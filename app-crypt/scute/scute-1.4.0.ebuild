@@ -4,7 +4,7 @@
 
 EAPI=3
 
-inherit autotools eutils libtool
+inherit autotools
 
 DESCRIPTION="A PKCS #11 module that adds support for the OpenPGP smartcard card
 to the Mozilla NSS."
@@ -16,7 +16,7 @@ SRC_URI="
 LICENSE="GPL-2"
 SLOT="1"
 KEYWORDS="~amd64"
-IUSE=""
+IUSE="static-libs"
 
 DEPEND="
 	>=dev-libs/libgpg-error-1.4
@@ -24,25 +24,20 @@ DEPEND="
 	>=app-crypt/pinentry-0.7.0"
 RDEPEND="
 	|| (
-		dev-libs/nss
-		www-client/firefox-bin
-		www-client/seamonkey-bin
-	)
-	|| (
 		>=app-crypt/gnupg-2.0[openct]
 		>=app-crypt/gnupg-2.0[pcsc-lite]
 		>=app-crypt/gnupg-2.0[smartcard]
 	)
 	${DEPEND}"
 
-#src_prepare() {
-#	eautoreconf
-#	elibtoolize
-#	epunt_cxx
-#}
+src_prepare() {
+	eautoreconf || die "eautoreconf failed"
+	elibtoolize || die "elibtoolize failed"
+	epunt_cxx || die "epunt_cxx failed"
+}
 
 src_configure() {
-	econf
+	econf $(use_enable static-libs static) || die "econf failed"
 }
 
 src_compile() {
@@ -50,6 +45,9 @@ src_compile() {
 }
 
 src_install() {
+	LIBDIR=$(get_libdir)
+	dosym ../libscute.so usr/${LIBDIR}/pkcs11/libscute.so \
+	|| die "dosym failed"
 	emake DESTDIR="${D}" install || die "emake install failed"
 	dodoc AUTHORS ChangeLog NEWS README TODO || die "dodoc failed"
 }
