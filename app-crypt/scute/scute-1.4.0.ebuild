@@ -16,7 +16,7 @@ SRC_URI="
 LICENSE="GPL-2"
 SLOT="1"
 KEYWORDS="~amd64"
-IUSE="static-libs"
+IUSE=""
 
 DEPEND="
 	>=dev-libs/libgpg-error-1.4
@@ -37,7 +37,7 @@ src_prepare() {
 }
 
 src_configure() {
-	econf $(use_enable static-libs static) || die "econf failed"
+	econf || die "econf failed"
 }
 
 src_compile() {
