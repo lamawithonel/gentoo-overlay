@@ -1,53 +1,50 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/app-crypt/scute/scute-1.4.0.ebuild,v 1.2 2011/04/17 00:13:45 flameeyes Exp $
 
-EAPI=3
+EAPI=4
 
-inherit autotools
+inherit autotools eutils libtool multilib
 
-DESCRIPTION="A PKCS #11 module that adds support for the OpenPGP smartcard card
-to the Mozilla NSS."
+DESCRIPTION="A PKCS #11 module for OpenPGP smartcards"
 HOMEPAGE="http://www.scute.org/"
-SRC_URI="
-	#mirror://gnupg/gcrypt/scute/${P}.tar.bz2
-	ftp://ftp.gnupg.org/gcrypt/scute/${P}.tar.bz2"
+SRC_URI="ftp://ftp.gnupg.org/gcrypt/scute/${P}.tar.bz2"
 
 LICENSE="GPL-2"
-SLOT="1"
+SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
+# configure script try to check the version of gpgsm and gpg-agent when
+# non-crosscompiling so we need to have them as build-time dependency as
+# well as runtime.  Require a version of gnupg that is patched to have
+# gpgsm-gencert.sh working (as that's what the documentation describe).
 DEPEND="
 	>=dev-libs/libgpg-error-1.4
 	>=dev-libs/libassuan-2.0.0
-	>=app-crypt/pinentry-0.7.0"
-RDEPEND="
-	|| (
-		>=app-crypt/gnupg-2.0[openct]
-		>=app-crypt/gnupg-2.0[pcsc-lite]
-		>=app-crypt/gnupg-2.0[smartcard]
-	)
-	${DEPEND}"
+	>=app-crypt/pinentry-0.7.0
+	>=app-crypt/gnupg-2.0.17-r1[smartcard]"
+RDEPEND="${DEPEND}"
 
 src_prepare() {
-	eautoreconf || die "eautoreconf failed"
-	elibtoolize || die "elibtoolize failed"
-	epunt_cxx || die "epunt_cxx failed"
+	# We need no ABI versioning, reduce the number of symlinks installed
+	epatch "${FILESDIR}"/scute-1.2.0-noversion.patch
+	# Don't build tests during src_compile.
+	epatch "${FILESDIR}"/scute-1.4.0-tests.patch
+
+	eautoreconf
+	elibtoolize
 }
 
 src_configure() {
-	econf || die "econf failed"
-}
-
-src_compile() {
-	emake || die "emake failed"
+	econf \
+		--libdir=/usr/$(get_libdir)/pkcs11 \
+		--with-gpgsm=/usr/bin/gpgsm \
+		--with-gpg-agent=/usr/bin/gpg-agent
 }
 
 src_install() {
-	LIBDIR=$(get_libdir)
-	dosym ../libscute.so usr/${LIBDIR}/pkcs11/libscute.so \
-	|| die "dosym failed"
 	emake DESTDIR="${D}" install || die "emake install failed"
-	dodoc AUTHORS ChangeLog NEWS README TODO || die "dodoc failed"
+	find "${D}" -name '*.la' -delete
+	dodoc AUTHORS ChangeLog NEWS README TODO
 }
