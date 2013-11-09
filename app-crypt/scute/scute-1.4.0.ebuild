@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/app-crypt/scute/scute-1.4.0.ebuild,v 1.2 2011/04/17 00:13:45 flameeyes Exp $
 
@@ -38,9 +38,9 @@ src_prepare() {
 
 src_configure() {
 	econf \
-		--libdir=/usr/$(get_libdir)/pkcs11 \
-		--with-gpgsm=/usr/bin/gpgsm \
-		--with-gpg-agent=/usr/bin/gpg-agent
+		--libdir="${EROOT}"/usr/$(get_libdir)/pkcs11 \
+		--with-gpgsm="${EROOT}"/usr/bin/gpgsm \
+		--with-gpg-agent="${EROOT}"/usr/bin/gpg-agent
 }
 
 src_install() {

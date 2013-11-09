@@ -1,4 +1,4 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -22,7 +22,7 @@ RDEPEND=">=sys-apps/rng-tools-3 ${DEPEND}"
 
 src_unpack()
 {
-	if [ "${A}" != "" ]; then
+	if [ ${A} != "" ]; then
 		unpack ${A}
 	else
 		return 1
