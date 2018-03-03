@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "http://www.gentoo.org/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>lamawithonel</name>
+    <description lang="en">A Gentoo Portage overlay for random workarounds and out-of-tree ebuilds.</description>
+    <homepage>https://github.com/lamawithonel/gentoo-overlay</homepage>
+    <owner type="person">
+      <email>lucas.yamanishi@gmail.com</email>
+      <name>Lucas Yamanishi</name>
+    </owner>
+    <source type="git">https://github.com/lamawithonel/gentoo-overlay.git</source>
+    <source type="git">git+ssh://git@github.com/lamawithonel/gentoo-overlay.git</source>
+    <feed>https://github.com/lamawithonel/gentoo-overlay/commits/master.atom</feed>
+  </repo>
+</repositories>
