@@ -53,6 +53,14 @@ PATCHES=(
 	"${FILESDIR}"/${P}-KBL-ICL-PCI-IDs.patch
 )
 
+src_unpack() {
+	if [ "${A}" != "" ]; then
+		unpack ${A}
+	fi
+
+	mv intel-gpu-tools-${PV} ${P}
+}
+
 src_configure() {
 	XORG_CONFIGURE_OPTIONS=(
 	$(usex test-programs $(use_enable sound audio) --disable-audio)
