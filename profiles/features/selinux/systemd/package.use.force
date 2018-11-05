@@ -1,0 +1,2 @@
+gnome-base/gnome-settings-daemon -openrc-force
+gnome-base/gnome-shell -openrc-force
