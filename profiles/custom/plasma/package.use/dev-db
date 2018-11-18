@@ -1,0 +1,2 @@
+dev-db/postgresql             -ldap
+dev-db/sqlite                 icu secure-delete

@@ -1,0 +1,3 @@
+kde-apps/akonadi              -mysql postgres
+kde-apps/ark                  zip
+kde-apps/kio-extras           mtp

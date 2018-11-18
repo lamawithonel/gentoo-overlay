@@ -1,0 +1,2 @@
+app-crypt/pinentry            -gtk -qt4
+app-crypt/qca                 gcrypt gpg nss softstore

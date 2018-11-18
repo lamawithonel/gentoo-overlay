@@ -1,0 +1,2 @@
+# Required by kde-plasma/powerdevil[brightness-control]
+app-misc/ddcutil

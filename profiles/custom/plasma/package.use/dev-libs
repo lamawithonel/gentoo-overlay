@@ -1,0 +1,4 @@
+dev-libs/boost                icu nls
+dev-libs/gmp                  pgo
+dev-libs/libnl                -debug
+dev-libs/openssl              gmp rfc3779 sctp

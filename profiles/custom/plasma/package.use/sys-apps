@@ -1,0 +1,6 @@
+sys-apps/coreutils            gmp
+sys-apps/dbus                 user-session
+sys-apps/gawk                 mpfr
+sys-apps/iproute2             elf
+sys-apps/pciutils             dns
+sys-apps/systemd              cryptsetup elfutils gnuefi xkb

@@ -1,0 +1,7 @@
+*sys-fs/btrfs-progs
+*sys-fs/btrfsmaintenance
+*net-wireless/wireless-regdb
+
+sys-power/acpi
+sys-power/acpid
+sys-power/powertop

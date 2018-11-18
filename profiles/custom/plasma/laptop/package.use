@@ -1,0 +1,3 @@
+app-misc/geoclue:2.0          zeroconf
+kde-plasma/plasma-desktop     touchpad
+x11-libs/gtk+                 cloudprint 

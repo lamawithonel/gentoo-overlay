@@ -1,0 +1,2 @@
+sys-boot/grub                 -themes -grub_platforms_pc
+sys-boot/plymouth             gdm

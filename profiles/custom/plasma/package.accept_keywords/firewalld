@@ -1,0 +1,8 @@
+<net-firewall/firewalld-0.7
+
+=net-firewall/ebtables-2.0.10.4-r2
+=net-firewall/iptables-1.6.2-r2
+=net-misc/ethertypes-0
+
+<net-firewall/nftables-0.9
+=net-libs/libnftnl-1.1.1-r1

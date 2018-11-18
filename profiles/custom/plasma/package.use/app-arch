@@ -1,0 +1,3 @@
+app-arch/libarchive           lz4 lzo
+app-arch/unzip                natspec
+app-arch/zip                  natspec

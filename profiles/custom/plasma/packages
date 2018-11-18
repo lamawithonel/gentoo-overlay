@@ -1,0 +1,110 @@
+*sys-apps/memtest86+
+*app-arch/lbzip2
+*app-arch/lzop
+*app-shells/dash
+*dev-vcs/git
+*sys-boot/grub
+*sys-boot/systemrescuecd-x86-grub
+*sys-fs/dosfstools
+*sys-fs/exfat-utils
+*sys-kernel/dracut
+*sys-kernel/gentoo-sources
+*virtual/linux-sources
+*sys-process/systemd-cron
+*sys-power/cpupower
+*sys-power/thermald
+
+
+#-----------------------------------------------------------------------
+# psudo-@system
+
+# Editor
+app-editors/neovim
+app-eselect/eselect-vi
+
+# Admin utils
+app-admin/sudo
+sys-process/htop
+app-admin/puppet
+sys-kernel/genkernel-next
+app-shells/bash-completion
+
+# Portage utils
+app-portage/eix
+app-portage/gentoolkit
+app-portage/repoman
+
+# Btrfs backup tools
+app-backup/btrbk
+sys-block/mbuffer
+
+# Network
+mail-mta/msmtp
+net-vpn/wireguard
+net-analyzer/netcat
+net-analyzer/nmap
+net-analyzer/tcpdump
+net-analyzer/traceroute
+net-dialup/minicom
+net-misc/iperf
+net-misc/telnet-bsd
+net-misc/whois
+
+
+#-----------------------------------------------------------------------
+# Desktop & Apps
+
+kde-plasma/plasma-meta
+
+# A stripped-down version of kde-apps/kdecore-meta
+kde-apps/dolphin
+kde-apps/kdialog
+kde-apps/keditbookmarks
+kde-apps/konsole
+kde-apps/kwrite
+
+# A stripped-down version of kde-apps/kdeutils-meta:
+kde-apps/ark
+kde-apps/filelight
+kde-apps/kcalc
+kde-apps/kcharselect
+kde-apps/kdebugsettings
+kde-apps/kdf
+kde-apps/kgpg
+kde-apps/ktimer
+kde-apps/kwalletmanager
+kde-apps/print-manager
+kde-apps/sweeper
+
+kde-misc/plasma-redshift-control
+www-client/firefox
+
+
+#-----------------------------------------------------------------------
+# Common Desktop Fonts
+media-fonts/fira-code
+media-fonts/fira-mono
+media-fonts/fira-sans
+#media-fonts/cantarell
+#media-fonts/ubuntu-font-family
+#media-fonts/dejavu
+
+# Dignbats and such
+media-fonts/powerline-symbols
+
+# Google
+#media-fonts/noto
+media-fonts/noto-cjk
+#media-fonts/noto-emoji
+media-fonts/droid
+
+# Microsoft look-alikes
+media-fonts/croscorefonts
+#media-fonts/corefonts
+media-fonts/inconsolata
+#media-fonts/open-sans
+#media-fonts/courier-prime
+
+# Adobe and Adobe look-alikes
+media-fonts/source-pro
+#media-fonts/heuristica
