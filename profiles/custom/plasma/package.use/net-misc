@@ -1,4 +1,5 @@
 net-misc/curl                 http2
 net-misc/dhcp                 -server
 net-misc/networkmanager       iwd json -modemmanager
+net-misc/networkmanager-openvpn -gtk
 net-misc/openssh              ldns libedit

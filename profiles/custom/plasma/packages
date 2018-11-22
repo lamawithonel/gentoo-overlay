@@ -3,16 +3,16 @@
 *app-arch/lzop
 *app-shells/dash
 *dev-vcs/git
+*net-firewall/firewalld
 *sys-boot/grub
 *sys-boot/systemrescuecd-x86-grub
 *sys-fs/dosfstools
 *sys-fs/exfat-utils
 *sys-kernel/dracut
-*sys-kernel/gentoo-sources
-*virtual/linux-sources
 *sys-process/systemd-cron
 *sys-power/cpupower
 *sys-power/thermald
+*virtual/linux-sources
 
 
 #-----------------------------------------------------------------------
@@ -46,7 +46,9 @@ net-analyzer/nmap
 net-analyzer/tcpdump
 net-analyzer/traceroute
 net-dialup/minicom
+net-dns/bind-tools
 net-misc/iperf
+net-misc/networkmanager-openvpn
 net-misc/telnet-bsd
 net-misc/whois
 
