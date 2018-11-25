@@ -24,10 +24,11 @@ app-eselect/eselect-vi
 
 # Admin utils
 app-admin/sudo
-sys-process/htop
 app-admin/puppet
-sys-kernel/genkernel-next
 app-shells/bash-completion
+sys-apps/smartmontools
+sys-process/htop
+sys-kernel/genkernel-next
 
 # Portage utils
 app-portage/eix

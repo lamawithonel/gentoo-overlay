@@ -48,7 +48,7 @@ USE_GAMES='		-steamruntime'
 USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'
 USE_I18N_L10N='		icu idn libidn2 -nls'
-USE_NET='		sctp -tcpd'
+USE_NET='		-ldap sctp -tcpd'
 USE_SYS='		caps custom-cflags hardened device-mapper threads'
 USE_VIDEO='		ffmpeg'
 
