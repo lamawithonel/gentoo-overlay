@@ -13,14 +13,13 @@ FEATURES_BINPKG='binpkg-multi-instance'
 FEATURES_DEBUG='compressdebug splitdebug'
 FEATURES_DOC='noinfo'
 FEATURES_ISOLATION='collision-protect cgroup ipc-sandbox network-sandbox'
-FEATURES_LOG='split-log split-elog'
-FEATURES="${FEATURES_BINPKG} ${FEATURES_DEBUG} ${FEATURES_DOC} ${FEATURES_ISOLATION} ${FEATURES_LOG}"
+FEATURES="${FEATURES_BINPKG} ${FEATURES_DEBUG} ${FEATURES_DOC} ${FEATURES_ISOLATION}"
 
 PORTDIR='/usr/portage'
 DISTDIR="${PORTDIR}/distfiles"
 PKGDIR="${PORTDIR}/packages"
 
-PORTAGE_ELOG_CLASSES='info warn log'
+PORT_LOGDIR='/var/log/portage'
 PORTAGE_ELOG_SYSTEM='save'
 
 PORTAGE_BZIP2_COMMAND='lbzip2'
