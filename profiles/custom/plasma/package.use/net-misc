@@ -1,6 +1,7 @@
 net-misc/curl                 http2
 net-misc/dhcp                 -server
-net-misc/networkmanager       iwd json -modemmanager -ppp -wext
+net-misc/modemmanager         -qmi
+net-misc/networkmanager       iwd json -wext
 net-misc/networkmanager-openvpn -gtk
 net-misc/openssh              ldns libedit
 net-misc/spice-gtk            usbredir
