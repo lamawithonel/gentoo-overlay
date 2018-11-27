@@ -1,3 +1,5 @@
 sys-libs/libblockdev          cryptsetup kbd
+sys-libs/libcap               static-libs
 sys-libs/ncurses              tinfo
 sys-libs/timezone-data        leaps_timezone
+sys-libs/zlib                 static-libs

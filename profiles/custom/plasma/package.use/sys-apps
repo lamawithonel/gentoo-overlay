@@ -1,3 +1,4 @@
+sys-apps/attr                 static-libs
 sys-apps/coreutils            gmp
 sys-apps/dbus                 user-session
 sys-apps/gawk                 mpfr
