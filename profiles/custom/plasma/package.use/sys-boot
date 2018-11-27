@@ -1,2 +1,2 @@
-sys-boot/grub                 -themes -grub_platforms_pc
+sys-boot/grub                 mount -themes
 sys-boot/plymouth             gdm

@@ -1,4 +1,5 @@
 net-libs/libnftnl             json -threads
+dev-libs/libnl                utils
 net-libs/libpcap              bluetooth netlink
 net-libs/libproxy             networkmanager
 net-libs/nghttp2              jemalloc

@@ -29,27 +29,30 @@ PORTAGE_COMPRESS='xz'
 BINPKG_COMPRESS='xz'
 
 LC_MESSAGES='C'
-L10N='en-US en'
+L10N='-* en-US en'
 
-USE_EXPAND="${USE_EXPAND} RKT_STAGE1"
+USE_EXPAND='RKT_STAGE1 STEAMGAMES UPS_DRIVERS'
+
+UPS_DRIVERS='-*'
 
 LLVM_TARGETS='-* BPF X86'
 PAX_MARKINGS='XT'
 
 INPUT_DEVICES='-* evdev libinput'
 
-CAMERAS='ptp2'
+CAMERAS='-* ptp2'
+CURL_SSL='-* nss'
 
 USE_ACCESSIBILITY='	-accessibility'
 USE_AUDIO='		-alsa pulseaudio'
-USE_COMPRESS='		lz4 lzma lzo xz'
-USE_DESKTOP_MISC='	gnome-keyring -handbook'
+USE_COMPRESS='		lz4 lzma lzo xz zstd'
+USE_DESKTOP_MISC='	gnome-keyring -handbook -semantic-desktop'
 USE_GAMES='		-steamruntime'
 USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'
 USE_I18N_L10N='		icu idn libidn2 -nls'
 USE_NET='		-ldap sctp -tcpd'
-USE_SYS='		caps custom-cflags hardened device-mapper threads'
+USE_SYS='		caps custom-cflags custom-optimization hardened device-mapper threads'
 USE_VIDEO='		ffmpeg'
 
 USE="	${USE_ACCESSIBILITY} ${USE_AUDIO} ${USE_COMPRESS} ${USE_DESKTOP_MISC}	\

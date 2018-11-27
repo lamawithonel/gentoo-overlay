@@ -1,1 +1,5 @@
+app-emulation/docker          -device-mapper
+app-emulation/qemu            sdl2 smartcard spice vte
+app-emulation/libvirt         firewalld pcap -vepa virt-network virtualbox wireshark-plugins
 app-emulation/virt-what       dmi
+app-emulation/virtualbox      vnc

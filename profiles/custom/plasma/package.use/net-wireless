@@ -1,2 +1,2 @@
-net-wireless/bluez            test-programs user-session
+net-wireless/bluez            user-session
 net-wireless/iwd              wired

@@ -1,2 +1,2 @@
-www-client/firefox            clang custom-cflags custom-optimization geckodriver hardened hwaccel lto system-harfbuzz system-icu system-jpeg system-libevent system-libvpx system-sqlite wifi
+www-client/firefox            clang geckodriver hwaccel lto system-harfbuzz system-icu system-jpeg system-libevent system-libvpx system-sqlite
 www-client/w3m                -X fbcon

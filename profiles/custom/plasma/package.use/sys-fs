@@ -1,4 +1,4 @@
 sys-fs/btrfs-progs            -convert
-sys-fs/cryptsetup             pwquality reencrypt
+sys-fs/cryptsetup             -gcrypt openssl pwquality reencrypt
 sys-fs/lvm2                   device-mapper-only -thin
 sys-fs/udisks                 cryptsetup

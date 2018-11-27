@@ -1,22 +1,30 @@
+*app-admin/logrotate
 *sys-apps/memtest86+
 *app-arch/lbzip2
 *app-arch/lzop
 *app-shells/dash
 *dev-vcs/git
+*mail-mta/msmtp
 *net-firewall/firewalld
 *sys-boot/grub
-*sys-boot/systemrescuecd-x86-grub
+*sys-apps/pciutils
+*sys-apps/usbutils
 *sys-fs/dosfstools
 *sys-fs/exfat-utils
+*sys-fs/f2fs-tools
+*sys-fs/fuse-exfat
+*sys-fs/lsscsi
+*sys-fs/squashfs-tools
 *sys-kernel/dracut
 *sys-process/systemd-cron
 *sys-power/cpupower
 *sys-power/thermald
 *virtual/linux-sources
+*x11-misc/xdg-user-dirs
 
 
 #-----------------------------------------------------------------------
-# psudo-@system
+# CLI tools
 
 # Editor
 app-editors/neovim
@@ -25,38 +33,79 @@ app-eselect/eselect-vi
 # Admin utils
 app-admin/sudo
 app-admin/puppet
-app-shells/bash-completion
-sys-apps/smartmontools
-sys-process/htop
 sys-kernel/genkernel-next
 
 # Portage utils
 app-portage/eix
 app-portage/gentoolkit
+app-portage/layman
+app-portage/portpeek
 app-portage/repoman
 
 # Btrfs backup tools
 app-backup/btrbk
 sys-block/mbuffer
 
+# Recovery tools
+dev-libs/libisoburn
+sys-boot/systemrescuecd-x86-grub
+
 # Network
-mail-mta/msmtp
-net-vpn/wireguard
-net-analyzer/netcat
+net-analyzer/fping
+net-analyzer/openbsd-netcat
 net-analyzer/nmap
 net-analyzer/tcpdump
 net-analyzer/traceroute
+net-analyzer/wireshark
 net-dialup/minicom
 net-dns/bind-tools
 net-misc/iperf
 net-misc/networkmanager-openvpn
 net-misc/telnet-bsd
 net-misc/whois
+net-vpn/wireguard
 
+# Misc.
+app-arch/p7zip
+app-arch/par2cmdline
+app-crypt/sbsigntools
+app-crypt/veracrypt
+app-crypt/yubikey-manager-qt
+app-misc/tails-installer
+app-misc/tmux
+app-admin/yadm
+dev-util/checkbashisms
+dev-util/shellcheck
+dev-util/strace
+sys-apps/ethtool
+sys-apps/lcdtest
+sys-apps/mlocate
+sys-apps/smartmontools
+sys-fs/inotify-tools
+sys-fs/ntfs3g
+sys-process/htop
+sys-process/lsof
+app-shells/bash-completion
+app-misc/jq
+sys-devel/gdb
+
+# Containers, Virtualization & Cloud
+app-admin/ec2-ami-tools
+app-emulation/buildah
+app-emulation/docker
+app-emulation/rkt
+app-emulation/vagrant
+app-emulation/virt-manager
+app-emulation/virt-viewer
+sys-cluster/minikube
+dev-python/awscli
+
+# Web Browsers
+www-client/firefox
+www-plugins/adobe-flash
 
 #-----------------------------------------------------------------------
-# Desktop & Apps
-
+# KDE
 kde-plasma/plasma-meta
 
 # A stripped-down version of kde-apps/kdecore-meta
@@ -79,12 +128,24 @@ kde-apps/kwalletmanager
 kde-apps/print-manager
 kde-apps/sweeper
 
+# A stripped-down version of kde-apps/kdegraphics-meta
+kde-apps/gwenview
+kde-apps/kamera
+kde-apps/kcolorchooser
+kde-apps/kolourpaint
+kde-apps/spectacle
+kde-apps/okular
+
+# kde-misc
 kde-misc/plasma-redshift-control
-www-client/firefox
-www-plugins/adobe-flash
+kde-misc/krename
 
 
 #-----------------------------------------------------------------------
+# Fonts & Artwork
+
+x11-themes/gentoo-artwork
+
 # Common Desktop Fonts
 media-fonts/fira-code
 media-fonts/fira-mono

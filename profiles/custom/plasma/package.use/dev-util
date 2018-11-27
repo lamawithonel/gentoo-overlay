@@ -1,2 +1,3 @@
 dev-util/cmake                qt5 system-jsoncpp
 dev-util/pkgconfig            hardened
+dev-util/strace               unwind
