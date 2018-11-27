@@ -97,6 +97,7 @@ app-emulation/rkt
 app-emulation/vagrant
 app-emulation/virt-manager
 app-emulation/virt-viewer
+app-emulation/virtualbox-additions
 sys-cluster/minikube
 dev-python/awscli
 
