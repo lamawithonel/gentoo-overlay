@@ -1,0 +1,4 @@
+app-admin/ec2-ami-tools
+dev-python/awscli
+dev-python/s3transfer
+dev-python/botocore

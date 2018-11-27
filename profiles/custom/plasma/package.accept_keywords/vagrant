@@ -1,4 +1,6 @@
 app-emulation/vagrant
 
 dev-ruby/hashicorp-checkpoint
-<dev-ruby/net-ssh-5.1
+dev-ruby/net-ssh:5
+dev-ruby/ed25519:1
+dev-ruby/rest-client:2

@@ -1,0 +1,9 @@
+app-crypt/yubikey-manager-qt
+app-crypt/yubikey-manager
+
+dev-python/pyotherside
+dev-python/fido2
+dev-python/pyusb
+dev-python/pyscard
+
+=sys-auth/ykpers-1.19.0
