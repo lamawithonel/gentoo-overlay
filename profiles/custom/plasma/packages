@@ -103,6 +103,7 @@ dev-python/awscli
 
 # Web Browsers
 www-client/firefox
+www-client/google-chrome
 www-plugins/adobe-flash
 
 #-----------------------------------------------------------------------
