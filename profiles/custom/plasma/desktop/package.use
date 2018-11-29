@@ -1,0 +1,6 @@
+dev-embedded/avrdude		ftdi
+app-office/libreoffice		java pdfimport vlc
+app-text/liblangtag		introspection
+dev-java/icedtea-bin		-webstart -headless-awt
+dev-java/icedtea-sound		-doc
+dev-util/astyle			java
