@@ -1,6 +1,10 @@
 app-emulation/vagrant
+dev-ruby/vagrant_cloud
 
 dev-ruby/hashicorp-checkpoint
 dev-ruby/net-ssh:5
 dev-ruby/ed25519:1
 dev-ruby/rest-client:2
+
+dev-ruby/i18n:1
+dev-ruby/rubyzip:1
