@@ -75,7 +75,7 @@ app-crypt/veracrypt
 app-crypt/yubikey-manager-qt
 app-forensics/lynis
 app-forensics/openscap
-app-misc/figlet
+app-misc/toilet
 app-misc/tails-installer
 app-misc/tmux
 app-admin/yadm
