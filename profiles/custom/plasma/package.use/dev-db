@@ -1,3 +1,3 @@
-dev-db/postgresql             -ldap
-dev-db/opendbx                -mysql postgres sqlite
-dev-db/sqlite                 icu secure-delete
+dev-db/postgresql               -ldap
+dev-db/opendbx                  -mysql postgres sqlite
+dev-db/sqlite                   icu secure-delete

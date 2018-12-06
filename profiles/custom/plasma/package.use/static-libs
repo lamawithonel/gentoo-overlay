@@ -1,12 +1,12 @@
 # Required by app-emulator/rkt[rkt_stage1_kvm_qemu]
-sys-apps/attr			static-libs
-sys-libs/libcap			static-libs
-sys-libs/zlib			static-libs
-x11-libs/pixman			static-libs
+sys-apps/attr                   static-libs
+sys-libs/libcap                 static-libs
+sys-libs/zlib                   static-libs
+x11-libs/pixman                 static-libs
 
 # Also required by app-emulator/rkt[rkt_stage1_kvm_qemu], but undocumented
-dev-libs/glib			static-libs
-dev-libs/libgcrypt		static-libs
-dev-libs/libgpg-error		static-libs
-dev-libs/libpcre		static-libs
-sys-apps/usbredir		static-libs
+dev-libs/glib                   static-libs
+dev-libs/libgcrypt              static-libs
+dev-libs/libgpg-error           static-libs
+dev-libs/libpcre                static-libs
+sys-apps/usbredir               static-libs

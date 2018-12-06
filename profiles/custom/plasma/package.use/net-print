@@ -1,2 +1,2 @@
-net-print/cups                zeroconf
-net-print/cups-filters        ipp_autosetup pclm zeroconf
+net-print/cups                  zeroconf
+net-print/cups-filters          ipp_autosetup pclm zeroconf

@@ -1,2 +1,2 @@
-sys-firmware/intel-microcode  hostonly
-sys-firmware/ipxe             -usb
+sys-firmware/intel-microcode    hostonly
+sys-firmware/ipxe               -usb

@@ -1,2 +1,2 @@
-media-sound/lame              -frontend sndfile
-media-sound/pulseaudio        alsa gconf libsamplerate realtime
+media-sound/lame                -frontend sndfile
+media-sound/pulseaudio          alsa gconf libsamplerate realtime

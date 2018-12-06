@@ -1,6 +1,6 @@
-app-misc/geoclue:2.0          zeroconf
-kde-plasma/plasma-desktop     touchpad
-media-sound/pulseaudio        native-headset
-x11-libs/gtk+                 cloudprint 
-x11-misc/redshift             geoclue
-www-client/firefox            wifi
+app-misc/geoclue:2.0            zeroconf
+kde-plasma/plasma-desktop       touchpad
+media-sound/pulseaudio          native-headset
+x11-libs/gtk+                   cloudprint
+x11-misc/redshift               geoclue
+www-client/firefox              wifi

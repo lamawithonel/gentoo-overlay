@@ -1,1 +1,1 @@
-sys-process/systemd-cron      setgid
+sys-process/systemd-cron        setgid

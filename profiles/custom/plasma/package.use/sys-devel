@@ -1,5 +1,5 @@
-sys-devel/gcc                 pgo
-sys-devel/llvm                libedit
->=sys-devel/llvm-6            gold
->=sys-devel/clang-6           default-compiler-rt default-libcxx
->=sys-devel/clang-runtime-6   libcxx
+sys-devel/gcc                   pgo
+sys-devel/llvm                  libedit
+>=sys-devel/llvm-6              gold
+>=sys-devel/clang-6             default-compiler-rt default-libcxx
+>=sys-devel/clang-runtime-6     libcxx

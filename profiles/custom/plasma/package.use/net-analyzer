@@ -1,2 +1,2 @@
-net-analyzer/nmap             libssh2
-net-analyzer/wireshark        androiddump -gtk libxml2 nghttp2 smi snappy
+net-analyzer/nmap               libssh2
+net-analyzer/wireshark          androiddump -gtk libxml2 nghttp2 smi snappy

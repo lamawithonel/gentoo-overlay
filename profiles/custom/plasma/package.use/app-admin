@@ -1,2 +1,2 @@
-app-admin/puppet              augeas diff -ldap shadow sqlite
-app-admin/sudo                -ldap openssl
+app-admin/puppet                augeas diff -ldap shadow sqlite
+app-admin/sudo                  -ldap openssl

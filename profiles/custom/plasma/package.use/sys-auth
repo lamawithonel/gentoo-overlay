@@ -1,2 +1,2 @@
-sys-auth/pambase              -cracklib -nullok securetty
-sys-auth/polkit               jit
+sys-auth/pambase                -cracklib -nullok securetty
+sys-auth/polkit                 jit

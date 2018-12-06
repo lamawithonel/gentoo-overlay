@@ -1,1 +1,1 @@
-net-mail/mailutils		-berkdb -gdbm
+net-mail/mailutils              -berkdb -gdbm

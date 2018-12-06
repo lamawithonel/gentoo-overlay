@@ -1,2 +1,2 @@
-virtual/ffmpeg                opus
-virtual/linux-sources         firmware
+virtual/ffmpeg                  opus
+virtual/linux-sources           firmware

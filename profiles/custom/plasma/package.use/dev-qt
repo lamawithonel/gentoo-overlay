@@ -1,2 +1,2 @@
-dev-qt/qtnetwork              networkmanager
-dev-qt/qtsql                  -mysql postgres
+dev-qt/qtnetwork                networkmanager
+dev-qt/qtsql                    -mysql postgres

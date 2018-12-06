@@ -1,4 +1,4 @@
-kde-frameworks/kdnssd         zeroconf
-kde-frameworks/kfilemetadata  epub ffmpeg office taglib
-kde-frameworks/kidletime      xscreensaver
-kde-frameworks/kxmlgui        attica
+kde-frameworks/kdnssd           zeroconf
+kde-frameworks/kfilemetadata    epub ffmpeg office taglib
+kde-frameworks/kidletime        xscreensaver
+kde-frameworks/kxmlgui          attica

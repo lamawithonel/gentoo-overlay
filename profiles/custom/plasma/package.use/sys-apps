@@ -1,7 +1,7 @@
-sys-apps/coreutils            gmp
-sys-apps/dbus                 user-session
-sys-apps/gawk                 mpfr
-sys-apps/iproute2             elf
-sys-apps/pciutils             dns
-sys-apps/smartmontools        update_drivedb
-sys-apps/systemd              cryptsetup elfutils xkb
+sys-apps/coreutils              gmp
+sys-apps/dbus                   user-session
+sys-apps/gawk                   mpfr
+sys-apps/iproute2               elf
+sys-apps/pciutils               dns
+sys-apps/smartmontools          update_drivedb
+sys-apps/systemd                cryptsetup elfutils xkb

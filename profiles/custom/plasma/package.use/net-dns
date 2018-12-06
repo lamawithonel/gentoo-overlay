@@ -1,1 +1,1 @@
-net-dns/avahi                 -gtk mdnsresponder-compat
+net-dns/avahi                   -gtk mdnsresponder-compat
