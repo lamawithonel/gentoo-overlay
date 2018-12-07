@@ -1,2 +1,3 @@
 net-dns/avahi                   -gtk mdnsresponder-compat
 net-dns/bind-tools              -idn libidn2
+net-dns/dnsmasq                 conntrack dhcp-tools dnssec script tftp
