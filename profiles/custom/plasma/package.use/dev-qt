@@ -1,3 +1,4 @@
+dev-qt/designer                 webkit
 dev-qt/qtnetwork                networkmanager
 >=dev-qt/qtpositioning-5.12     geoclue
 dev-qt/qtsql                    -mysql postgres

@@ -1,5 +1,6 @@
+kde-plasma/kdeplasma-addons     share webengine
 kde-plasma/ksysguard            lm_sensors
-kde-plasma/libksysguard         -detailedmemory
+kde-plasma/libksysguard         webkit
 kde-plasma/plasma-meta          grub -legacy-systray networkmanager plymouth
 kde-plasma/plasma-nm            -modemmanager
 kde-plasma/plasma-vault         networkmanager
