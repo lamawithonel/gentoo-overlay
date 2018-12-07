@@ -1,1 +1,2 @@
 dev-python/pyyaml               libyaml
+dev-python/setuptools_scm       git

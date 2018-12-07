@@ -1,3 +1,4 @@
+dev-lang/lua                    -deprecated
 dev-lang/python                 hardened sqlite
 dev-lang/ruby                   jemalloc socks5
 dev-lang/rust                   cargo doc rustfmt

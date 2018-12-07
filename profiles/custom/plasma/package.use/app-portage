@@ -1,2 +1,2 @@
 app-portage/gemato              sha3
-app-portage/layman              gpg sync-plugin-portage
+app-portage/layman              gpg sqlite sync-plugin-portage
