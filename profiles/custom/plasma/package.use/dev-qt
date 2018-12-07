@@ -1,2 +1,5 @@
 dev-qt/qtnetwork                networkmanager
+>=dev-qt/qtpositioning-5.12     geoclue
 dev-qt/qtsql                    -mysql postgres
+dev-qt/qtwebengine              geolocation
+dev-qt/qtwebkit                 geolocation -gstreamer multimedia webp

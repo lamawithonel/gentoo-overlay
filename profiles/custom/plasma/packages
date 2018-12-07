@@ -152,8 +152,9 @@ kde-apps/spectacle
 kde-apps/okular
 
 # kde-misc
-kde-misc/plasma-redshift-control
+kde-misc/kio-gdrive
 kde-misc/krename
+kde-misc/plasma-redshift-control
 
 
 #-----------------------------------------------------------------------
