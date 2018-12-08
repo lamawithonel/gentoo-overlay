@@ -1,4 +1,7 @@
 app-misc/geoclue:2.0            zeroconf
+>=dev-qt/qtpositioning-5.12     geoclue
+dev-qt/qtwebengine              geolocation
+dev-qt/qtwebkit                 geolocation
 kde-plasma/plasma-desktop       touchpad
 media-sound/pulseaudio          native-headset
 x11-libs/gtk+                   cloudprint
