@@ -1,3 +1,5 @@
 www-client/firefox
 dev-libs/nss
 <dev-util/cbindgen-2
+
+=dev-db/sqlite-3.25.3
