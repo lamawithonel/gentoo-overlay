@@ -79,6 +79,7 @@ app-misc/toilet
 app-misc/tails-installer
 app-misc/tmux
 app-admin/yadm
+dev-embedded/arduino
 dev-util/checkbashisms
 dev-util/shellcheck
 dev-util/strace
