@@ -148,6 +148,8 @@ kde-apps/sweeper
 
 # A stripped-down version of kde-apps/kdenetwork-meta
 kde-apps/dolphin-plugins-dropbox
+kde-apps/krdc
+kde-apps/zeroconf-ioslave
 
 # A stripped-down version of kde-apps/kdegraphics-meta
 kde-apps/gwenview
