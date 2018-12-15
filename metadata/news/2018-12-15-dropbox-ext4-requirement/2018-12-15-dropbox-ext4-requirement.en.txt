@@ -1,0 +1,15 @@
+Title: Dropbox No Longer Supports Non-ext4 Filesystems
+Author: Lucas Yamanishi <lucas.yamanishi@gmail.com>
+Posted: 2018-12-13
+Revision: 0
+News-Item-Format: 2.0
+Display-If-Installed: net-misc/dropbox
+
+As of November 7, 2018 and >=net-misc/dropbox-61, Dropbox officialy ended
+support for non-ext4 filesystems in their Linux client.  As a result, users
+who store their Dropbox directory on non-ext4 filesystems must migrate them to
+an ext4 filesystem, or find an alternative workaround.  See the reference
+links for more information.
+
+[1] https://bugs.gentoo.org/673184
+[2] https://www.dropboxforum.com/t5/Error-messages/Dropbox-client-warns-me-that-it-ll-stop-syncing-in-Nov-why/m-p/306368#solution_view

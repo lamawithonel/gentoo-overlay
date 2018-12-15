@@ -146,6 +146,9 @@ kde-apps/kwalletmanager
 kde-apps/print-manager
 kde-apps/sweeper
 
+# A stripped-down version of kde-apps/kdenetwork-meta
+kde-apps/dolphin-plugins-dropbox
+
 # A stripped-down version of kde-apps/kdegraphics-meta
 kde-apps/gwenview
 kde-apps/kamera
