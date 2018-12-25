@@ -1,3 +1,4 @@
+dev-libs/appstream-glib         stemmer
 dev-libs/boost                  icu nls
 dev-libs/cyrus-sasl             -berkdb -gdbm
 dev-libs/gmp                    pgo
