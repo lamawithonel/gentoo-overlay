@@ -1,3 +1,5 @@
+=net-misc/dropbox-60.4.107
+
 # required by @profile
 # required by @world
 =kde-apps/dolphin-plugins-dropbox-18.12.0
