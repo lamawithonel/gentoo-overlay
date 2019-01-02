@@ -1,5 +1,1 @@
 >x11-apps/igt-gpu-tools-1.22
-
-# Lucas Yamanishi <lucas.yamanishi@gmail.com> (04 Dec 2018)
-# Requires >=dev-lang/go-1.11.1, which is keyworded
->=sys-cluster/kubectl-1.13.0
