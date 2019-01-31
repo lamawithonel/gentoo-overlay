@@ -1,5 +1,10 @@
 www-client/firefox
 dev-libs/nss
-<dev-util/cbindgen-2
 
-=dev-db/sqlite-3.25.3
+<dev-util/cbindgen-2
+dev-lang/rust:stable/1.30
+=virtual/rust-1.30*
+=virtual/cargo-1.30*
+
+=media-libs/libwebp-1.0*
+=media-libs/libvpx-1.7*
