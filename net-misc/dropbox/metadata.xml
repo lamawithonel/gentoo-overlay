@@ -9,5 +9,6 @@
   </maintainer>
   <use>
     <flag name="librsync-bundled">Use bundled librsync library</flag>
+    <flag name="experimental">Use a third-party patch to allow non-ext4 filesystems</flag>
   </use>
 </pkgmetadata>
