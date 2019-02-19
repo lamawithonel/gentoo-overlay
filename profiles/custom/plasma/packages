@@ -83,6 +83,7 @@ dev-embedded/arduino
 dev-util/checkbashisms
 dev-util/shellcheck
 dev-util/strace
+net-irc/konversation
 net-misc/dropbox-cli
 sys-apps/ethtool
 sys-apps/lcdtest
