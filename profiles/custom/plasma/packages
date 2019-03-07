@@ -60,9 +60,9 @@ net-analyzer/wireshark
 net-dialup/minicom
 net-dns/bind-tools
 net-misc/iperf
-net-misc/networkmanager-openvpn
 net-misc/telnet-bsd
 net-misc/whois
+net-vpn/networkmanager-openvpn
 net-vpn/wireguard
 
 # Misc.

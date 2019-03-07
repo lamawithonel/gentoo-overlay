@@ -1,1 +1,2 @@
+net-vpn/networkmanager-openvpn -gtk
 net-vpn/openvpn                 inotify iproute2
