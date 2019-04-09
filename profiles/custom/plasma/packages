@@ -109,6 +109,10 @@ app-emulation/virtualbox-additions
 sys-cluster/minikube
 dev-python/awscli
 
+# 3D Graphics stack & tools
+dev-util/vulkan-tools
+x11-apps/mesa-progs
+
 # A few tools from x11-base/xorg-x11
 x11-apps/appres
 x11-apps/xdpyinfo
