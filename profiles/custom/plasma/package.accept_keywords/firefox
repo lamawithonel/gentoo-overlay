@@ -2,9 +2,9 @@ www-client/firefox
 dev-libs/nss
 
 <dev-util/cbindgen-2
-dev-lang/rust:stable/1.31
-=virtual/rust-1.31*
-=virtual/cargo-1.31*
+dev-lang/rust:stable
+virtual/rust
+virtual/cargo
 
 =dev-db/sqlite-3.26*
 
