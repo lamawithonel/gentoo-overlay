@@ -48,7 +48,6 @@ sys-block/mbuffer
 
 # Recovery tools
 dev-libs/libisoburn
-sys-boot/systemrescuecd-x86-grub
 
 # Network
 net-analyzer/fping
