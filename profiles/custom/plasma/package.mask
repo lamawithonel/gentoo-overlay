@@ -1,1 +1,4 @@
 >x11-apps/igt-gpu-tools-1.22
+
+# Conflicts with <dev-python/python-dateutil-3
+>=dev-python/setuptools_scm-3
