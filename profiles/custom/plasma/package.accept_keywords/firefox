@@ -1,6 +1,8 @@
 www-client/firefox
 dev-libs/nss
 
+=dev-libs/nspr-4.21
+
 <dev-util/cbindgen-2
 dev-lang/rust:stable
 virtual/rust
