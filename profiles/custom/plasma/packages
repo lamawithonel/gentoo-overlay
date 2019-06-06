@@ -100,7 +100,6 @@ sys-devel/gdb
 app-admin/ec2-ami-tools
 app-emulation/buildah
 app-emulation/docker
-app-emulation/rkt
 app-emulation/vagrant
 app-emulation/virt-manager
 app-emulation/virt-viewer
