@@ -2,3 +2,4 @@ net-firewall/ebtables           -perl
 net-firewall/ipset              -modules
 net-firewall/iptables           conntrack netlink nftables pcap
 net-firewall/firewalld          gui
+net-firewall/nftables           json
