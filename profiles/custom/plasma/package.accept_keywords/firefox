@@ -15,3 +15,5 @@ virtual/cargo
 
 =media-libs/libaom-1.0*
 =media-libs/dav1d-0.2*
+
+<media-libs/harfbuzz-2.5
