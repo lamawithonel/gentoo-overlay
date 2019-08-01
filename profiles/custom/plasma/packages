@@ -68,6 +68,7 @@ net-vpn/wireguard
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
+app-benchmarks/geekbench
 app-crypt/efitools
 app-crypt/sbsigntools
 app-crypt/veracrypt
