@@ -65,6 +65,7 @@ net-vpn/networkmanager-openvpn
 net-vpn/wireguard
 
 # Misc.
+app-admin/apg
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
