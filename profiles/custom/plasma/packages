@@ -97,6 +97,7 @@ sys-process/lsof
 app-shells/bash-completion
 app-misc/jq
 sys-devel/gdb
+x11-terms/gnome-terminal
 
 # Containers, Virtualization & Cloud
 app-admin/ec2-ami-tools
