@@ -66,6 +66,7 @@ net-vpn/wireguard
 
 # Misc.
 app-admin/apg
+app-admin/yadm
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
@@ -79,7 +80,6 @@ app-forensics/openscap
 app-misc/toilet
 app-misc/tails-installer
 app-misc/tmux
-app-admin/yadm
 dev-embedded/arduino
 dev-util/checkbashisms
 dev-util/shellcheck

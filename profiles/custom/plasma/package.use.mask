@@ -1,1 +1,1 @@
-net-misc/networkmanager	-iwd
+net-misc/networkmanager		-iwd
