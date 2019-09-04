@@ -72,6 +72,7 @@ app-arch/p7zip
 app-arch/par2cmdline
 app-benchmarks/geekbench
 app-crypt/efitools
+app-crypt/keybase
 app-crypt/sbsigntools
 app-crypt/veracrypt
 app-crypt/yubikey-manager-qt
