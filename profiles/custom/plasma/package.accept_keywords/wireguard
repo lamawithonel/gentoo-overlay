@@ -1,4 +1,1 @@
-~net-vpn/wireguard-0.0.20190702
-
-=dev-libs/glib-2.54.3-r6
-=dev-util/gdbus-codegen-2.54.3
+net-vpn/wireguard
