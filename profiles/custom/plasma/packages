@@ -33,6 +33,7 @@ app-eselect/eselect-vi
 # Admin utils
 app-admin/sudo
 app-admin/puppet
+app-crypt/ima-evm-utils
 sys-kernel/genkernel-next
 
 # Portage utils
