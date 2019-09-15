@@ -1,2 +1,2 @@
 # Required by dev-ruby/facter and other Puppet libraries
-dev-libs/boost                  nls
+dev-libs/boost			nls
