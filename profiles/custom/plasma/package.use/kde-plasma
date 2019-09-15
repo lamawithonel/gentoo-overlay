@@ -1,5 +1,5 @@
 kde-plasma/kdeplasma-addons     share webengine
-kde-plasma/ksysguard            lm_sensors
+kde-plasma/ksysguard            lm-sensors
 kde-plasma/libksysguard         webengine
 kde-plasma/plasma-desktop       appstream
 kde-plasma/plasma-meta          grub networkmanager plymouth
