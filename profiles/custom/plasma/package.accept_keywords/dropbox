@@ -1,16 +1,1 @@
-=net-misc/dropbox-60.4.107
-
-# required by @profile
-# required by @world
-=kde-apps/dolphin-plugins-dropbox-18.12.0
-
-# required by kde-apps/dolphin-plugins-dropbox-18.12.0::gentoo
-# required by @profile
-# required by @world
-=kde-apps/dolphin-18.12.0
-
-# required by kde-apps/dolphin-18.12.0::gentoo
-# required by kde-apps/dolphin-plugins-dropbox-18.12.0::gentoo
-# required by @profile
-# required by @world
-=kde-apps/kio-extras-18.12.0
+net-misc/dropbox-cli
