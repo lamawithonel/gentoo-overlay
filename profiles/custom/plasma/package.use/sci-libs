@@ -1,0 +1,2 @@
+sci-libs/fftw                   -fortran
+sci-libs/gsl                    -deprecated

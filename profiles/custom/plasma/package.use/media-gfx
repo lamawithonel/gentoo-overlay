@@ -1,0 +1,2 @@
+media-gfx/imagemagick           fftw
+media-gfx/inkscape              -cdr imagemagick -spell

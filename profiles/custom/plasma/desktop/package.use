@@ -3,3 +3,4 @@ app-text/liblangtag             introspection
 dev-embedded/avrdude            ftdi
 dev-java/icedtea-bin            -webstart
 dev-java/icedtea-sound          -doc
+media-gfx/inkscape              dia visio
