@@ -5,5 +5,5 @@ kde-plasma/plasma-desktop       appstream
 kde-plasma/plasma-meta          grub networkmanager plymouth
 kde-plasma/plasma-nm            -modemmanager
 kde-plasma/plasma-vault         networkmanager
-kde-plasma/plasma-workspace     appstream geolocation prison
+kde-plasma/plasma-workspace     appstream geolocation qrcode
 kde-plasma/powerdevil           brightness-control

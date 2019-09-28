@@ -1,5 +1,5 @@
 app-emulation/docker            -device-mapper pkcs11
-app-emulation/qemu              gnutls sdl2 smartcard spice usbredir vte
+app-emulation/qemu              gnutls jemalloc sdl2 smartcard spice usbredir vte
 app-emulation/libvirt           firewalld pcap -vepa virt-network virtualbox wireshark-plugins
 app-emulation/rkt               rkt_stage1_kvm_qemu
 app-emulation/virt-what         dmi
