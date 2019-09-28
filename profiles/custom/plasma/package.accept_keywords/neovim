@@ -1,5 +1,9 @@
 dev-libs/msgpack
 app-editors/neovim
 
-# required by app-editors/neovim-0.3.3::gentoo[tui]
-=dev-libs/unibilium-2.0.0:0=
+# required by >=app-editors/neovim-0.3.3::gentoo[tui]
+<dev-libs/unibilium-2.1
+
+# required by app-editors/neovim-0.4.2::gentoo
+=dev-libs/libvterm-0.1.1
+=dev-lua/luv-1.30.1.1
