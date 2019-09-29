@@ -1,15 +1,15 @@
-sys-devel/clang:8
-sys-devel/llvm:8
+sys-devel/clang:9
+sys-devel/llvm:9
 
-<sys-devel/clang-common-8.1
-<sys-devel/llvm-common-8.1
+<sys-devel/clang-common-9.1
+<sys-devel/llvm-common-9.1
 
-<sys-devel/lld-8.1
-=sys-devel/llvmgold-8
-<sys-devel/clang-runtime-8.1
+<sys-devel/lld-9.1
+=sys-devel/llvmgold-9
+<sys-devel/clang-runtime-9.1
 
-<sys-libs/compiler-rt-sanitizers-8.1
-<sys-libs/compiler-rt-8.1
-<sys-libs/libcxx-8.1
-<sys-libs/libcxxabi-8.1
-<sys-libs/libomp-8.1
+<sys-libs/compiler-rt-sanitizers-9.1
+<sys-libs/compiler-rt-9.1
+<sys-libs/libcxx-9.1
+<sys-libs/libcxxabi-9.1
+<sys-libs/libomp-9.1
