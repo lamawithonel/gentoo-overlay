@@ -7,4 +7,4 @@ dev-ruby/ed25519:1
 dev-ruby/rest-client:2
 
 dev-ruby/i18n:1
-dev-ruby/rubyzip:1
+<dev-ruby/rubyzip-1.3
