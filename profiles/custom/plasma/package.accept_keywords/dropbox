@@ -1,1 +1,4 @@
 net-misc/dropbox-cli
+
+# required by net-misc/dropbox-81.4.195::gentoo
+=dev-libs/libffi-compat-3.2.1-r3
