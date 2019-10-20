@@ -74,4 +74,5 @@ dev-perl/XML-LibXML                     minimal
 dev-perl/XML-Parser-Lite                minimal
 dev-perl/XML-RSS-LibXML                 minimal
 dev-perl/YAML-Tiny                      minimal
+dev-perl/libintl-perl                   minimal
 dev-perl/strictures                     minimal
