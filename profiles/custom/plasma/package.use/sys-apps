@@ -4,4 +4,4 @@ sys-apps/gawk                   mpfr
 sys-apps/iproute2               elf
 sys-apps/pciutils               dns
 sys-apps/smartmontools          update_drivedb
-sys-apps/systemd                cryptsetup dns-over-tls gnutls elfutils xkb
+sys-apps/systemd                cgroup-hybrid cryptsetup dns-over-tls elfutils xkb
