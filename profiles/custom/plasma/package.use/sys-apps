@@ -2,6 +2,7 @@ sys-apps/coreutils              gmp
 sys-apps/dbus                   user-session
 sys-apps/gawk                   mpfr
 sys-apps/iproute2               elf
+sys-apps/kmod                   pkcs7
 sys-apps/pciutils               dns
 sys-apps/smartmontools          update_drivedb
 sys-apps/systemd                cgroup-hybrid cryptsetup dns-over-tls elfutils xkb
