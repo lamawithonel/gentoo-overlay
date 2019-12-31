@@ -1,1 +1,3 @@
-net-vpn/wireguard
+net-vpn/wireguard-modules
+net-vpn/wireguard-tools
+virtual/wireguard

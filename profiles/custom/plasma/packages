@@ -63,7 +63,7 @@ net-misc/iperf
 net-misc/telnet-bsd
 net-misc/whois
 net-vpn/networkmanager-openvpn
-net-vpn/wireguard
+virtual/wireguard
 
 # Misc.
 app-admin/apg
