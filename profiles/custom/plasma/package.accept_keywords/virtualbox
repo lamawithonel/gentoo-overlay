@@ -1,4 +1,4 @@
-=app-emulation/virtualbox-5.2*
-=app-emulation/virtualbox-additions-5.2*
-=app-emulation/virtualbox-modules-5.2*
-=app-emulation/virtualbox-extpack-oracle-5.2*
+=app-emulation/virtualbox-6.1*
+=app-emulation/virtualbox-additions-6.1*
+=app-emulation/virtualbox-modules-6.1*
+=app-emulation/virtualbox-extpack-oracle-6.1*
