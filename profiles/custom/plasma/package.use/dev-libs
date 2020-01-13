@@ -2,7 +2,8 @@ dev-libs/appstream-glib         stemmer
 dev-libs/boost                  icu nls
 dev-libs/cyrus-sasl             -berkdb -gdbm
 dev-libs/gmp                    pgo
-dev-libs/libdbusmenu            -gtk gtk3
+dev-libs/jemalloc               lazy-lock
+dev-libs/libdbusmenu            -gtk3
 dev-libs/libnl                  -debug
 dev-libs/nss                    utils
 dev-libs/openssl                gmp rfc3779 sctp
