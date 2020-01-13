@@ -1,2 +1,2 @@
 sci-libs/fftw                   -fortran
-sci-libs/gsl                    -deprecated
+sci-libs/gsl                    cblas-external -deprecated
