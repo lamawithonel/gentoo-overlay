@@ -1,5 +1,6 @@
 dev-lang/lua                    -deprecated
 dev-lang/python                 hardened sqlite
-dev-lang/ruby                   jemalloc socks5
-dev-lang/rust                   cargo doc rustfmt system-llvm wasm
+# FIXME: dev-lang/ruby[jemalloc] disabled due to bug.  See https://bugs.gentoo.org/617518
+dev-lang/ruby                   -jemalloc socks5
+dev-lang/rust                   clippy rls rustfmt system-llvm wasm
 dev-lang/spidermonkey           minimal
