@@ -1,7 +1,7 @@
 www-client/firefox
 dev-libs/nss
 
-=dev-libs/nspr-4.24
+=dev-libs/nspr-4.25
 
 <dev-util/cbindgen-2
 dev-lang/rust:stable
@@ -10,10 +10,10 @@ virtual/cargo
 
 =dev-db/sqlite-3.26*
 
-=media-libs/libwebp-1.0*
-=media-libs/libvpx-1.7*
-
 =media-libs/libaom-1.0*
 =media-libs/dav1d-0.2*
 
 <media-libs/harfbuzz-2.5
+
+=media-libs/libvpx-1.8*
+=media-libs/libwebp-1.1*
