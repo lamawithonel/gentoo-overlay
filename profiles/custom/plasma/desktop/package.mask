@@ -1,0 +1,2 @@
+# Conflicts with media-gfx/inkscape-1.0_beta2
+>=media-gfx/imagemagick-7
