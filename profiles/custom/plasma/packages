@@ -81,7 +81,6 @@ app-forensics/lynis
 app-forensics/openscap
 app-misc/toilet
 app-misc/tmux
-app-text/tesseract
 dev-embedded/arduino
 dev-util/checkbashisms
 dev-util/shellcheck
