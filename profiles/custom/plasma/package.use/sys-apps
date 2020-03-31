@@ -4,5 +4,6 @@ sys-apps/gawk                   mpfr
 sys-apps/iproute2               elf
 sys-apps/kmod                   pkcs7
 sys-apps/pciutils               dns
+sys-apps/shadow                 bcrypt
 sys-apps/smartmontools          update_drivedb
 sys-apps/systemd                cgroup-hybrid cryptsetup dns-over-tls elfutils xkb
