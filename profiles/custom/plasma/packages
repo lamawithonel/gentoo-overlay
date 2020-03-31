@@ -59,6 +59,7 @@ net-analyzer/traceroute
 net-analyzer/wireshark
 net-dialup/minicom
 net-dns/bind-tools
+net-firewall/conntrack-tools
 net-misc/iperf
 net-misc/telnet-bsd
 net-misc/whois
