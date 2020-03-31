@@ -1,3 +1,3 @@
-media-gfx/imagemagick           fftw
+media-gfx/imagemagick           cxx fftw
 # FIXME: Remove nls from Inkscape once https://gitlab.com/inkscape/inkscape/issues/168 is fixed
 media-gfx/inkscape              -cdr imagemagick jemalloc nls -spell svg2
