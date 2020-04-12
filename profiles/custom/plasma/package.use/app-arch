@@ -1,4 +1,5 @@
 app-arch/libarchive             blake2 lz4 lzo
 app-arch/p7zip                  -kde -wxwidgets
 app-arch/unzip                  natspec
+app-arch/xz-utils               static-libs
 app-arch/zip                    natspec
