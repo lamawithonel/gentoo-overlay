@@ -1,1 +1,2 @@
+sys-cluster/kubernetes          -kube-apiserver -kube-controller-manager -kube-proxy -kube-scheduler kubeadm kubectl -kubelet
 sys-cluster/minikube            libvirt
