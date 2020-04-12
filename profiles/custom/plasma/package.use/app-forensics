@@ -1,1 +1,1 @@
-app-forensics/openscap          gconf nss sce sql
+app-forensics/openscap          docker gconf nss podman python rpm sce sql ssh vm
