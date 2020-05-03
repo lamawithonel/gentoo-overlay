@@ -17,3 +17,5 @@ virtual/cargo
 
 =media-libs/libvpx-1.8*
 =media-libs/libwebp-1.1*
+
+=dev-libs/libgit2-1.0.0-r1
