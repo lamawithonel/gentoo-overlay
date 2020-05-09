@@ -110,7 +110,6 @@ app-emulation/virt-manager
 app-emulation/virt-viewer
 app-emulation/virtualbox-additions
 sys-cluster/kubernetes
-dev-python/awscli
 
 # 3D Graphics stack & tools
 dev-util/vulkan-tools
