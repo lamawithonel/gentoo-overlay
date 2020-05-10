@@ -1,0 +1,10 @@
+app-admin/r10k
+
+dev-ruby/colored
+dev-ruby/cri
+dev-ruby/puppet_forge
+dev-ruby/faraday_middleware
+dev-ruby/minitar
+dev-ruby/simple_oauth
+dev-ruby/rash_alt
+dev-ruby/hashie

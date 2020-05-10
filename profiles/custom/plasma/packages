@@ -33,6 +33,7 @@ app-eselect/eselect-vi
 # Admin utils
 app-admin/sudo
 app-admin/puppet-agent
+app-admin/r10k
 app-crypt/ima-evm-utils
 sys-kernel/genkernel-next
 
