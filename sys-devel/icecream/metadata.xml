@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+    <maintainer type="person">
+        <email>lucas.yamanishi@gmail.com</email>
+        <name>Lucas Yamanishi (lamawithonel)</name>
+    </maintainer>
+    <use>
+        <flag name="firewalld">Install firewalld service definitions and require net-firewall/firewalld.</flag>
+    </use>
+</pkgmetadata>

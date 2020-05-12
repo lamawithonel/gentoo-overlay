@@ -1,4 +1,5 @@
 sys-devel/gcc                   lto pgo
+sys-devel/icecream              firewalld
 sys-devel/llvm                  libedit
 >=sys-devel/llvm-6              gold
 >=sys-devel/clang-6             default-compiler-rt default-libcxx
