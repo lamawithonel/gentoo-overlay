@@ -37,7 +37,6 @@ src_prepare() {
 
 src_configure() {
 	econf \
-		--enable-shared --disable-static \
 		--enable-clang-rewrite-includes \
 		--enable-clang-wrappers \
 		--disable-fast-install
