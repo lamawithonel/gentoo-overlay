@@ -1,26 +1,8 @@
-*app-admin/logrotate
 *sys-apps/memtest86+
-*app-arch/lbzip2
-*app-arch/lzop
-*app-shells/dash
-*dev-vcs/git
-*mail-mta/msmtp
-*net-firewall/firewalld
 *sys-boot/grub
-*sys-apps/pciutils
-*sys-apps/usbutils
-*sys-fs/dosfstools
-*sys-fs/exfat-utils
-*sys-fs/f2fs-tools
 *sys-fs/fuse-exfat
 *sys-fs/lsscsi
-*sys-fs/squashfs-tools
 *sys-kernel/dracut
-*sys-process/systemd-cron
-*sys-power/cpupower
-*sys-power/thermald
-*virtual/linux-sources
-*x11-misc/xdg-user-dirs
 
 
 #-----------------------------------------------------------------------
@@ -28,21 +10,15 @@
 
 # Editor
 app-editors/neovim
-app-eselect/eselect-vi
 
 # Admin utils
-app-admin/sudo
 app-admin/puppet-agent
 app-admin/r10k
 app-crypt/ima-evm-utils
 sys-kernel/genkernel-next
 
 # Portage utils
-app-portage/eix
-app-portage/gentoolkit
 app-portage/layman
-app-portage/portpeek
-app-portage/repoman
 
 # Btrfs backup tools
 app-backup/btrbk
@@ -59,7 +35,6 @@ net-analyzer/tcpdump
 net-analyzer/traceroute
 net-analyzer/wireshark
 net-dialup/minicom
-net-dns/bind-tools
 net-firewall/conntrack-tools
 net-misc/iperf
 net-misc/telnet-bsd
@@ -69,7 +44,6 @@ virtual/wireguard
 
 # Misc.
 app-admin/apg
-app-admin/yadm
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
@@ -82,25 +56,17 @@ app-crypt/yubikey-manager-qt
 app-forensics/lynis
 app-forensics/openscap
 app-misc/toilet
-app-misc/tmux
 dev-embedded/arduino
 dev-util/checkbashisms
 dev-util/shellcheck
 dev-util/strace
 net-irc/konversation
 net-misc/dropbox-cli
-sys-apps/ethtool
 sys-apps/lcdtest
 sys-apps/mlocate
 sys-apps/smartmontools
-sys-fs/inotify-tools
 sys-fs/ntfs3g
-sys-process/htop
-sys-process/lsof
-app-shells/bash-completion
-app-misc/jq
 sys-devel/gdb
-sys-devel/icecream
 x11-terms/gnome-terminal
 dev-qt/qdbusviewer
 

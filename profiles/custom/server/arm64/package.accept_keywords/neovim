@@ -1,0 +1,5 @@
+app-editors/neovim                      ~arm
+dev-libs/msgpack                        ~*
+dev-lua/mpack                           ~arm
+dev-libs/libtermkey                     arm
+dev-libs/unibilium                      arm

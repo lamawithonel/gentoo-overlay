@@ -1,0 +1,2 @@
+sys-kernel/bcmrpi3-kernel-bin		-pi4multiboot -with-matching-boot-fw
+sys-kernel/bcmrpi3-kernel-bis-bin	-pi4multiboot -with-matching-boot-fw

@@ -1,5 +1,9 @@
+# @MAINTAINER: lucas.yamanishi@gmail.com
 amd64	custom/plasma/desktop		stable
 amd64	custom/plasma/laptop		stable
 amd64	custom/plasma/desktop/selinux	exp
 amd64	custom/plasma/laptop/selinux	exp
+arm64	custom/server/arm64/rpi3	stable
+arm64	custom/server/arm64/rpi4	stable
+
 # vi:ts=8:sw=8:noexpandtab

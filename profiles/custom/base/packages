@@ -1,0 +1,50 @@
+*app-admin/logrotate
+*app-arch/lbzip2
+*app-arch/lzop
+*app-shells/dash
+*dev-vcs/git
+*mail-mta/msmtp
+*net-firewall/firewalld
+*sys-apps/pciutils
+*sys-apps/rng-tools
+*sys-apps/usbutils
+*sys-fs/dosfstools
+*sys-fs/exfat-utils
+*sys-fs/f2fs-tools
+*sys-fs/squashfs-tools
+*sys-process/systemd-cron
+*sys-power/cpupower
+*virtual/linux-sources
+*x11-misc/xdg-user-dirs
+
+
+#-----------------------------------------------------------------------
+# CLI tools
+
+# Editor
+app-eselect/eselect-vi
+
+# Admin utils
+app-admin/sudo
+#app-admin/puppet-agent
+#app-admin/r10k
+
+# Portage utils
+app-portage/eix
+app-portage/gentoolkit
+app-portage/portpeek
+app-portage/repoman
+
+# Network
+net-dns/bind-tools
+
+# Misc.
+app-admin/yadm
+app-misc/jq
+app-misc/tmux
+app-shells/bash-completion
+sys-apps/ethtool
+sys-devel/icecream
+sys-fs/inotify-tools
+sys-process/htop
+sys-process/lsof

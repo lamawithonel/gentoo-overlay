@@ -1,0 +1,45 @@
+FEATURES_BINPKG='binpkg-multi-instance'
+FEATURES_DEBUG='compressdebug splitdebug'
+FEATURES_DOC='noinfo'
+FEATURES_ISOLATION='collision-protect cgroup ipc-sandbox network-sandbox'
+FEATURES_LOG='clean-logs split-elog'
+FEATURES="${FEATURES_BINPKG} ${FEATURES_DEBUG} ${FEATURES_DOC} ${FEATURES_ISOLATION} ${FEATURES_LOG}"
+
+# TODO: Use FHS locations (See: https://bugs.gentoo.org/378603)
+#PORTDIR='/usr/portage'
+#DISTDIR="${PORTDIR}/distfiles"
+#PKGDIR="${PORTDIR}/packages"
+
+#PORTDIR='/var/db/repos/gentoo'
+#PKGDIR=/var/cache/binpkgs
+#DISTDIR=/var/cache/distfiles
+
+PORT_LOGDIR_CLEAN="find \"\${PORT_LOGDIR}\" -type f ! -name \"summary.log*\" -mtime +90 -delete"
+PORTAGE_ELOG_SYSTEM='echo:log,warn,error,qa save:log,warn'
+
+PORTAGE_BZIP2_COMMAND='lbzip2'
+PORTAGE_BUNZIP2_COMMAND='lbunzip2'
+PORTAGE_COMPRESS='lbzip2'
+BINPKG_COMPRESS='xz'
+BINPKG_COMPRESS_FLAGS='-9e -T0'
+
+LC_MESSAGES='C'
+L10N='-* en-US en'
+
+USE_EXPAND='PROGRAMMERS STEAMGAMES UPS_DRIVERS'
+
+PROGRAMMERS='-* dummy'
+UPS_DRIVERS='-*'
+
+LLVM_TARGETS='-* BPF'
+PAX_MARKINGS='XT'
+
+USE_ACCESSIBILITY='	-accessibility'
+USE_COMPRESS='		lz4 lzma lzo xz zstd'
+USE_I18N_L10N='		-icu -idn -libidn2 -nls'
+USE_NET='		-ldap sctp -tcpd'
+USE_SYS='		caps custom-cflags custom-optimization hardened threads'
+
+USE="${USE_ACCESSIBILITY} ${USE_COMPRESS} ${USE_I18N_L10N} ${USE_NET} ${USE_SYS}"
+
+# vi:ts=8:sw=8:noexpandtab

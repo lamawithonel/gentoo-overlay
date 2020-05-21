@@ -1,0 +1,2 @@
+sys-kernel/bcm2711-kernel-bin		-pi3multiboot -with-matching-boot-fw
+sys-kernel/bcm2711-kernel-bis-bin	-pi3multiboot -with-matching-boot-fw
