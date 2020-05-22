@@ -32,7 +32,6 @@ net-analyzer/fping
 net-analyzer/openbsd-netcat
 net-analyzer/nmap
 net-analyzer/tcpdump
-net-analyzer/traceroute
 net-analyzer/wireshark
 net-dialup/minicom
 net-firewall/conntrack-tools
