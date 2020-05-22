@@ -37,6 +37,8 @@ app-portage/repoman
 
 # Network
 net-dns/bind-tools
+net-vpn/wireguard-modules
+net-vpn/wireguard-tools
 
 # Misc.
 app-admin/yadm
