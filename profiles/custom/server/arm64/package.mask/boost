@@ -1,0 +1,3 @@
+# Incompatible with dev-libs/leatherman-1.12 and Facter
+# See: https://bugs.gentoo.org/721652
+=dev-libs/boost-1.73.0

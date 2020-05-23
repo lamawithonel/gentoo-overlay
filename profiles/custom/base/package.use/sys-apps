@@ -1,4 +1,4 @@
-sys-apps/flashrom                       -atapromise -atavia -buspirate-spi -ch341a-spi -dediprog -developerbox-spi -digilent-spi -drkaiser -ft2232-spi -gfxnvidia -internal -it8212 -linux-mtd -linux-spi -nicintel -nicintel-eeprom -nicintel-spi -ogp-spi -pickit2-spi -pony-spi -satasii -serprog -usbblaster-spi
+sys-apps/flashrom                       -atapromise -atavia -buspirate-spi -ch341a-spi -dediprog -developerbox-spi -digilent-spi -drkaiser -ft2232-spi -gfxnvidia -internal -internal-dmi -it8212 -linux-mtd -linux-spi -nicintel -nicintel-eeprom -nicintel-spi -ogp-spi -pickit2-spi -pony-spi -satasii -serprog -usbblaster-spi
 sys-apps/pciutils                       dns
 sys-apps/rng-tools                      jitterentropy
 sys-apps/systemd                        cryptsetup dns-over-tls homed policykit pwquality

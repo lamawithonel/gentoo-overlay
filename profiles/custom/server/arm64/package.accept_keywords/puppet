@@ -1,0 +1,17 @@
+app-admin/puppet                        ~arm
+
+# required by app-admin/puppet
+dev-ruby/facter                         ~arm
+dev-ruby/hiera                          ~arm
+dev-ruby/semantic_puppet                ~arm
+dev-ruby/hocon                          ~arm
+dev-ruby/ruby-shadow                    ~arm
+dev-ruby/ruby-augeas                    ~arm
+
+# required by dev-ruby/facter
+app-emulation/virt-what                 ~arm
+dev-libs/leatherman                     ~arm
+dev-cpp/cpp-hocon                       ~arm
+
+# required by dev-ruby/hiera
+dev-ruby/deep_merge                     ~arm

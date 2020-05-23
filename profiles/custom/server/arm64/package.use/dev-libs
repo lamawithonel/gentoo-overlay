@@ -1,0 +1,1 @@
+dev-libs/boost                          nls # NLS required by dev-cpp/cpp-hocon for Facter
