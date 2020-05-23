@@ -9,3 +9,6 @@ dev-ruby/rest-client:2
 <dev-ruby/rubyzip-1.3
 
 dev-ruby/http-accept:1
+
+<dev-ruby/i18n-1.9
+<dev-ruby/rubyzip-2.4
