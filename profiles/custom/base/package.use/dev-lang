@@ -1,2 +1,3 @@
+dev-lang/ocaml                          flambda
 dev-lang/python:2.7                     sqlite
 dev-lang/spidermonkey                   minimal
