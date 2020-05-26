@@ -3,28 +3,27 @@
 
 EAPI=7
 
-inherit autotools systemd
+inherit autotools systemd tmpfiles
 
-DESCRIPTION="Distributed compiling of C(++) code across several machines; based on distcc"
-HOMEPAGE="https://github.com/icecc/icecream"
+DESCRIPTION='Distributed compiling of C(++) code across several machines; based on distcc'
+HOMEPAGE='https://github.com/icecc/icecream'
 SRC_URI="https://github.com/icecc/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="GPL-2"
-SLOT="0"
-KEYWORDS="~amd64 ~arm64"
-IUSE="firewalld systemd"
+LICENSE='GPL-2'
+SLOT='0'
+KEYWORDS='~amd64 ~arm64'
+IUSE='systemd'
 
-DEPEND="
+DEPEND='
 	acct-user/icecream
 	acct-group/icecream
 	sys-libs/libcap-ng
 	app-text/docbook2X
 	app-arch/zstd
-"
+'
 RDEPEND="
 	${DEPEND}
 	dev-util/shadowman
-	firewalld? ( net-firewall/firewalld )
 	systemd? ( sys-apps/systemd )
 "
 
@@ -49,26 +48,23 @@ src_install() {
 	if use systemd; then
 		systemd_dounit "${FILESDIR}/iceccd.service"
 		systemd_dounit "${FILESDIR}/icecc-scheduler.service"
-
-		insinto /etc/tmpfiles.d
-		newins "${FILESDIR}/icecream-tmpfiles.conf" icecream.conf
-
-		keepdir /var/log/icecc
-		fowners icecream:icecream /var/log/icecc
-		fperms  0750              /var/log/icecc
 	else
 		newconfd suse/sysconfig.icecream icecream
-		newinitd "${FILESDIR}/icecream-r2" icecream
+		newinitd "${FILESDIR}/icecream.openrc" icecream
 	fi
+
+	keepdir /var/log/icecream
+	fowners icecream:icecream /var/log/icecream
+	fperms  0750 /var/log/icecream
+
+	newtmpfiles "${FILESDIR}/icecream-tmpfiles.conf" icecream.conf
 
 	insinto /etc/logrotate.d
 	newins suse/logrotate icecream
 
-	if use firewalld; then
-		insinto /usr/lib/firewalld/services
-		doins "${FILESDIR}/iceccd.xml"
-		doins "${FILESDIR}/icecc-scheduler.xml"
-	fi
+	insinto /etc/firewalld/services
+	doins suse/iceccd.xml
+	doins suse/icecc-scheduler.xml
 
 	insinto /usr/share/shadowman/tools
 	newins - icecc <<<'/usr/libexec/icecc/bin'
@@ -81,6 +77,8 @@ pkg_prerm() {
 }
 
 pkg_postinst() {
+	tmpfiles_process icecream.conf
+
 	if [[ ${ROOT} == / ]]; then
 		eselect compiler-shadow update icecc
 	fi

@@ -5,7 +5,7 @@ After=network.target nss-lookup.target
 [Service]
 Type=simple
 SyslogIdentifier=iceccd
-ExecStart=/usr/sbin/iceccd -u icecream -b /var/cache/icecream -v
+ExecStart=/usr/sbin/iceccd -u icecream -b /var/cache/icecream -l /var/log/icecream/iceccd -v
 Nice=5
 
 [Install]
