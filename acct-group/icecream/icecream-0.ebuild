@@ -6,3 +6,5 @@ EAPI=7
 inherit acct-group
 
 DESCRIPTION='Group for sys-devel/icecream'
+
+ACCT_GROUP_ID=-1
