@@ -8,3 +8,5 @@ dev-ruby/minitar
 dev-ruby/simple_oauth
 dev-ruby/rash_alt
 dev-ruby/hashie
+dev-ruby/faraday
+dev-ruby/multipart-post
