@@ -30,6 +30,7 @@ app-admin/sudo
 #app-admin/r10k
 
 # Portage utils
+app-eselect/eselect-repository
 app-portage/eix
 app-portage/gentoolkit
 app-portage/portpeek

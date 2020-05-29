@@ -17,9 +17,6 @@ app-admin/r10k
 app-crypt/ima-evm-utils
 sys-kernel/genkernel-next
 
-# Portage utils
-app-portage/layman
-
 # Btrfs backup tools
 app-backup/btrbk
 sys-block/mbuffer
