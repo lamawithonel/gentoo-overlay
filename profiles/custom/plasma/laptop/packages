@@ -6,3 +6,4 @@ sys-power/acpi
 sys-power/acpid
 sys-power/powertop
 sys-power/thermald
+x11-misc/libinput-gestures
