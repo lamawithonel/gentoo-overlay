@@ -9,10 +9,6 @@ PORTAGE_IONICE_COMMAND='ionice -c 3 -p \${PID}'
 
 EMERGE_DEFAULT_OPTS='--backtrack=2048'
 
-PORTDIR='/usr/portage'
-DISTDIR="${PORTDIR}/distfiles"
-PKGDIR="${PORTDIR}/packages"
-
 PORTAGE_ELOG_SYSTEM='save'
 
 UPS_DRIVERS='-*'
