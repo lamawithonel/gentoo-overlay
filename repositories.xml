@@ -3,7 +3,7 @@
 <repositories xmlns="" version="1.0">
   <repo quality="experimental" status="unofficial">
     <name>lamawithonel</name>
-    <description lang="en">A Gentoo Portage overlay for random workarounds and out-of-tree ebuilds.</description>
+    <description lang="en">A generic Gentoo Portage overlay, mostly for its owner's personal use.</description>
     <homepage>https://github.com/lamawithonel/gentoo-overlay</homepage>
     <owner type="person">
       <email>lucas.yamanishi@gmail.com</email>
