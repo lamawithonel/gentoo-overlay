@@ -22,7 +22,7 @@ CAMERAS='-* ptp2'
 CURL_SSL='-* nss'
 
 USE_AUDIO='		-alsa pulseaudio'
-USE_DESKTOP_MISC='	gnome-keyring -handbook -semantic-desktop -vala'
+USE_DESKTOP_MISC='	gnome-keyring -handbook -semantic-desktop -vala wayland'
 USE_GAMES='		-steamruntime'
 USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'
