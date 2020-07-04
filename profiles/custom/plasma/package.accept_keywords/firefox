@@ -1,7 +1,6 @@
 www-client/firefox
 dev-libs/nss
-
-=dev-libs/nspr-4.25
+dev-libs/nspr
 
 <dev-util/cbindgen-2
 dev-lang/rust:stable
