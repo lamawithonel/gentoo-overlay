@@ -16,7 +16,7 @@ UPS_DRIVERS='-*'
 LLVM_TARGETS='-* BPF X86'
 PAX_MARKINGS='XT'
 
-INPUT_DEVICES='-* evdev libinput'
+INPUT_DEVICES='-* libinput'
 
 CAMERAS='-* ptp2'
 CURL_SSL='-* nss'
