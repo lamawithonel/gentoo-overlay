@@ -50,5 +50,6 @@ app-shells/bash-completion
 sys-apps/ethtool
 sys-devel/icecream
 sys-fs/inotify-tools
+sys-fs/quota
 sys-process/htop
 sys-process/lsof

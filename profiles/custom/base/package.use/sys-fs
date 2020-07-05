@@ -1,1 +1,2 @@
 sys-fs/cryptsetup                       -gcrypt openssl pwquality reencrypt
+sys-fs/quota                            netlink
