@@ -4,7 +4,6 @@ dev-libs/cyrus-sasl             -berkdb -gdbm
 dev-libs/gmp                    pgo
 dev-libs/jemalloc               lazy-lock
 dev-libs/libdbusmenu            -gtk3
-dev-libs/libnl                  -debug
 dev-libs/nss                    utils
 dev-libs/openssl                gmp rfc3779 sctp
 dev-libs/pkcs11-helper          nss
