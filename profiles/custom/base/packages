@@ -48,6 +48,7 @@ app-admin/yadm
 app-misc/jq
 app-misc/tmux
 app-shells/bash-completion
+sys-apps/dmidecode
 sys-apps/ethtool
 sys-devel/icecream
 sys-fs/inotify-tools
