@@ -2,7 +2,6 @@
 *sys-boot/grub
 *sys-fs/fuse-exfat
 *sys-fs/lsscsi
-*sys-kernel/dracut
 
 
 #-----------------------------------------------------------------------
