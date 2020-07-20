@@ -1,3 +1,4 @@
+dev-embedded/rpi4-eeprom-images
 dev-embedded/rpi4-eeprom-updater
 sys-boot/raspberrypi-firmware
 sys-kernel/raspberrypi-sources
