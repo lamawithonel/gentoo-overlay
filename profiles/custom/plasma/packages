@@ -14,7 +14,7 @@ app-editors/neovim
 app-admin/puppet-agent
 app-admin/r10k
 app-crypt/ima-evm-utils
-sys-kernel/genkernel-next
+sys-kernel/genkernel
 
 # Btrfs backup tools
 app-backup/btrbk
