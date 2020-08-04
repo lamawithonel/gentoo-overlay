@@ -1,4 +1,3 @@
 app-admin/apg                   cracklib
 app-admin/packagekit-base       command-not-found
-app-admin/puppet                augeas diff -ldap shadow sqlite
 app-admin/sudo                  -ldap system-digest

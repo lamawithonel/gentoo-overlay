@@ -1,1 +1,1 @@
-app-admin/puppet                        augeas diff shadow
+app-admin/puppet                        augeas diff -ldap shadow sqlite

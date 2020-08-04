@@ -27,8 +27,8 @@ app-eselect/eselect-vi
 
 # Admin utils
 app-admin/sudo
-#app-admin/puppet-agent # Puppet, Inc. doesn't package for arm64
-#app-admin/r10k
+app-admin/puppet
+dev-ruby/puppetdb-termini
 
 # Portage utils
 app-eselect/eselect-repository
