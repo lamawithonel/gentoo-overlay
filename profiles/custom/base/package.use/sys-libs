@@ -1,1 +1,2 @@
+sys-libs/glibc                          static-pic
 sys-libs/libselinux                     pcre2
