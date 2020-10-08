@@ -40,7 +40,6 @@ app-portage/repoman
 # Network
 net-analyzer/traceroute
 net-dns/bind-tools
-net-vpn/wireguard-modules
 net-vpn/wireguard-tools
 
 # Misc.
