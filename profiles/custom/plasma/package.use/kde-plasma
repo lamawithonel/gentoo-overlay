@@ -1,4 +1,4 @@
-kde-plasma/kdeplasma-addons     share webengine
+kde-plasma/kdeplasma-addons     -comic share webengine
 kde-plasma/ksysguard            lm-sensors
 kde-plasma/libksysguard         webengine
 kde-plasma/plasma-desktop       appstream
