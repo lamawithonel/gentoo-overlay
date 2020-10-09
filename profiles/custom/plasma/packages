@@ -70,7 +70,13 @@ app-emulation/vagrant
 app-emulation/virt-manager
 app-emulation/virt-viewer
 app-emulation/virtualbox-additions
-sys-cluster/kubernetes
+sys-cluster/kubeadm
+sys-cluster/kube-apiserver
+sys-cluster/kube-controller-manager
+sys-cluster/kubectl
+sys-cluster/kubelet
+sys-cluster/kube-proxy
+sys-cluster/kube-scheduler
 
 # 3D Graphics stack & tools
 dev-util/vulkan-tools

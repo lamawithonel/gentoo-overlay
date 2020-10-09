@@ -1,4 +1,3 @@
-sys-cluster/kubernetes
 net-misc/calico-cni-plugin
 net-misc/calicoctl
 net-misc/felix

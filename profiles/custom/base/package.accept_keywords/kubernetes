@@ -1,0 +1,7 @@
+<sys-cluster/kubeadm-1.19
+<sys-cluster/kube-apiserver-1.19
+<sys-cluster/kube-controller-manager-1.19
+<sys-cluster/kubectl-1.19
+<sys-cluster/kubelet-1.19
+<sys-cluster/kube-proxy-1.19
+<sys-cluster/kube-scheduler-1.19

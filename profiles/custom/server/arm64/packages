@@ -1,3 +1,8 @@
 app-editors/vim
 sys-block/zram-init
-sys-cluster/kubernetes
+sys-cluster/kube-apiserver
+sys-cluster/kube-controller-manager
+sys-cluster/kubectl
+sys-cluster/kubelet
+sys-cluster/kube-proxy
+sys-cluster/kube-scheduler
