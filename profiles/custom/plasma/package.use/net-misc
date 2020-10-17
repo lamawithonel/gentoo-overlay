@@ -1,4 +1,4 @@
-net-misc/curl                   http2
+net-misc/curl                   http2 nss -openssl
 net-misc/dhcp                   -server
 net-misc/freerdp                openh264 smartcard
 net-misc/modemmanager           -qmi
