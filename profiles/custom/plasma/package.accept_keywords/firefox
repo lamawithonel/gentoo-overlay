@@ -5,7 +5,6 @@ dev-libs/nspr
 <dev-util/cbindgen-2
 dev-lang/rust:stable
 virtual/rust
-virtual/cargo
 
 =dev-db/sqlite-3.26*
 
