@@ -1,2 +1,2 @@
-sys-auth/pambase                -cracklib -nullok
+sys-auth/pambase                -nullok -passwdqc pwquality
 sys-auth/polkit                 jit
