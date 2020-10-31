@@ -54,7 +54,6 @@ dev-util/shellcheck-bin
 dev-util/strace
 net-irc/konversation
 net-misc/dropbox-cli
-sys-apps/lcdtest
 sys-apps/mlocate
 sys-apps/smartmontools
 sys-fs/ntfs3g
