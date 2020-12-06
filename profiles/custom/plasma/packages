@@ -93,7 +93,6 @@ x11-apps/xwininfo
 # Web Browsers
 www-client/firefox
 www-client/google-chrome
-www-plugins/adobe-flash
 
 #-----------------------------------------------------------------------
 # KDE
