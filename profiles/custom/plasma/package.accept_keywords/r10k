@@ -1,6 +1,6 @@
 app-admin/r10k
 
-dev-ruby/colored
+dev-ruby/colored2
 dev-ruby/cri
 dev-ruby/puppet_forge
 dev-ruby/faraday_middleware
