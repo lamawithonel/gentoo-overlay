@@ -3,5 +3,5 @@ kde-apps/ark                    zip
 kde-apps/dolphin                -activities -thumbnail
 kde-apps/kio-extras             mtp taglib
 kde-apps/krdc                   vnc
-kde-apps/okular                 epub share
+kde-apps/okular                 epub -plucker share
 kde-apps/spectacle              share
