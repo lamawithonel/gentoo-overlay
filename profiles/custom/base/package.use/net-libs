@@ -1,2 +1,3 @@
 net-libs/ldns                   ed25519 ed448
 net-libs/miniupnpc              verify-sig
+net-libs/nodejs                 system-icu
