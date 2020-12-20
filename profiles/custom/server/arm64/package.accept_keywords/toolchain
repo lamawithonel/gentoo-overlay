@@ -1,0 +1,5 @@
+sys-devel/gcc				-* arm64
+sys-devel/binutils			-* arm64
+sys-libs/glibc				-* arm64
+
+#=sys-libs/glibc-2.32-r3

@@ -1,4 +1,5 @@
 app-admin/puppet                        ~arm
+dev-ruby/puppetdb-termini               ~*
 
 # required by app-admin/puppet
 dev-ruby/facter                         ~arm
@@ -7,6 +8,10 @@ dev-ruby/semantic_puppet                ~arm
 dev-ruby/hocon                          ~arm
 dev-ruby/ruby-shadow                    ~arm
 dev-ruby/ruby-augeas                    ~arm
+dev-ruby/sqlite3
+dev-ruby/rake-compiler
+app-admin/augeas
+app-doc/NaturalDocs
 
 # required by dev-ruby/facter
 app-emulation/virt-what                 ~arm
