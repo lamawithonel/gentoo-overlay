@@ -17,6 +17,7 @@
 *sys-power/cpupower
 *virtual/linux-sources
 *x11-misc/xdg-user-dirs
+sys-libs/libxcrypt
 
 
 #-----------------------------------------------------------------------

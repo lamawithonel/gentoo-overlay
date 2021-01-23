@@ -20,3 +20,8 @@ dev-cpp/cpp-hocon                       ~arm
 
 # required by dev-ruby/hiera
 dev-ruby/deep_merge                     ~arm
+
+# required by app-admin/puppet-agent
+sys-libs/libselinux                    *
+sys-libs/libsepol                      *
+sys-libs/libxcrypt
