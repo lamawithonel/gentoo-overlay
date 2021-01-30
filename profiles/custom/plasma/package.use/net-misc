@@ -3,4 +3,5 @@ net-misc/dhcp                   -server
 net-misc/freerdp                openh264 smartcard
 net-misc/modemmanager           -qmi
 net-misc/networkmanager         iwd json -wext
+net-misc/openssh                security-key
 net-misc/spice-gtk              usbredir
