@@ -29,8 +29,9 @@ USE_ACCESSIBILITY='	-accessibility'
 USE_COMPRESS='		lz4 lzma lzo xz zstd'
 USE_I18N_L10N='		icu -idn -libidn2 -nls'
 USE_NET='		-ldap sctp -tcpd'
+USE_PKG='		verify-sig'
 USE_SYS='		caps custom-cflags custom-optimization hardened threads'
 
-USE="${USE_ACCESSIBILITY} ${USE_COMPRESS} ${USE_I18N_L10N} ${USE_NET} ${USE_SYS}"
+USE="${USE_ACCESSIBILITY} ${USE_COMPRESS} ${USE_I18N_L10N} ${USE_NET} ${USE_PKG} ${USE_SYS}"
 
 # vi:ts=8:sw=8:noexpandtab
