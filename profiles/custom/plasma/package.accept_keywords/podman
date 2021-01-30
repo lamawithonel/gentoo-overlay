@@ -1,4 +1,4 @@
-app-emulation/libpod
+app-emulation/podman
 app-emulation/conmon
 app-emulation/slirp4netns
 net-libs/libslirp
