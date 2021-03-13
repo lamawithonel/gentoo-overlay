@@ -1,15 +1,15 @@
 sys-devel/clang:11
 sys-devel/llvm:11
 
-<sys-devel/clang-common-11.1
-<sys-devel/llvm-common-11.1
+<sys-devel/clang-common-11.2
+<sys-devel/llvm-common-11.2
 
-<sys-devel/lld-11.1
+<sys-devel/lld-11.2
 =sys-devel/llvmgold-11
-<sys-devel/clang-runtime-11.1
+<sys-devel/clang-runtime-11.2
 
-<sys-libs/compiler-rt-sanitizers-11.1
-<sys-libs/compiler-rt-11.1
-<sys-libs/libcxx-11.1
-<sys-libs/libcxxabi-11.1
-<sys-libs/libomp-11.1
+<sys-libs/compiler-rt-sanitizers-11.2
+<sys-libs/compiler-rt-11.2
+<sys-libs/libcxx-11.2
+<sys-libs/libcxxabi-11.2
+<sys-libs/libomp-11.2
