@@ -1,4 +1,4 @@
-*sys-apps/memtest86+
+*sys-apps/memtest86-bin
 *sys-boot/grub
 *sys-fs/fuse-exfat
 *sys-fs/lsscsi
