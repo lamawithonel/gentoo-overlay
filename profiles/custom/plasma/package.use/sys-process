@@ -1,1 +1,2 @@
+sys-process/htop                hwloc lm-sensors
 sys-process/systemd-cron        setgid
