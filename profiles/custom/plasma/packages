@@ -50,6 +50,7 @@ app-forensics/openscap
 app-misc/toilet
 dev-embedded/arduino
 dev-util/checkbashisms
+dev-util/rustup
 dev-util/shellcheck-bin
 dev-util/strace
 net-irc/konversation
