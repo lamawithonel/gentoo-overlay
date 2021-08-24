@@ -156,9 +156,8 @@ media-fonts/fira-sans
 media-fonts/powerline-symbols
 
 # Google
-#media-fonts/noto
-media-fonts/noto-cjk
-#media-fonts/noto-emoji
+media-fonts/noto
+media-fonts/noto-emoji
 media-fonts/droid
 
 # Microsoft look-alikes
