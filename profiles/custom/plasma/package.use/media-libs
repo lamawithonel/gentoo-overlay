@@ -4,7 +4,7 @@ media-libs/harfbuzz             fontconfig icu
 media-libs/libbdplus            aacs
 media-libs/libcanberra          -sound -udev
 media-libs/libsamplerate        sndfile
-media-libs/libsdl2              gles2 libsamplerate kms xscreensaver
+media-libs/libsdl2              gles2 libsamplerate kms pipewire xscreensaver
 media-libs/libvpx               postproc
 media-libs/mesa                 -classic lm-sensors osmesa
 media-libs/x264                 opencl
