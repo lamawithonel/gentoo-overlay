@@ -1,3 +1,4 @@
 # (atom)                        (general)                       (decode)        (encode)
 media-video/ffmpeg              gmp libdrm openssl              libaom opus     fdk openh264 theora -xvid x265
 media-video/vlc                 chromecast microdns taglib      aom
+media-video/pipewire            echo-cancel
