@@ -43,7 +43,6 @@ app-benchmarks/geekbench
 app-crypt/efitools
 app-crypt/keybase
 app-crypt/sbsigntools
-app-crypt/veracrypt
 app-crypt/yubikey-manager-qt
 app-forensics/lynis
 app-forensics/openscap
