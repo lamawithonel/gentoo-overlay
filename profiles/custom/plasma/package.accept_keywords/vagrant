@@ -12,3 +12,6 @@ dev-ruby/http-accept:1
 
 <dev-ruby/i18n-1.9
 <dev-ruby/rubyzip-2.4
+
+<dev-ruby/excon-0.74
+<dev-ruby/childprocess-4.2
