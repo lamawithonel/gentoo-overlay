@@ -1,3 +1,4 @@
 x11-libs/gtk+                   colord
 x11-libs/libdrm                 libkms
 x11-libs/libva                  opengl
+x11-libs/libva-compat           egl

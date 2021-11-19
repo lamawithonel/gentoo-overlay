@@ -1,4 +1,5 @@
 media-libs/a52dec               djbfft
+media-libs/dav1d                xxhash
 media-libs/freetype             harfbuzz
 media-libs/harfbuzz             fontconfig icu
 media-libs/libbdplus            aacs

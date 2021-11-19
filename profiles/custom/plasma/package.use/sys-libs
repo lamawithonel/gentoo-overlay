@@ -1,4 +1,5 @@
 sys-libs/libblockdev            cryptsetup kbd -tools
+sys-libs/libomp                 hwloc
 sys-libs/ncurses                tinfo
 sys-libs/timezone-data          leaps-timezone
 sys-libs/zlib                   static-libs
