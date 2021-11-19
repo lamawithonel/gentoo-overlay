@@ -25,6 +25,7 @@ dev-libs/libisoburn
 # Network
 net-analyzer/fping
 net-analyzer/openbsd-netcat
+net-analyzer/netselect
 net-analyzer/nmap
 net-analyzer/tcpdump
 net-analyzer/wireshark
