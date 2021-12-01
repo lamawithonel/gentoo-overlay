@@ -13,6 +13,7 @@
 *sys-fs/f2fs-tools
 *sys-fs/squashfs-tools
 *sys-kernel/dracut
+*sys-kernel/installkernel-systemd-boot
 *sys-process/systemd-cron
 *sys-power/cpupower
 *virtual/linux-sources
@@ -27,6 +28,7 @@ sys-libs/libxcrypt
 app-eselect/eselect-vi
 
 # Admin utils
+app-admin/eclean-kernel
 app-admin/sudo
 app-admin/puppet
 dev-ruby/puppetdb-termini
