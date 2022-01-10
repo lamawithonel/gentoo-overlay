@@ -64,9 +64,9 @@ dev-qt/qdbusviewer
 
 # Containers, Virtualization & Cloud
 app-admin/ec2-ami-tools
-app-emulation/buildah
-app-emulation/docker
-app-emulation/podman
+app-containers/buildah
+app-containers/docker
+app-containers/podman
 app-emulation/vagrant
 app-emulation/virt-manager
 app-emulation/virt-viewer

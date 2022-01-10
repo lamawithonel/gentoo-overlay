@@ -1,5 +1,3 @@
-app-emulation/containerd        -device-mapper
-app-emulation/docker            -device-mapper
 app-emulation/qemu              gnutls jemalloc sdl2 smartcard spice usbredir vte
 app-emulation/libvirt           firewalld pcap -vepa virt-network virtualbox wireshark-plugins
 app-emulation/virt-what         dmi
