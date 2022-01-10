@@ -6,5 +6,5 @@ sys-apps/iproute2               elf
 sys-apps/kmod                   pkcs7
 sys-apps/shadow                 bcrypt
 sys-apps/smartmontools          update-drivedb
-sys-apps/systemd                cgroup-hybrid curl elfutils fido2 gnuefi importd xkb
+sys-apps/systemd                curl elfutils fido2 gnuefi importd xkb
 sys-apps/xdg-desktop-portal     screencast
