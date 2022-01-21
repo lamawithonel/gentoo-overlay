@@ -1,2 +1,2 @@
-sys-process/htop                hwloc lm-sensors
+sys-process/htop                delayacct hwloc lm-sensors unwind
 sys-process/systemd-cron        setgid
