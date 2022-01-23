@@ -17,3 +17,5 @@ virtual/rust
 =media-libs/libwebp-1.1*
 
 =dev-libs/libgit2-1.0.0-r1
+
+~dev-libs/icu-70.1
