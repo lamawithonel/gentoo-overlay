@@ -1,4 +1,4 @@
-app-office/libreoffice          java pdfimport vlc
+app-office/libreoffice          pdfimport vlc
 app-text/liblangtag             introspection
 dev-embedded/avrdude            ftdi
 dev-java/icedtea-bin            -webstart
