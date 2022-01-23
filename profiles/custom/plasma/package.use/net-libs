@@ -3,4 +3,6 @@ dev-libs/libnl                  utils
 net-libs/libpcap                bluetooth netlink
 net-libs/libproxy               networkmanager
 net-libs/nghttp2                jemalloc
-net-libs/nodejs                 lto
+
+# FIXME: LTO builds of nodejs using gcc-11+ currently fail tests and produce runtime errors.
+#net-libs/nodejs                 lto
