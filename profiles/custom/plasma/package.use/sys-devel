@@ -1,3 +1,4 @@
+sys-devel/binutils              pgo
 sys-devel/gcc                   lto pgo
 sys-devel/icecream              firewalld
 sys-devel/llvm                  libedit
