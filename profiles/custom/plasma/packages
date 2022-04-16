@@ -57,6 +57,7 @@ net-irc/konversation
 net-misc/dropbox-cli
 sys-apps/mlocate
 sys-apps/smartmontools
+sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-fs/ntfs3g
 sys-devel/gdb
 x11-terms/gnome-terminal
