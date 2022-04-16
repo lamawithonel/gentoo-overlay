@@ -9,7 +9,6 @@ virtual/rust
 =dev-db/sqlite-3.26*
 
 =media-libs/libaom-1.0*
-=media-libs/dav1d-0.2*
 
 <media-libs/harfbuzz-2.7
 
@@ -19,3 +18,5 @@ virtual/rust
 =dev-libs/libgit2-1.0.0-r1
 
 ~dev-libs/icu-70.1
+
+<media-libs/dav1d-1.1
