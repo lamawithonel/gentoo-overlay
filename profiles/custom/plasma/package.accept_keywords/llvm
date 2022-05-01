@@ -1,17 +1,15 @@
-sys-devel/clang:13
-sys-devel/llvm:13
+<sys-devel/clang-15
+<sys-devel/llvm-15
 
-<sys-devel/clang-common-14
-<sys-devel/llvm-common-14
+<sys-devel/clang-common-15
+<sys-devel/llvm-common-15
 
-<sys-devel/lld-14
-<sys-devel/llvmgold-14
-<sys-devel/clang-runtime-14
+<sys-devel/lld-15
+<sys-devel/llvmgold-15
+<sys-devel/clang-runtime-15
 
-<sys-libs/compiler-rt-sanitizers-14
-<sys-libs/compiler-rt-14
-<sys-libs/libcxx-14
-<sys-libs/libcxxabi-14
-<sys-libs/libomp-14
-
-=dev-lang/spidermonkey-78.15.0
+<sys-libs/compiler-rt-sanitizers-15
+<sys-libs/compiler-rt-15
+<sys-libs/libcxx-15
+<sys-libs/libcxxabi-15
+<sys-libs/libomp-15
