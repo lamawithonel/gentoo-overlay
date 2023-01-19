@@ -1,7 +1,7 @@
 net-misc/curl                   http2 nss -openssl
 net-misc/dhcp                   -server
 net-misc/freerdp                openh264 smartcard
-net-misc/modemmanager           -qmi
+net-misc/modemmanager           -qmi -qrtr
 net-misc/networkmanager         iwd json lto -wext
 net-misc/openssh                security-key
 net-misc/spice-gtk              usbredir

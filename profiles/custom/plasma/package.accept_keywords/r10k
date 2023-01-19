@@ -10,3 +10,6 @@ dev-ruby/rash_alt
 dev-ruby/hashie
 dev-ruby/faraday
 dev-ruby/multipart-post
+
+dev-ruby/jwt
+dev-ruby/multi_json

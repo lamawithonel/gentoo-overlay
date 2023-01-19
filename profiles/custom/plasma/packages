@@ -40,25 +40,29 @@ net-vpn/networkmanager-openvpn
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
+app-benchmarks/bootchart2
 app-benchmarks/geekbench
 app-crypt/efitools
-app-crypt/keybase
 app-crypt/sbsigntools
 app-crypt/yubikey-manager-qt
 app-forensics/lynis
-app-forensics/openscap
 app-misc/toilet
+app-text/tree
 dev-embedded/arduino
 dev-util/checkbashisms
+dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
 dev-util/strace
 net-irc/konversation
 net-misc/dropbox-cli
 sys-apps/mlocate
+sys-apps/nvme-cli
 sys-apps/smartmontools
 sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
+sys-block/bmap-tools
 sys-fs/ntfs3g
+sys-fs/xfsprogs
 sys-devel/gdb
 x11-terms/gnome-terminal
 dev-qt/qdbusviewer
@@ -67,6 +71,7 @@ dev-qt/qdbusviewer
 app-admin/ec2-ami-tools
 app-containers/buildah
 app-containers/docker
+app-containers/docker-compose
 app-containers/podman
 app-emulation/vagrant
 app-emulation/virt-manager
@@ -100,13 +105,7 @@ www-client/google-chrome
 #-----------------------------------------------------------------------
 # KDE
 kde-plasma/plasma-meta
-
-# A stripped-down version of kde-apps/kdecore-meta
-kde-apps/dolphin
-kde-apps/kdialog
-kde-apps/keditbookmarks
-kde-apps/konsole
-kde-apps/kwrite
+kde-apps/kdecore-meta
 
 # A stripped-down version of kde-apps/kdeutils-meta:
 kde-apps/ark
@@ -124,7 +123,6 @@ kde-apps/sweeper
 # A stripped-down version of kde-apps/kdenetwork-meta
 kde-apps/dolphin-plugins-dropbox
 kde-apps/krdc
-kde-apps/zeroconf-ioslave
 
 # A stripped-down version of kde-apps/kdegraphics-meta
 kde-apps/gwenview
@@ -169,5 +167,5 @@ media-fonts/inconsolata
 #media-fonts/courier-prime
 
 # Adobe and Adobe look-alikes
-media-fonts/source-pro
+#media-fonts/source-pro
 #media-fonts/heuristica

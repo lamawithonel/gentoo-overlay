@@ -2,6 +2,7 @@ kde-apps/akonadi                -mysql postgres
 kde-apps/ark                    zip
 kde-apps/dolphin                -activities -thumbnail
 kde-apps/kaccounts-providers    -webengine
+kde-apps/kdecore-meta           -webengine
 kde-apps/kio-extras             mtp taglib
 kde-apps/krdc                   vnc
 kde-apps/okular                 epub -plucker share

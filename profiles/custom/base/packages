@@ -38,7 +38,6 @@ app-eselect/eselect-repository
 app-portage/eix
 app-portage/gentoolkit
 app-portage/portpeek
-app-portage/repoman
 
 # Network
 net-analyzer/traceroute

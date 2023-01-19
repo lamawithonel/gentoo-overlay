@@ -1,2 +1,2 @@
-sys-auth/pambase                homed -nullok -passwdqc pwquality
+sys-auth/pambase                homed -nullok -passwdqc pwquality -sha512 yescrypt
 sys-auth/polkit                 jit

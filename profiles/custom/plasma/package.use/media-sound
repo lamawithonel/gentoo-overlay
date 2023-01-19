@@ -1,3 +1,2 @@
 media-sound/lame                -frontend sndfile
-media-sound/mumble              -pulseaudio pipewire
 media-sound/pulseaudio          alsa -alsa-plugin -daemon gconf libsamplerate realtime

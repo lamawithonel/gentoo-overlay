@@ -2,9 +2,11 @@ dev-libs/appstream-glib         stemmer
 dev-libs/boost                  icu nls
 dev-libs/cyrus-sasl             -berkdb -gdbm
 dev-libs/gmp                    pgo
+dev-libs/imath                  large-stack
 dev-libs/jemalloc               lazy-lock
 dev-libs/libdbusmenu            -gtk3
 dev-libs/nss                    utils
 dev-libs/openssl                gmp rfc3779 sctp
 dev-libs/pkcs11-helper          nss
+dev-libs/poco                   -data -file2pagecompiler -mongodb -net -pagecompiler -pdf
 dev-libs/rasqal                 gmp

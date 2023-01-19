@@ -1,3 +1,4 @@
 sys-fs/btrfs-progs
-app-office/libreoffice
+app-office/libreoffice-bin
 media-gfx/inkscape
+media-gfx/krita

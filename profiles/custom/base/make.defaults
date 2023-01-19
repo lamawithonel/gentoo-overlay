@@ -1,7 +1,7 @@
 FEATURES_BINPKG='binpkg-multi-instance'
 FEATURES_DEBUG='compressdebug splitdebug'
 FEATURES_DOC='noinfo'
-FEATURES_ISOLATION='collision-protect cgroup ipc-sandbox network-sandbox'
+FEATURES_ISOLATION='protect-owned cgroup ipc-sandbox network-sandbox'
 FEATURES_LOG='clean-logs split-elog'
 FEATURES="${FEATURES_BINPKG} ${FEATURES_DEBUG} ${FEATURES_DOC} ${FEATURES_ISOLATION} ${FEATURES_LOG}"
 

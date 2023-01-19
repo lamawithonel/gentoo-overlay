@@ -1,5 +1,5 @@
 sys-fs/btrfs-progs              -convert
 sys-fs/e2fsprogs                lto
 sys-fs/fuse                     -suid
-sys-fs/lvm2                     device-mapper-only -thin
+sys-fs/lvm2                     -thin
 sys-fs/udisks                   cryptsetup
