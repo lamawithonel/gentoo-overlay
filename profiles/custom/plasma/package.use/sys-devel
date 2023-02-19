@@ -1,5 +1,5 @@
 sys-devel/binutils              gold pgo
-sys-devel/gcc                   lto pgo
+sys-devel/gcc                   default-stack-clash-protection default-znow lto pgo
 sys-devel/icecream              firewalld
 sys-devel/llvm                  libedit
 >=sys-devel/llvm-6              gold
