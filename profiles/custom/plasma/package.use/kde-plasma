@@ -1,9 +1,9 @@
-kde-plasma/kdeplasma-addons     -comic share webengine
+kde-plasma/kdeplasma-addons     -alternate-calendar -comic networkmanager share webengine
 kde-plasma/ksysguard            lm-sensors networkmanager
 kde-plasma/ksystemstats         lm-sensors networkmanager
 kde-plasma/kwin                 screencast
 kde-plasma/libksysguard         webengine
-kde-plasma/plasma-desktop       appstream emoji
+kde-plasma/plasma-desktop       appstream emoji screencast
 kde-plasma/plasma-firewall      firewalld -ufw
 kde-plasma/plasma-meta          colord grub networkmanager plymouth
 kde-plasma/plasma-nm            -modemmanager
