@@ -68,7 +68,6 @@ x11-terms/gnome-terminal
 dev-qt/qdbusviewer
 
 # Containers, Virtualization & Cloud
-app-admin/ec2-ami-tools
 app-containers/buildah
 app-containers/docker
 app-containers/docker-compose
