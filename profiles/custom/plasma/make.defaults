@@ -19,7 +19,7 @@ PAX_MARKINGS='XT'
 INPUT_DEVICES='-* libinput'
 
 CAMERAS='-* ptp2'
-CURL_SSL='-* nss'
+CURL_SSL='-* openssl'
 
 USE_AUDIO='		-alsa pulseaudio pipewire'
 USE_DESKTOP_MISC='	gnome-keyring -handbook keyring -semantic-desktop -vala wayland'
