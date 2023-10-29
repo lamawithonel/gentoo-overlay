@@ -1,15 +1,19 @@
-<sys-devel/clang-15
-<sys-devel/llvm-15
+<sys-devel/clang-18
+<sys-devel/llvm-18
 
-<sys-devel/clang-common-15
-<sys-devel/llvm-common-15
+<sys-devel/clang-common-18
+<sys-devel/llvm-common-18
 
-<sys-devel/lld-15
-<sys-devel/llvmgold-15
-<sys-devel/clang-runtime-15
+<sys-devel/lld-18
+<sys-devel/llvmgold-18
+<sys-devel/clang-runtime-18
 
-<sys-libs/compiler-rt-sanitizers-15
-<sys-libs/compiler-rt-15
-<sys-libs/libcxx-15
-<sys-libs/libcxxabi-15
-<sys-libs/libomp-15
+<sys-libs/compiler-rt-sanitizers-18
+<sys-libs/compiler-rt-18
+<sys-libs/libcxx-18
+<sys-libs/libcxxabi-18
+<sys-libs/libomp-18
+
+<sys-devel/clang-toolchain-symlinks-18
+<sys-devel/lld-toolchain-symlinks-18
+<sys-devel/llvm-toolchain-symlinks-18
