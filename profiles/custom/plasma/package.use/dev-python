@@ -1,4 +1,4 @@
-dev-python/PyQt5                -bluetooth -declarative -multimedia -network -opengl -printsupport -svg
+dev-python/PyQt5                -bluetooth -declarative -multimedia -network -opengl -printsupport -svg -webchannel
 dev-python/ipython              -wxwidgets
 dev-python/pyyaml               libyaml
 dev-python/setuptools_scm       git
