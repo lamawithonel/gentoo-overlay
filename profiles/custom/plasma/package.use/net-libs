@@ -1,3 +1,4 @@
+net-libs/gnutls                 pkcs11 tools
 net-libs/libnftnl               json -threads
 dev-libs/libnl                  utils
 net-libs/libpcap                bluetooth netlink
