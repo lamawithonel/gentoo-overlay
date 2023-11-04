@@ -1,5 +1,6 @@
 dev-lang/python                 lto pgo sqlite
 # FIXME: dev-lang/ruby[jemalloc] disabled due to bug.  See https://bugs.gentoo.org/617518
+dev-lang/lua                    deprecated
 dev-lang/ruby                   -jemalloc socks5
 dev-lang/rust                   profiler rust-src system-bootstrap system-llvm wasm
 dev-lang/spidermonkey           clang lto
