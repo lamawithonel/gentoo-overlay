@@ -1,1 +1,2 @@
+sys-process/audit               io-uring
 sys-process/systemd-cron        -runparts
