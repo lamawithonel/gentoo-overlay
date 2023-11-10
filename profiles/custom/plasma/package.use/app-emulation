@@ -1,4 +1,4 @@
-app-emulation/qemu              -doc gnutls jemalloc sdl2 smartcard spice usbredir vte
+app-emulation/qemu              bpf -doc gnutls io-uring jemalloc plugins sdl2 smartcard spice usbredir virtfs vte
 app-emulation/libvirt           firewalld pcap -vepa virt-network virtualbox wireshark-plugins
 app-emulation/virt-viewer       vte
 app-emulation/virt-what         dmi
