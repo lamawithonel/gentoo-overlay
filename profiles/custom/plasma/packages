@@ -76,6 +76,7 @@ app-containers/podman
 app-emulation/vagrant
 app-emulation/virt-manager
 app-emulation/virt-viewer
+app-emulation/virtiofsd
 app-emulation/virtualbox-additions
 sys-cluster/kubeadm
 sys-cluster/kube-apiserver
