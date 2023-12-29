@@ -118,7 +118,6 @@ kde-apps/kdf
 kde-apps/kgpg
 kde-apps/ktimer
 kde-apps/kwalletmanager
-kde-apps/print-manager
 kde-apps/sweeper
 
 # A stripped-down version of kde-apps/kdenetwork-meta
