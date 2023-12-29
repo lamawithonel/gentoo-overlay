@@ -2,4 +2,4 @@ sys-apps/flashrom                       -atapromise -atavia -buspirate-spi -ch34
 sys-apps/iproute2                       libbsd
 sys-apps/pciutils                       dns
 sys-apps/rng-tools                      jitterentropy
-sys-apps/systemd                        cryptsetup dns-over-tls homed policykit pwquality
+sys-apps/systemd                        cryptsetup dns-over-tls homed kernel-install policykit pwquality
