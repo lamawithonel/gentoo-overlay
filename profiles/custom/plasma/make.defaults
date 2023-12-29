@@ -23,6 +23,7 @@ CURL_SSL='-* openssl'
 
 USE_AUDIO='		-alsa pulseaudio pipewire'
 USE_DESKTOP_MISC='	gnome-keyring -handbook keyring -semantic-desktop -vala wayland'
+USE_COMPILER_FEATURES='	lto pgo'
 USE_GAMES='		-steamruntime'
 USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'
@@ -31,7 +32,8 @@ USE_NET='		-ldap sctp -tcpd'
 USE_SYS='		device-mapper'
 USE_VIDEO='		ffmpeg'
 
-USE="	${USE_AUDIO} ${USE_DESKTOP_MISC} ${USE_GAMES} ${USE_GRAPHICS}	\
-	${USE_INPUT} ${USE_I18N_L10N} ${USE_NET} ${USE_SYS} ${USE_VIDEO}"
+USE="	${USE_AUDIO} ${USE_DESKTOP_MISC} ${USE_COMPILER_FEATURES} ${USE_GAMES}	\
+	${USE_GRAPHICS} ${USE_INPUT} ${USE_I18N_L10N} ${USE_NET} ${USE_SYS}	\
+	${USE_VIDEO}"
 
 # vi:ts=8:sw=8:noexpandtab

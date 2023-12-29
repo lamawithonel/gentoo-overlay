@@ -1,1 +1,1 @@
-cross-avr/gcc			-fortran pgo
+cross-avr/gcc			-fortran
