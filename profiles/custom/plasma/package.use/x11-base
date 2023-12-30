@@ -1,1 +1,2 @@
 x11-base/xorg-server            -suid xvfb
+x11-base/xwayland               libei
