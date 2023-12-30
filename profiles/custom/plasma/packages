@@ -56,6 +56,7 @@ dev-util/shellcheck-bin
 dev-util/strace
 net-irc/konversation
 net-misc/dropbox-cli
+app-misc/rdfind
 sys-apps/mlocate
 sys-apps/nvme-cli
 sys-apps/smartmontools
