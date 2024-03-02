@@ -15,3 +15,6 @@ dev-ruby/http-accept:1
 
 <dev-ruby/excon-0.74
 <dev-ruby/childprocess-4.2
+
+<dev-ruby/grpc-1.60
+<dev-ruby/google-protobuf-3.25
