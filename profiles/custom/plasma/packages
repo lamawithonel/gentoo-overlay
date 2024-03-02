@@ -48,12 +48,13 @@ app-crypt/yubikey-manager-qt
 app-forensics/lynis
 app-misc/toilet
 app-text/tree
+dev-debug/gdb
+dev-debug/strace
 dev-embedded/arduino
 dev-util/checkbashisms
 dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
-dev-util/strace
 net-irc/konversation
 net-misc/dropbox-cli
 app-misc/rdfind
@@ -64,7 +65,6 @@ sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-block/bmap-tools
 sys-fs/ntfs3g
 sys-fs/xfsprogs
-sys-devel/gdb
 x11-terms/gnome-terminal
 dev-qt/qdbusviewer
 
