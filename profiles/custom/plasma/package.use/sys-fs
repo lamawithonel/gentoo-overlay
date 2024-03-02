@@ -1,3 +1,4 @@
 sys-fs/btrfs-progs              -convert
 sys-fs/lvm2                     -thin
 sys-fs/udisks                   cryptsetup
+sys-fs/zfs-kmod                 -modules-compress
