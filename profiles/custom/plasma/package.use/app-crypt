@@ -1,4 +1,6 @@
 app-crypt/gpgme                 python
 app-crypt/pinentry              -gtk -qt4
 app-crypt/qca                   gcrypt gpg nss softstore
+#app-crypt/libsecret             tpm
+app-crypt/tpm2-pkcs11           fapi
 app-crypt/veracrypt             -X

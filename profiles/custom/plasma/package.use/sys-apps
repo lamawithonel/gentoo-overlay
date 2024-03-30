@@ -4,6 +4,7 @@ sys-apps/gawk                   mpfr
 sys-apps/hwloc                  netloc
 sys-apps/iproute2               elf
 sys-apps/kmod                   pkcs7
+sys-apps/rng-tools              pkcs11
 sys-apps/shadow                 bcrypt
 sys-apps/smartmontools          update-drivedb
 sys-apps/systemd                boot curl elfutils fido2 gnuefi importd pkcs11 ukify xkb

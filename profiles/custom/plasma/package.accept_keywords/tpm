@@ -1,0 +1,3 @@
+app-crypt/tpm2-openssl
+app-crypt/tpm2-pkcs11
+dev-python/tpm2-pytss
