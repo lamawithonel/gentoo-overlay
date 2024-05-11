@@ -1,2 +1,3 @@
+dev-java/ant                    -xz
 dev-java/icedtea-bin            -webstart
 dev-java/icedtea-sound          -doc

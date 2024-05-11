@@ -1,3 +1,4 @@
+sci-libs/amd                    -fortran
 sci-libs/fftw                   -fortran
 sci-libs/gsl                    cblas-external -deprecated
 sci-libs/hdf5                   -fortran -threads

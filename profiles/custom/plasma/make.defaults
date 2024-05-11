@@ -23,7 +23,7 @@ CURL_SSL='-* openssl'
 
 USE_AUDIO='		-alsa pulseaudio pipewire'
 USE_DESKTOP_MISC='	gnome-keyring -handbook keyring -semantic-desktop -vala wayland'
-USE_COMPILER_FEATURES='	lto pgo'
+USE_COMPILER_FEATURES='	lto ocamlopt pgo'
 USE_GAMES='		-steamruntime'
 USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'

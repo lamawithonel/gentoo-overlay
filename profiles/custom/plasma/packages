@@ -49,10 +49,12 @@ app-crypt/sbsigntools
 app-crypt/yubikey-manager-qt
 app-forensics/lynis
 app-misc/toilet
+app-misc/wally-cli
 app-text/tree
 dev-debug/gdb
 dev-debug/strace
 dev-embedded/arduino
+dev-python/bashate
 dev-util/checkbashisms
 dev-util/diffstat
 dev-util/rustup
@@ -60,6 +62,7 @@ dev-util/shellcheck-bin
 net-irc/konversation
 net-misc/dropbox-cli
 app-misc/rdfind
+sys-apps/man-pages-posix
 sys-apps/mlocate
 sys-apps/nvme-cli
 sys-apps/smartmontools

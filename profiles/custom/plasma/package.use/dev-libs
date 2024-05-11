@@ -9,3 +9,8 @@ dev-libs/openssl                gmp rfc3779 sctp
 dev-libs/pkcs11-helper          nss
 dev-libs/poco                   -data -file2pagecompiler -mongodb -net -pagecompiler -pdf
 dev-libs/rasqal                 gmp
+
+# required by app-emulation/qemu-8.1.5::gentoo[static-user]
+dev-libs/glib                   static-libs
+# required by app-emulation/qemu-8.1.5::gentoo[static-user]
+dev-libs/libpcre2                static-libs
