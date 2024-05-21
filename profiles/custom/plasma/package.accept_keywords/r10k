@@ -13,3 +13,5 @@ dev-ruby/multipart-post
 
 dev-ruby/jwt
 dev-ruby/multi_json
+
+dev-ruby/faraday-follow_redirects
