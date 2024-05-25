@@ -29,11 +29,12 @@ USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'
 USE_I18N_L10N='		icu idn libidn2'
 USE_NET='		-ldap sctp -tcpd'
+USE_SHELL='		bash-completion'
 USE_SYS='		device-mapper'
 USE_VIDEO='		ffmpeg'
 
 USE="	${USE_AUDIO} ${USE_DESKTOP_MISC} ${USE_COMPILER_FEATURES} ${USE_GAMES}	\
-	${USE_GRAPHICS} ${USE_INPUT} ${USE_I18N_L10N} ${USE_NET} ${USE_SYS}	\
-	${USE_VIDEO}"
+	${USE_GRAPHICS} ${USE_INPUT} ${USE_I18N_L10N} ${USE_NET} ${USE_SHELL}	\
+	${USE_SYS} ${USE_VIDEO}"
 
 # vi:ts=8:sw=8:noexpandtab

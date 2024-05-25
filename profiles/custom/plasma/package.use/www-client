@@ -1,2 +1,2 @@
-www-client/firefox              clang geckodriver hwaccel libproxy openh264 screencast system-harfbuzz system-icu system-jpeg system-libevent system-libvpxi system-png system-sqlite
+www-client/firefox              clang geckodriver hwaccel libproxy openh264 screencast system-harfbuzz system-icu system-jpeg system-libevent system-libvpxi system-png system-sqlite -lto -pgo
 www-client/w3m                  -X fbcon
