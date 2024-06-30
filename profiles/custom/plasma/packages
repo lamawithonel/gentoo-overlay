@@ -1,3 +1,4 @@
+*sys-apps/memtest86+
 *sys-apps/memtest86-bin
 *sys-boot/grub
 *sys-fs/fuse-exfat
@@ -37,6 +38,7 @@ net-misc/whois
 net-vpn/networkmanager-openvpn
 
 # Misc.
+app-admin/chrpath
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
@@ -68,8 +70,10 @@ sys-apps/nvme-cli
 sys-apps/smartmontools
 sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-block/bmap-tools
+sys-fs/google-drive-ocamlfuse
 sys-fs/ntfs3g
 sys-fs/xfsprogs
+x11-terms/alacritty
 x11-terms/gnome-terminal
 dev-qt/qdbusviewer
 
@@ -91,6 +95,7 @@ sys-cluster/kubectl
 sys-cluster/kubelet
 sys-cluster/kube-proxy
 sys-cluster/kube-scheduler
+virtual/wine
 
 # 3D Graphics stack & tools
 dev-util/vulkan-tools

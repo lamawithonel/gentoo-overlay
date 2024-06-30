@@ -1,4 +1,5 @@
 net-misc/curl                           alt-svc -ftp -imap -pop3 -rtmp -smtp -tftp
+net-misc/modemmanager                   -mbim
 net-misc/networkmanager                 psl
 net-misc/openssh                        ldns libedit -scp xmss
 net-misc/rsync                          system-zlib xxhash

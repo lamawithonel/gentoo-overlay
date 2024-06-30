@@ -1,5 +1,5 @@
 # accessibility is required by kde-plasma/kwin-5.27.9-r1
 dev-qt/qtgui                    accessibility
-dev-qt/qtnetwork                libproxy networkmanager
+dev-qt/qtnetwork                networkmanager
 dev-qt/qtsql                    -mysql postgres
 dev-qt/qtwebkit                 -gstreamer multimedia webp
