@@ -1,2 +1,3 @@
 www-client/firefox              clang geckodriver hwaccel openh264 screencast system-harfbuzz system-icu system-jpeg system-libevent system-libvpxi system-png system-sqlite -lto -pgo
+#-llvm_slot_17 llvm_slot_18
 www-client/w3m                  -X fbcon
