@@ -1,5 +1,6 @@
 sys-apps/coreutils              gmp
 sys-apps/dbus                   user-session
+sys-apps/fwupd                  amdgpu cbor gnutls logitech nvme uefi tpm
 sys-apps/gawk                   mpfr
 sys-apps/hwloc                  netloc
 sys-apps/iproute2               elf
