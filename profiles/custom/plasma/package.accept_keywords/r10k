@@ -15,3 +15,5 @@ dev-ruby/jwt
 dev-ruby/multi_json
 
 dev-ruby/faraday-follow_redirects
+
+dev-ruby/logger
