@@ -1,4 +1,4 @@
 # (atom)                        (general)                       (decode)        (encode)
-media-video/ffmpeg              gmp libdrm openssl              libaom opus     fdk openh264 theora -xvid x265
-media-video/vlc                 chromecast microdns -mtp taglib aom
+media-video/ffmpeg              gmp libass libdrm openssl       libaom opus     fdk openh264 theora -xvid x265
+media-video/vlc                 chromecast libass microdns -mtp taglib aom
 media-video/pipewire            echo-cancel -ffmpeg pipewire-alsa sound-server
