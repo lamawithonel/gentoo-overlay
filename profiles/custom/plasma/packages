@@ -61,6 +61,7 @@ dev-util/checkbashisms
 dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
+kde-apps/kdenlive
 net-irc/konversation
 net-misc/dropbox-cli
 app-misc/rdfind

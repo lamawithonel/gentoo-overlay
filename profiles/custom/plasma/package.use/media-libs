@@ -10,6 +10,7 @@ media-libs/libsamplerate        sndfile
 media-libs/libsdl2              libsamplerate kms xscreensaver
 media-libs/libvpx               postproc
 media-libs/mesa                 -classic lm-sensors osmesa
+media-libs/mlt                  -gtk -rubberband
 media-libs/openexr              large-stack
 media-libs/openimageio          -gui -tools raw
 media-libs/x264                 opencl
