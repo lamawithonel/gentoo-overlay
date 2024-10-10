@@ -5,4 +5,4 @@ dev-java/icedtea-bin            -webstart
 dev-java/icedtea-sound          -doc
 dev-python/PyQt5                declarative network
 media-gfx/inkscape              dia visio
-media-gfx/krita                 color-management fftw
+media-gfx/krita                 color-management media fftw
