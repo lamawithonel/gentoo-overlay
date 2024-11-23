@@ -41,7 +41,7 @@ app-portage/portpeek
 
 # Network
 net-analyzer/traceroute
-net-dns/bind-tools
+#net-dns/bind
 net-vpn/wireguard-tools
 
 # Misc.
