@@ -10,6 +10,7 @@ sys-apps/rng-tools              pkcs11
 sys-apps/shadow                 bcrypt
 sys-apps/smartmontools          update-drivedb
 sys-apps/systemd                boot curl elfutils fido2 gnuefi importd pkcs11 ukify xkb
+sys-apps/util-linux             uuidd
 sys-apps/xdg-desktop-portal     screencast
 
 # required by app-emulation/qemu-8.1.5::gentoo[xattr,static-user]
