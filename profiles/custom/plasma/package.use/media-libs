@@ -2,6 +2,7 @@ media-libs/a52dec               djbfft
 media-libs/dav1d                xxhash
 media-libs/freetype             harfbuzz
 media-libs/harfbuzz             fontconfig icu
+media-libs/libass               libunibreak
 media-libs/libbdplus            aacs
 media-libs/libcanberra          -sound -udev
 media-libs/libheif              x265

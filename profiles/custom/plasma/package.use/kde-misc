@@ -1,2 +1,2 @@
 kde-misc/krename                taglib
-kde-misc/kdeconnect             zeroconf
+kde-misc/kdeconnect             bluetooth zeroconf
