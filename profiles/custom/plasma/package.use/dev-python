@@ -1,5 +1,5 @@
-dev-python/PyQt5                -bluetooth -declarative -multimedia -network -opengl -printsupport -svg -webchannel
-dev-python/PyQt6                -bluetooth -multimedia -opengl -printsupport -svg -webchannel
+dev-python/pyqt5                -bluetooth -declarative -multimedia -network -opengl -printsupport -svg -webchannel
+dev-python/pyqt6                -bluetooth -multimedia -opengl -printsupport -svg -webchannel
 dev-python/ipython              -wxwidgets
 dev-python/pillow               webp
 dev-python/pyyaml               libyaml

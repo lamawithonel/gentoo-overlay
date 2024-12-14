@@ -3,6 +3,6 @@ app-text/liblangtag             introspection
 dev-embedded/avrdude            ftdi
 dev-java/icedtea-bin            -webstart
 dev-java/icedtea-sound          -doc
-dev-python/PyQt5                declarative network
+dev-python/pyqt5                declarative network
 media-gfx/inkscape              dia visio
 media-gfx/krita                 color-management media fftw
