@@ -1,2 +1,3 @@
 sys-process/audit               io-uring
+sys-process/psproc              skill
 sys-process/systemd-cron        -runparts
