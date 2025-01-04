@@ -1,5 +1,2 @@
-app-emulation/podman
-app-emulation/conmon
-app-emulation/slirp4netns
-net-libs/libslirp
-sys-fs/fuse-overlayfs
+app-containers/podman-compose
+app-containers/podman-tui
