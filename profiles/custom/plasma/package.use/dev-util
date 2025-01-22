@@ -1,5 +1,4 @@
 dev-util/astyle                 java
-dev-util/cmake                  qt5 system-jsoncpp
 dev-util/pkgconfig              hardened
 dev-util/ragel                  vim-syntax
 dev-util/schroot                zfs
