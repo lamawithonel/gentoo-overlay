@@ -26,7 +26,7 @@ LLVM_TARGETS='-* BPF'
 PAX_MARKINGS='XT'
 
 USE_ACCESSIBILITY='	-accessibility'
-USE_COMPRESS='		lz4 lzma lzo xz zstd'
+USE_COMPRESS='		brotli lz4 lzma lzo xz zstd'
 USE_I18N_L10N='		icu -idn -libidn2 -nls'
 USE_NET='		-ldap sctp -tcpd'
 USE_PKG='		modules-sign verify-sig'
