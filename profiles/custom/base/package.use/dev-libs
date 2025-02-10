@@ -1,1 +1,2 @@
+dev-libs/libfido2                       hidapi
 dev-libs/libnl                          -debug
