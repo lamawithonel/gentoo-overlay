@@ -55,6 +55,7 @@ app-text/tree
 dev-debug/gdb
 dev-debug/strace
 dev-embedded/arduino
+dev-lua/luarocks
 dev-python/bashate
 dev-util/checkbashisms
 dev-util/diffstat
