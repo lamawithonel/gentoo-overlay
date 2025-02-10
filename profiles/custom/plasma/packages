@@ -77,7 +77,6 @@ sys-fs/ntfs3g
 sys-fs/xfsprogs
 x11-terms/alacritty
 x11-terms/gnome-terminal
-dev-qt/qdbusviewer
 
 # Containers, Virtualization & Cloud
 app-containers/buildah
