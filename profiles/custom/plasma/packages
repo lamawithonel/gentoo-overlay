@@ -38,6 +38,7 @@ net-vpn/networkmanager-openvpn
 
 # Misc.
 app-admin/chrpath
+app-admin/mkosi
 app-antivirus/clamav
 app-arch/p7zip
 app-arch/par2cmdline
