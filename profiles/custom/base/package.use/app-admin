@@ -1,1 +1,2 @@
 app-admin/puppet                        augeas diff -ldap shadow sqlite
+app-admin/setools                       -gui
