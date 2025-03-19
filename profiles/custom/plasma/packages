@@ -62,6 +62,7 @@ dev-util/checkbashisms
 dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
+gui-apps/wl-clipboard
 kde-apps/kdenlive
 net-irc/konversation
 net-misc/dropbox-cli
@@ -70,6 +71,7 @@ sys-apps/fwupd
 sys-apps/man-pages-posix
 sys-apps/mlocate
 sys-apps/nvme-cli
+sys-apps/ripgrep
 sys-apps/smartmontools
 sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-block/bmap-tools
@@ -87,6 +89,7 @@ app-containers/docker-compose
 app-containers/podman
 app-containers/podman-compose
 app-containers/podman-tui
+app-emulation/guestfs-tools
 app-emulation/vagrant
 app-emulation/virt-manager
 app-emulation/virt-viewer
