@@ -1,2 +1,3 @@
 dev-debug/gdb                   multitarget source-highlight xxhash
 dev-debug/strace                aio unwind
+dev-debug/systemtap             libvirt
