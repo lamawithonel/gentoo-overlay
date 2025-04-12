@@ -9,3 +9,4 @@ kde-plasma/plasma-nm            -modemmanager
 kde-plasma/plasma-vault         networkmanager
 kde-plasma/plasma-workspace     appstream geolocation qrcode screencast
 kde-plasma/powerdevil           brightness-control
+kde-plasma/spectacle            share

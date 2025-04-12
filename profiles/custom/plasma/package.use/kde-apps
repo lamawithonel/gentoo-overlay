@@ -6,5 +6,4 @@ kde-apps/kdecore-meta           -webengine
 kde-apps/kio-extras             mtp taglib
 kde-apps/krdc                   vnc
 kde-apps/okular                 epub -plucker share
-kde-apps/spectacle              share
 kde-apps/thumbnailers           blender raw video
