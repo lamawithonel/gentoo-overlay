@@ -24,6 +24,7 @@ UPS_DRIVERS='-*'
 
 LLVM_TARGETS='-* BPF'
 PAX_MARKINGS='XT'
+POLICY_TYPES='targeted'
 
 USE_ACCESSIBILITY='	-accessibility'
 USE_COMPRESS='		brotli lz4 lzma lzo xz zstd'
