@@ -118,7 +118,7 @@ x11-apps/xrandr
 x11-apps/xwininfo
 
 # Web Browsers
-www-client/firefox
+www-client/firefox-bin
 www-client/google-chrome
 www-client/lynx
 
