@@ -1,7 +1,6 @@
 kde-frameworks/frameworkintegration     appstream
 kde-frameworks/kdnssd                   zeroconf
 kde-frameworks/kfilemetadata            epub ffmpeg office taglib
-kde-frameworks/kidletime                xscreensaver
 kde-frameworks/knewstuff                opds
 kde-frameworks/knotifications           phonon
 kde-frameworks/knotifyconfig            phonon

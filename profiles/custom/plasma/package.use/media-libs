@@ -8,7 +8,7 @@ media-libs/libcanberra          -sound -udev
 media-libs/libheif              x265
 media-libs/libpng               apng
 media-libs/libsamplerate        sndfile
-media-libs/libsdl2              libsamplerate kms xscreensaver
+media-libs/libsdl2              libsamplerate kms
 media-libs/libvpx               postproc
 media-libs/mesa                 -classic lm-sensors osmesa
 media-libs/mlt                  -gtk -rubberband
