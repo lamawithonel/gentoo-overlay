@@ -19,7 +19,7 @@ dev-ruby/http-accept:1
 <dev-ruby/grpc-1.60
 <dev-ruby/google-protobuf-3.25
 
-<dev-ruby/googleapis-common-protos-types-1.9.0
+<dev-ruby/googleapis-common-protos-types-1.16.0
 <dev-ruby/stream-0.6.0
 <dev-ruby/strscan-3.2.0
 <dev-ruby/pairing_heap-3.2.0
