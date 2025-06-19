@@ -1,3 +1,4 @@
 dev-util/google-perftools       -debug minimal
+dev-util/mingw64-toolchain      -bin-symlinks
 dev-util/ostree                 archive introspection
 dev-util/perf                   bpf libpfm unwind

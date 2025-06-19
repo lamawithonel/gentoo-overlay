@@ -1,4 +1,4 @@
-app-emulation/guestfs-tools     -perl
+app-emulation/guestfs-tools     libvirt -perl
 app-emulation/qemu              bpf -doc gnutls io-uring jemalloc keyutils sdl2 smartcard spice static-user usbredir virtfs vte
 app-emulation/libguestfs        -gtk inspect-icons libvirt -perl python
 app-emulation/libvirt           dtrace firewalld pcap -vepa virt-network virtiofsd virtualbox wireshark-plugins
