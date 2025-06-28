@@ -1,4 +1,4 @@
-sys-libs/libblockdev            cryptsetup kbd -tools
+sys-libs/libblockdev            cryptsetup kbd smart -tools
 sys-libs/libomp                 hwloc
 sys-libs/libselinux             python ruby
 sys-libs/ncurses                tinfo

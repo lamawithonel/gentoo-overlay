@@ -28,5 +28,5 @@ dev-ruby/http-accept:1
 <dev-ruby/version_gem-1.2
 <dev-ruby/snaky_hash-2.1
 
-<dev-ruby/grpc-1.70
-<dev-ruby/google-protobuf-3.26
+<dev-ruby/grpc-1.72
+<dev-ruby/google-protobuf-4.27
