@@ -1,2 +1,3 @@
 media-plugins/alsa-plugins      -ffmpeg
 media-plugins/gst-plugins-meta  -a52 -aac -cdda -dts -dvd -flac -mp3 -mpeg -ogg -vaapi -vorbis -x264
+media-plugins/mpg123-output-plugins     -sdl

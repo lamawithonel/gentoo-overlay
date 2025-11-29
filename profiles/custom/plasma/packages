@@ -63,6 +63,7 @@ dev-util/rustup
 dev-util/shellcheck-bin
 gui-apps/wl-clipboard
 kde-apps/kdenlive
+net-im/zoom
 net-irc/konversation
 net-misc/dropbox-cli
 app-misc/rdfind
