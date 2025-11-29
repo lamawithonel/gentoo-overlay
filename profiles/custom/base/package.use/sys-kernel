@@ -1,2 +1,3 @@
-sys-kernel/installkernel        dracut systemd-boot uki ukify
+sys-kernel/gentoo-kernel        experimental -initramfs savedconfig
+sys-kernel/installkernel        dracut uki ukify
 sys-kernel/linux-firmware       -initramfs
