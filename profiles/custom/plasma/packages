@@ -51,6 +51,7 @@ app-crypt/sbsigntools
 app-forensics/lynis
 app-misc/toilet
 app-misc/wally-cli
+app-misc/wayland-utils
 app-text/tree
 dev-debug/gdb
 dev-debug/strace
@@ -58,6 +59,7 @@ dev-embedded/arduino
 dev-lua/luarocks
 dev-python/bashate
 dev-util/checkbashisms
+dev-util/clinfo
 dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
