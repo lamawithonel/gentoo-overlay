@@ -68,6 +68,8 @@ app-crypt/sbsigntools
 #app-crypt/tpm2-openssl
 #app-crypt/tpm2-pkcs11
 app-forensics/lynis
+app-misc/jdupes
+app-misc/rdfind
 app-misc/toilet
 app-misc/wally-cli
 app-misc/wayland-utils
@@ -90,7 +92,6 @@ kde-apps/kdenlive
 net-im/zoom
 net-irc/konversation
 net-misc/dropbox-cli
-app-misc/rdfind
 sci-electronics/kicad-meta
 sys-apps/fwupd
 sys-apps/man-pages-posix
@@ -100,6 +101,7 @@ sys-apps/ripgrep
 sys-apps/smartmontools
 sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-block/bmap-tools
+sys-fs/duperemove
 sys-fs/google-drive-ocamlfuse
 sys-fs/ntfs3g
 sys-fs/xfsprogs
