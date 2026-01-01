@@ -71,10 +71,13 @@ app-forensics/lynis
 app-misc/toilet
 app-misc/wally-cli
 app-misc/wayland-utils
+app-mobilephone/dfu-util
 app-text/tree
 dev-debug/gdb
 dev-debug/strace
 dev-embedded/arduino
+dev-embedded/openocd
+dev-embedded/stlink
 dev-lua/luarocks
 dev-python/bashate
 dev-util/checkbashisms
@@ -88,6 +91,7 @@ net-im/zoom
 net-irc/konversation
 net-misc/dropbox-cli
 app-misc/rdfind
+sci-electronics/kicad-meta
 sys-apps/fwupd
 sys-apps/man-pages-posix
 sys-apps/mlocate
