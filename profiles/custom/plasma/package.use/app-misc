@@ -3,3 +3,4 @@ app-misc/geoclue:0              networkmanager hostip
 app-misc/geoclue:2.0            -modemmanager
 app-misc/hivex                  ocaml -perl
 app-misc/tmux                   utempter
+app-misc/zellij                 man
