@@ -105,8 +105,7 @@ sys-fs/duperemove
 sys-fs/google-drive-ocamlfuse
 sys-fs/ntfs3g
 sys-fs/xfsprogs
-x11-terms/alacritty
-x11-terms/gnome-terminal
+x11-terms/ghostty
 
 # Containers, Virtualization & Cloud
 app-containers/buildah
