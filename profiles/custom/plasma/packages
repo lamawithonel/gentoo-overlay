@@ -73,6 +73,7 @@ app-misc/rdfind
 app-misc/toilet
 app-misc/wally-cli
 app-misc/wayland-utils
+app-misc/yq-go
 app-mobilephone/dfu-util
 app-text/tree
 dev-debug/gdb
