@@ -1,3 +1,4 @@
 virtual/ffmpeg                  opus
 virtual/linux-sources           firmware
 virtual/wine                    proton
+virtual/zlib                    static-libs
