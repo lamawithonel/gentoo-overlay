@@ -49,6 +49,7 @@ net-vpn/wireguard-tools
 app-misc/jq
 app-misc/tmux
 app-shells/bash-completion
+dev-util/vmtouch
 sys-apps/dmidecode
 sys-apps/ethtool
 sys-devel/icecream
