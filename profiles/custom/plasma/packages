@@ -7,8 +7,13 @@
 #-----------------------------------------------------------------------
 # CLI tools
 
-# Editor
+# Core
+app-admin/yadm
 app-editors/neovim
+app-shells/gentoo-zsh-completions
+app-shells/zsh
+app-shells/zsh-completions
+x11-terms/ghostty
 
 # Admin utils
 app-admin/r10k
@@ -106,7 +111,6 @@ sys-fs/duperemove
 sys-fs/google-drive-ocamlfuse
 sys-fs/ntfs3g
 sys-fs/xfsprogs
-x11-terms/ghostty
 
 # Containers, Virtualization & Cloud
 app-containers/buildah

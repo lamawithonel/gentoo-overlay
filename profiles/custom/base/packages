@@ -46,7 +46,6 @@ net-analyzer/traceroute
 net-vpn/wireguard-tools
 
 # Misc.
-app-admin/yadm
 app-misc/jq
 app-misc/tmux
 app-shells/bash-completion
