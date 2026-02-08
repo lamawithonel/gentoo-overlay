@@ -16,7 +16,7 @@ dev-ruby/http-accept:1
 <dev-ruby/excon-0.74
 <dev-ruby/childprocess-4.2
 
-<dev-ruby/googleapis-common-protos-types-1.16.0
+<dev-ruby/googleapis-common-protos-types-1.21
 <dev-ruby/stream-0.6.0
 <dev-ruby/strscan-3.2.0
 <dev-ruby/pairing_heap-3.2.0
@@ -29,4 +29,4 @@ dev-ruby/http-accept:1
 <dev-ruby/snaky_hash-2.1
 
 <dev-ruby/grpc-1.72
-<dev-ruby/google-protobuf-4.27
+<dev-ruby/google-protobuf-4.29
