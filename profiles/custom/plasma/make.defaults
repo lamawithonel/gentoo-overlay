@@ -4,9 +4,6 @@ CFLAGS='-pipe -ggdb -O2 -mtune=generic'
 CXXFLAGS="${CFLAGS}"
 FCFLAGS="${CFLAGS}"
 
-PORTAGE_NICENESS='2'
-PORTAGE_IONICE_COMMAND='ionice -c 3 -p \${PID}'
-
 EMERGE_DEFAULT_OPTS='--backtrack=2048'
 
 PORTAGE_ELOG_SYSTEM='save'
