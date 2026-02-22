@@ -114,9 +114,6 @@ sys-fs/xfsprogs
 
 # Containers, Virtualization & Cloud
 app-containers/buildah
-app-containers/docker
-app-containers/docker-buildx
-app-containers/docker-compose
 app-containers/podman
 app-containers/podman-compose
 app-containers/podman-tui
