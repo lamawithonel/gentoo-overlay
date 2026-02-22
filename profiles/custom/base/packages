@@ -52,6 +52,7 @@ app-shells/bash-completion
 dev-util/vmtouch
 sys-apps/dmidecode
 sys-apps/ethtool
+sys-apps/progress
 sys-devel/icecream
 sys-fs/inotify-tools
 sys-fs/quota
