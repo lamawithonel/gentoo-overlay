@@ -58,3 +58,4 @@ sys-fs/inotify-tools
 sys-fs/quota
 sys-process/htop
 sys-process/lsof
+sys-process/time
