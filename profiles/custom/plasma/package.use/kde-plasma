@@ -4,7 +4,7 @@ kde-plasma/ksystemstats         lm-sensors networkmanager
 kde-plasma/kwin                 screencast
 kde-plasma/plasma-desktop       appstream emoji screencast -sdl
 kde-plasma/plasma-firewall      firewalld -ufw
-kde-plasma/plasma-meta          colord grub networkmanager plymouth
+kde-plasma/plasma-meta          colord networkmanager plymouth
 kde-plasma/plasma-nm            -modemmanager
 kde-plasma/plasma-vault         networkmanager
 kde-plasma/plasma-workspace     appstream geolocation qrcode screencast
