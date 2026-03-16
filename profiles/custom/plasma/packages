@@ -92,6 +92,7 @@ dev-util/clinfo
 dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
+dev-util/stressapptest
 gui-apps/wl-clipboard
 kde-apps/kdenlive
 net-im/zoom

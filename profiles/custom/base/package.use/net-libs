@@ -1,2 +1,2 @@
 net-libs/ldns                   ed25519 ed448
-net-libs/nodejs                 system-icu
+net-libs/nodejs                 -npm system-icu
