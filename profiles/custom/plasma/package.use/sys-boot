@@ -1,1 +1,1 @@
-sys-boot/grub                   mount -themes
+sys-boot/grub                   -branding -fonts mount -sdl -themes -truetype
