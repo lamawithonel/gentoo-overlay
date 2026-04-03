@@ -1,4 +1,5 @@
 dev-util/astyle                 java
+dev-util/ostree                 libmount sodium
 dev-util/pkgconfig              hardened
 dev-util/ragel                  vim-syntax
 dev-util/schroot                zfs
