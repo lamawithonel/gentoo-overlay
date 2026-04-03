@@ -3,3 +3,5 @@ dev-qt/qtnetwork                networkmanager
 dev-qt/qtsql                    -mysql postgres
 dev-qt/qttools                  assistant
 dev-qt/qtwebkit                 -gstreamer multimedia webp
+
+dev-qt/qtwidgets                -X

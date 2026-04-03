@@ -1,6 +1,6 @@
 # (atom)                        (general)                                                       (decode)                                                (encode)
 media-video/ffmpeg              gmp libass libdrm libplacebo openssl shaderc libaom             opus                                                    fdk lame openh264 theora vpx x265 xvid
-media-video/vlc                 -X archive libass mtp taglib                                    -dvbpsi -flac -jpeg -mad -mp3 -mpeg -svg -vaapi         x264 x265
+media-video/vlc                 archive libass mtp taglib                                       -dvbpsi -flac -jpeg -mad -mp3 -mpeg -svg -vaapi         x264 x265
 media-video/pipewire            echo-cancel -ffmpeg flatpak pipewire-alsa sound-server
 
 media-video/mediainfo           -wxwidgets
