@@ -1,18 +1,21 @@
 media-libs/a52dec               djbfft
 media-libs/dav1d                xxhash
+media-libs/embree               ssp
 media-libs/freetype             harfbuzz
 media-libs/harfbuzz             fontconfig icu
 media-libs/libass               libunibreak
 media-libs/libbdplus            aacs
 media-libs/libcanberra          -sound -udev
-media-libs/libheif              x265
+media-libs/libheif              dav1d -de265 -kvazaar openh264 svt-av1 x265
 media-libs/libpng               apng
 media-libs/libsamplerate        sndfile
 media-libs/libsdl2              libsamplerate kms
 media-libs/libvpx               postproc
 media-libs/mesa                 -classic lm-sensors osmesa
 media-libs/mlt                  -gtk -rubberband
+media-libs/oidn                 openimageio
 media-libs/openexr              large-stack
 media-libs/openimageio          -gui -tools raw
+media-libs/opensubdiv           opencl tbb
 media-libs/tiff                 libdeflate
 media-libs/x264                 opencl

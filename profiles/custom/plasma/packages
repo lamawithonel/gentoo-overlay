@@ -59,6 +59,9 @@ dev-libs/tree-sitter-ruby
 dev-libs/tree-sitter-tsq
 dev-libs/tree-sitter-typescript
 
+# CAD/CAM
+media-gfx/blender
+
 # Misc.
 app-admin/chrpath
 app-admin/mkosi

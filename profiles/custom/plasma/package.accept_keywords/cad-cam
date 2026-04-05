@@ -1,0 +1,7 @@
+media-gfx/blender-bin
+media-gfx/bambustudio-bin
+media-gfx/orcaslicer-bin
+
+media-gfx/blender:5.0
+media-libs/openexr
+media-libs/openimageio
