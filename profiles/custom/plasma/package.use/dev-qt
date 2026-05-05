@@ -1,4 +1,5 @@
 dev-qt/qtbase                   evdev -mysql postgres
+dev-qt/qtmultimedia             -v4l
 dev-qt/qtnetwork                networkmanager
 dev-qt/qtsql                    -mysql postgres
 dev-qt/qttools                  assistant
