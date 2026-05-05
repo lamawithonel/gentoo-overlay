@@ -5,4 +5,4 @@ app-emulation/libvirt           dtrace firewalld pcap -vepa virt-network virtiof
 app-emulation/virt-viewer       vte
 app-emulation/virt-what         dmi
 app-emulation/virtualbox        -sdk -vmmraw vnc
-app-emulation/wine-proton        osmesa
+app-emulation/wine-proton       osmesa -wow64
