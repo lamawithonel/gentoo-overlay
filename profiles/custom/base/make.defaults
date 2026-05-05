@@ -24,7 +24,7 @@ UPS_DRIVERS='-*'
 
 LLVM_TARGETS='-* BPF'
 PAX_MARKINGS='XT'
-POLICY_TYPES='mcs targeted'
+SELINUX_POLICY_TYPES='mcs targeted -strict -mls'
 
 USE_ACCESSIBILITY='	-accessibility'
 USE_COMPRESS='		brotli lz4 lzma lzo xz zstd'
