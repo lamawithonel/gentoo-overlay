@@ -3,4 +3,5 @@ dev-lang/ocaml                          flambda
 dev-lang/perl                           -berkdb -gdbm minimal
 dev-lang/python:2.7                     sqlite
 dev-lang/ruby                           -berkdb -gdbm -rdoc
+dev-lang/rust-bin                       -clippy -rustfmt
 dev-lang/spidermonkey                   minimal
