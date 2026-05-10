@@ -19,6 +19,11 @@ app-admin/r10k
 app-crypt/ima-evm-utils
 sys-kernel/genkernel
 
+# SnapRAID + MergerFS
+sys-fs/snapraid
+sys-fs/mergerfs
+sys-fs/mergerfs-tools
+
 # Btrfs backup tools
 app-backup/btrbk
 sys-block/mbuffer

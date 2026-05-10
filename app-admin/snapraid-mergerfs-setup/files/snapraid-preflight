@@ -1,0 +1,91 @@
+#!/bin/sh
+# Preflight checks.  Read-only; safe to run anytime.  Exits nonzero
+# on any failure.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+
+sr_header 'Preflight: environment checks'
+
+_fails=0
+_check() {
+	if eval "$2" >/dev/null 2>&1; then
+		sr_ok "$1"
+	else
+		sr_err "$1"
+		_fails=$((_fails + 1))
+	fi
+}
+
+# Required binaries.
+for _bin in snapraid mergerfs mkfs.xfs xfs_info blkid lsblk \
+		smartctl hdparm partprobe parted wipefs gum; do
+	_check "binary present: ${_bin}" "command -v ${_bin}"
+done
+
+# Filesystem support.
+_check 'xfs in /proc/filesystems' 'grep -qw xfs /proc/filesystems'
+_check 'fuse available' \
+	'grep -qw fuse /proc/filesystems || modprobe fuse'
+
+# systemd as PID 1.
+_check 'systemd is PID 1' \
+	'readlink /proc/1/exe | grep -q systemd'
+
+# Enumerate drives.  Source of truth is the roles file written by
+# snapraid-detect; the SR_DRIVE_GLOB is a candidate pool, not the
+# array membership, so we no longer use it here.
+sr_header 'Preflight: drive enumeration'
+if [ ! -f "$SR_ROLES_FILE" ]; then
+	sr_err "${SR_ROLES_FILE} missing; run snapraid-detect first"
+	exit 1
+fi
+_drives=$(grep -v '^#' "$SR_ROLES_FILE" | grep -v '^$' \
+	| awk '{print $3}' | LC_ALL=C sort)
+_count=$(printf '%s\n' "$_drives" | grep -c '^/' || true)
+_expected=$((SR_PARITY_COUNT + SR_DATA_COUNT))
+
+if [ "$_count" -eq "$_expected" ]; then
+	sr_ok "found ${_count} drives in ${SR_ROLES_FILE}"
+else
+	sr_err "expected ${_expected} drives in ${SR_ROLES_FILE}," \
+		"found ${_count}"
+	_fails=$((_fails + 1))
+fi
+
+# Per-drive checks.
+echo "$_drives" | while read -r _link; do
+	[ -n "$_link" ] || continue
+	if [ ! -e "$_link" ]; then
+		sr_err "missing device: ${_link}"
+		continue
+	fi
+	_dev=$(readlink -f "$_link")
+	_name=$(basename "$_dev")
+
+	# SMART.
+	if smartctl -H -d sat "$_dev" 2>/dev/null \
+			| grep -q 'PASSED'; then
+		sr_ok "SMART PASSED: $(basename "$_link")"
+	elif smartctl -H "$_dev" 2>/dev/null | grep -q 'PASSED'; then
+		sr_ok "SMART PASSED (no -d sat): $(basename "$_link")"
+	else
+		sr_err "SMART not PASSED: ${_link}"
+	fi
+
+	# USB transport.
+	_tran=$(lsblk -ndo TRAN "/dev/${_name}" 2>/dev/null || echo '')
+	if [ "$_tran" = 'usb' ]; then
+		sr_ok "USB transport: $(basename "$_link")"
+	else
+		sr_err "${_link} transport='${_tran}', expected usb"
+	fi
+done
+
+if [ "$_fails" -gt 0 ]; then
+	sr_err "${_fails} preflight check(s) failed"
+	exit 1
+fi
+
+sr_header 'Preflight passed'

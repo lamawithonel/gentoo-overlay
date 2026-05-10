@@ -1,0 +1,143 @@
+#!/bin/sh
+# End-to-end integrity drill.  Writes test data, syncs, corrupts a
+# file, verifies detection and repair.  Cleans up after itself.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+
+sr_header 'Integrity drill: corrupt → detect → repair → verify'
+
+# Verify /mnt/snapraid0/storage is actually a mergerfs union.  If
+# it is just an empty directory, dd writes land on the underlying
+# filesystem and never reach a data branch, which makes the drill's
+# corruption phase silently look for files that do not exist.
+_storage_fstype=$(findmnt -n -o FSTYPE /mnt/snapraid0/storage 2>/dev/null || true)
+case "$_storage_fstype" in
+	fuse.mergerfs) : ;;
+	'') sr_err '/mnt/snapraid0/storage is not mounted (expected fuse.mergerfs).
+Run: sudo systemctl daemon-reload && sudo mount /mnt/snapraid0/storage'
+	    exit 1 ;;
+	*)  sr_err "/mnt/snapraid0/storage is ${_storage_fstype}, expected fuse.mergerfs"
+	    exit 1 ;;
+esac
+
+# Discover data branches from snapraid.conf rather than hardcoding
+# /mnt/snapraid0/data{1,2,3}.  Handles arbitrary disk counts and
+# mountpoints.
+_data_dirs=$(awk '$1 == "data" { print $3 }' "$SR_CONF")
+[ -n "$_data_dirs" ] || { sr_err "no 'data' entries in ${SR_CONF}"; exit 1; }
+
+sr_confirm \
+	'Run integrity drill?' \
+	"This writes ~50MB of test data to /mnt/snapraid0/storage, runs sync,
+deliberately corrupts one file on its backing branch, then
+verifies that snapraid detects and repairs the corruption.
+All test data is removed at the end." \
+	'mkdir -p /mnt/snapraid0/storage/integrity-test' \
+	'dd if=/dev/urandom of=...file{1..5}.bin bs=1M count=10' \
+	"snapraid -c ${SR_CONF} sync" \
+	'dd if=/dev/urandom of=<one file> bs=1M count=1 conv=notrunc' \
+	"snapraid -c ${SR_CONF} check" \
+	"snapraid -c ${SR_CONF} fix" \
+	'rm -rf /mnt/snapraid0/storage/integrity-test' \
+	"snapraid -c ${SR_CONF} sync" \
+	|| exit 1
+
+_pass=0; _fail=0
+_t() {
+	if eval "$2"; then sr_green "$1"; _pass=$((_pass + 1))
+	else sr_red "$1"; _fail=$((_fail + 1))
+	fi
+}
+
+# Always try to leave snapraid state and the data branches in
+# agreement, even if the drill aborts mid-run (errexit, Ctrl-C,
+# etc.).  Otherwise a partial run leaves test files indexed in
+# snapraid but absent from disk, and the next sync refuses with
+# "files previously present ... are now missing" until the user
+# runs 'snapraid --force-empty sync' by hand.
+_drill_cleanup() {
+	_rc=$?
+	rm -rf /mnt/snapraid0/storage/integrity-test \
+	       /tmp/snapraid-drill.sha256 2>/dev/null || true
+	# --force-empty: the drill's test files were just rm'd above
+	# and snapraid would otherwise refuse to sync ("files
+	# previously present ... are now missing").  Best-effort:
+	# suppress errors so a broken snapraid.conf cannot mask the
+	# original failure exit code.
+	snapraid -c "$SR_CONF" --force-empty sync >/dev/null 2>&1 || true
+	exit "$_rc"
+}
+trap _drill_cleanup EXIT INT TERM
+
+# Run snapraid commands directly (not under 'gum spin') so the user
+# sees snapraid's own progress output, and any error message is
+# visible if the command fails.  'gum spin -- cmd' suppresses
+# stdout/stderr, which combined with errexit would terminate this
+# script silently if snapraid sync/fix failed.
+_run() {
+	_label=$1; shift
+	gum style --margin '1 2' --bold "$_label"
+	"$@"
+}
+
+# Setup.
+mkdir -p /mnt/snapraid0/storage/integrity-test
+for _i in 1 2 3 4 5; do
+	dd if=/dev/urandom \
+		of="/mnt/snapraid0/storage/integrity-test/file${_i}.bin" \
+		bs=1M count=10 status=none
+done
+sha256sum /mnt/snapraid0/storage/integrity-test/*.bin \
+	> /tmp/snapraid-drill.sha256
+
+# Sync.
+_run 'Running sync...' snapraid -c "$SR_CONF" sync
+
+# Corrupt.
+# shellcheck disable=SC2086 # _data_dirs is intentionally word-split
+_target=$(find $_data_dirs \
+	-path '*/integrity-test/file3.bin' -print -quit)
+[ -n "$_target" ] || { sr_err 'test file not found on any branch'; exit 1; }
+gum style --margin '1 2' "Corrupting backing file: ${_target}"
+dd if=/dev/urandom of="$_target" bs=1M count=1 \
+	conv=notrunc status=none
+
+sync && echo 3 > /proc/sys/vm/drop_caches
+
+# Detect.  Use plain 'check' (read-only verify of all files against
+# stored hashes); '-e' would only check files already in the error
+# report, which is empty here, so the predicate would never trip.
+# Capture output so a non-corruption failure (e.g. config error) is
+# visible instead of just a red FAIL line.
+gum style --margin '1 2' --bold 'Checking for corruption...'
+_check_log=$(mktemp -t snapraid-drill-check.XXXXXX.log)
+if snapraid -c "$SR_CONF" check >"$_check_log" 2>&1; then
+	sr_red 'snapraid detects corruption'
+	sr_err 'check returned 0 (no corruption found); output:'
+	cat "$_check_log" >&2
+	_fail=$((_fail + 1))
+else
+	sr_green 'snapraid detects corruption'
+	_pass=$((_pass + 1))
+fi
+rm -f "$_check_log"
+
+# Repair.  Plain 'fix' rewrites any file that does not match parity;
+# '-e fix' would skip everything for the same reason as above.
+_run 'Repairing...' snapraid -c "$SR_CONF" fix
+
+_t 'repaired file matches original hash' \
+	'sha256sum -c /tmp/snapraid-drill.sha256 >/dev/null 2>&1'
+
+# Cleanup.
+rm -rf /mnt/snapraid0/storage/integrity-test /tmp/snapraid-drill.sha256
+_run 'Final sync...' snapraid -c "$SR_CONF" --force-empty sync
+
+printf '\n'
+gum style \
+	--foreground "$_SR_HDR_FG" --bold \
+	"Drill: ${_pass} passed, ${_fail} failed."
+[ "$_fail" -eq 0 ]

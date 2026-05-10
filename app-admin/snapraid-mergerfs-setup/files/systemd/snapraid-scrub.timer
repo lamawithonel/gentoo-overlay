@@ -1,0 +1,10 @@
+[Unit]
+Description=Run SnapRAID scrub weekly
+
+[Timer]
+OnCalendar=Sun *-*-* 04:00:00
+Persistent=true
+RandomizedDelaySec=30m
+
+[Install]
+WantedBy=timers.target

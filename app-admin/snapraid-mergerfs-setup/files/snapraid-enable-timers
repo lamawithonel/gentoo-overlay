@@ -1,0 +1,49 @@
+#!/bin/sh
+# Enable and start systemd timers, with confirmation.
+# Idempotent: skips timers already enabled and active.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+
+sr_header 'Enable systemd timers'
+
+_to_enable=''
+# snapraid-smart-long.timer is gated by the 'smart-tests' USE flag;
+# the @SMART_LONG_ENABLED@ token is substituted to 1 or 0 at install
+# time so the loop only references the timer when its unit was
+# actually installed.
+_smart_timer=''
+_smart_long_enabled='@SMART_LONG_ENABLED@'
+[ "$_smart_long_enabled" = '1' ] && _smart_timer='snapraid-smart-long.timer'
+# shellcheck disable=SC2086 # _smart_timer is intentionally word-split
+for _t in snapraid-sync.timer snapraid-scrub.timer $_smart_timer; do
+	if systemctl is-enabled "$_t" >/dev/null 2>&1 \
+			&& systemctl is-active "$_t" >/dev/null 2>&1; then
+		sr_skip "${_t} already enabled and active"
+	else
+		_to_enable="${_to_enable}${_t} "
+	fi
+done
+
+if [ -z "$_to_enable" ]; then
+	sr_ok 'all timers already enabled'
+	exit 0
+fi
+
+sr_confirm \
+	'Enable and start timers?' \
+	"This enables and starts the following timers, which run as
+root and may run for hours during scrub/smart-long.  All
+timers can be disabled later with 'systemctl disable
+--now <timer>'." \
+	'systemctl daemon-reload' \
+	"systemctl enable --now ${_to_enable}" \
+	|| exit 1
+
+systemctl daemon-reload
+# shellcheck disable=SC2086
+systemctl enable --now $_to_enable
+sr_ok 'timers enabled'
+systemctl list-timers 'snapraid-*' --all

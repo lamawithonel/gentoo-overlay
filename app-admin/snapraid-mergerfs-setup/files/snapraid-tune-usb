@@ -1,0 +1,74 @@
+#!/bin/sh
+# Install udev rules for USB HDD tuning.  Idempotent.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+
+readonly RULES_FILE='/etc/udev/rules.d/60-snapraid-usb.rules'
+
+# Why these values:
+#   bfq scheduler         best HDD latency under mixed load
+#                         (mq-deadline used as fallback if the
+#                         kernel lacks CONFIG_IOSCHED_BFQ)
+#   read_ahead_kb=2048    helps sequential scrub/sync
+#   nr_requests=256       deeper queue for parity calc
+#   hdparm -B 254         disable APM aggressive idle
+#   hdparm -S 0           disable spin-down (cold storage:
+#                         use -S 241 for 30-min spin-down)
+#
+# Note: udev ATTR= assignments fail silently if the kernel
+# rejects the value, so listing bfq first then mq-deadline
+# acts as a graceful fallback -- whichever one is accepted
+# wins.
+_proposed=$(cat <<-'RULES'
+	# Tune USB-attached HDDs used by SnapRAID.  Matches every USB
+	# block-device whole disk (KERNEL=="sd*[!0-9]"); the SnapRAID
+	# array members are selected by the operator via snapraid-detect,
+	# but the tuning here is safe for any USB HDD and is benign for
+	# USB SSDs/sticks (they ignore hdparm power flags).
+	SUBSYSTEM=="block", KERNEL=="sd*[!0-9]", \
+		ENV{ID_BUS}=="usb", \
+		ATTR{queue/scheduler}="bfq", \
+		ATTR{queue/scheduler}="mq-deadline", \
+		ATTR{queue/read_ahead_kb}="2048", \
+		ATTR{queue/nr_requests}="256", \
+		RUN+="/usr/sbin/hdparm -B 254 -S 0 /dev/$kernel"
+RULES
+)
+
+sr_header 'Install USB tuning udev rule'
+
+if [ -f "$RULES_FILE" ] \
+		&& [ "$(cat "$RULES_FILE")" = "$_proposed" ] \
+		&& [ "${SR_FORCE:-0}" != '1' ]; then
+	sr_skip "${RULES_FILE} already up to date"
+	exit 0
+fi
+
+if [ -f "$RULES_FILE" ]; then
+	gum style --margin '1 2' --bold "Diff for ${RULES_FILE}:"
+	_diff=$(diff -u "$RULES_FILE" - <<EOF || true
+$_proposed
+EOF
+)
+	gum style --foreground "$_SR_DIM_FG" --margin '0 2' -- "$_diff"
+fi
+
+sr_confirm \
+	'Install udev rule and reload?' \
+	"This sets the BFQ scheduler, increases read-ahead, deepens
+the request queue, and disables aggressive APM/spin-down on
+all matching USB drives.  Reversible by removing the file
+and reloading udev." \
+	"cat > ${RULES_FILE} <<EOF (rule shown above)" \
+	'udevadm control --reload-rules' \
+	'udevadm trigger --subsystem-match=block --action=change' \
+	|| exit 1
+
+printf '%s\n' "$_proposed" > "$RULES_FILE"
+chmod 0644 "$RULES_FILE"
+udevadm control --reload-rules
+udevadm trigger --subsystem-match=block --action=change
+sr_ok "installed ${RULES_FILE} and reloaded udev"

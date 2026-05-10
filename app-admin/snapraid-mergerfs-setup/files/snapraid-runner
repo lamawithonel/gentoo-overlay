@@ -1,0 +1,80 @@
+#!/bin/sh
+# Wrapper around snapraid sync/scrub/smart.  Designed to run from
+# systemd timers (non-interactive).  Use snapraid-runner-interactive
+# for manual runs with confirmation.
+#
+# Usage: snapraid-runner sync | scrub | smart-long
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+
+readonly MAX_DEL_THRESHOLD=500
+readonly MAX_UPD_THRESHOLD=2000
+
+mkdir -p "$SR_LOG_DIR"
+_ts=$(date +%Y%m%dT%H%M%S)
+
+_log() {
+	tee -a "${SR_LOG_DIR}/${1}-${_ts}.log"
+}
+
+_do_sync() {
+	_difflog="${SR_LOG_DIR}/diff-${_ts}.log"
+	snapraid -c "$SR_CONF" diff > "$_difflog" 2>&1 || true
+
+	_removed=$(awk '/^[[:space:]]*[0-9]+ removed/ {print $1; exit}' \
+		"$_difflog")
+	_updated=$(awk '/^[[:space:]]*[0-9]+ updated/ {print $1; exit}' \
+		"$_difflog")
+	_removed=${_removed:-0}
+	_updated=${_updated:-0}
+
+	if [ "$_removed" -gt "$MAX_DEL_THRESHOLD" ]; then
+		echo "ABORT: ${_removed} removals > threshold ${MAX_DEL_THRESHOLD}" \
+			| _log sync
+		exit 3
+	fi
+	if [ "$_updated" -gt "$MAX_UPD_THRESHOLD" ]; then
+		echo "ABORT: ${_updated} updates > threshold ${MAX_UPD_THRESHOLD}" \
+			| _log sync
+		exit 3
+	fi
+
+	snapraid -c "$SR_CONF" sync 2>&1 | _log sync
+}
+
+_do_scrub() {
+	# Scrub 10% of blocks older than 10 days.  Over 10 weeks
+	# covers the entire array.
+	snapraid -c "$SR_CONF" scrub -p 10 -o 10 2>&1 | _log scrub
+}
+
+_do_smart_long() {
+	# Build-time gate: USE=smart-tests flips this token to '1'.
+	# USB enclosures rarely implement SAT passthrough deeply
+	# enough for smartctl -t to succeed, so default is disabled.
+	# shellcheck disable=SC2050
+	if [ '@SMART_LONG_ENABLED@' != '1' ]; then
+		echo 'ERROR: smart-long disabled at build time (USE=-smart-tests).' >&2
+		echo '  USB enclosures rarely support SAT self-tests.' >&2
+		echo '  Rebuild with USE=smart-tests if your enclosure does.' >&2
+		exit 4
+	fi
+	while read -r _role _idx _link; do
+		case "$_role" in '#'*|'') continue ;; esac
+		_dev=$(readlink -f "$_link")
+		echo "==> SMART long test on ${_link}" | _log smart-long
+		smartctl -d sat -t long "$_dev" 2>&1 | _log smart-long
+	done < "$SR_ROLES_FILE"
+}
+
+case "${1:-}" in
+	sync)       _do_sync ;;
+	scrub)      _do_scrub ;;
+	smart-long) _do_smart_long ;;
+	*)
+		echo 'Usage: snapraid-runner sync|scrub|smart-long' >&2
+		exit 2
+		;;
+esac

@@ -1,0 +1,44 @@
+#!/bin/sh
+# Run the initial snapraid sync, with confirmation.
+# Idempotent: a second run on a clean array reports 'No differences'
+# and does nothing.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+
+sr_header 'Initial SnapRAID sync'
+
+# Show diff first.
+gum style --margin '1 2' 'Running snapraid diff to preview...'
+_difflog=$(mktemp)
+snapraid -c "$SR_CONF" diff > "$_difflog" 2>&1 || true
+gum style --foreground "$_SR_DIM_FG" --margin '0 2' \
+	"$(tail -n 30 "$_difflog")"
+
+# If diff is clean, we are done.
+if grep -q 'No differences' "$_difflog"; then
+	sr_skip 'no differences; parity already up to date'
+	rm -f "$_difflog"
+	exit 0
+fi
+
+sr_confirm \
+	'Run initial snapraid sync?' \
+	"This computes parity for all current data on the data
+branches.  On empty disks this is fast; on populated disks it
+scales with total data size.  Sync writes to both parity
+drives but does not modify data files." \
+	"snapraid -c ${SR_CONF} sync" \
+	|| { rm -f "$_difflog"; exit 1; }
+
+mkdir -p "$SR_LOG_DIR"
+_ts=$(date +%Y%m%dT%H%M%S)
+gum spin --spinner dot --show-output \
+		--title 'Running snapraid sync...' -- \
+	sh -c "snapraid -c '${SR_CONF}' sync \
+		2>&1 | tee '${SR_LOG_DIR}/initial-sync-${_ts}.log'"
+
+rm -f "$_difflog"
+sr_ok "initial sync complete; log at ${SR_LOG_DIR}/initial-sync-${_ts}.log"

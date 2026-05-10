@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>lucas@lamawithonel.net</email>
+		<name>Lucas Hall</name>
+	</maintainer>
+	<longdescription lang="en">
+		Operator scripts and systemd units that build a SnapRAID +
+		MergerFS pool on top of XFS-formatted disks attached via a
+		USB enclosure on Gentoo with systemd.  Provides idempotent
+		bootstrap helpers (preflight, role detection, formatting,
+		fstab generation, snapraid.conf generation, first sync,
+		timer enablement, USB tuning), a non-interactive runner
+		invoked from systemd timers, and a recovery menu.  Test
+		and acceptance drills are gated behind the test USE flag.
+	</longdescription>
+	<use>
+		<flag name="setup">
+			Install the one-shot bootstrap scripts: preflight,
+			detect, format, fstab, genconf, first-sync,
+			enable-timers, and tune-usb.
+		</flag>
+		<flag name="systemd">
+			Install snapraid-runner, snapraid-runner-interactive,
+			and the sync/scrub systemd service and timer units.
+		</flag>
+		<flag name="smart-tests">
+			Install the snapraid-smart-long systemd service and
+			timer, and enable the smart-long action in
+			snapraid-runner.  Disabled by default because most
+			USB enclosures do not implement SAT passthrough deeply
+			enough for smartctl -t long to work.
+		</flag>
+		<flag name="test">
+			Install the integrity drill and acceptance test
+			scripts.  Hardware-dependent; not run under
+			FEATURES=test.
+		</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">lamawithonel/snapraid</remote-id>
+	</upstream>
+</pkgmetadata>

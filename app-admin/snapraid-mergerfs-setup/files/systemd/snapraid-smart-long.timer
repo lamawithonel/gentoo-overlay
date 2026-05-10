@@ -1,0 +1,10 @@
+[Unit]
+Description=Monthly SMART long self-test
+
+[Timer]
+OnCalendar=*-*-01 02:00:00
+Persistent=true
+RandomizedDelaySec=1h
+
+[Install]
+WantedBy=timers.target

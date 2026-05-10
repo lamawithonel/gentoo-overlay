@@ -1,0 +1,62 @@
+#!/bin/sh
+# Interactive recovery menu.  Idempotent in the sense that each
+# operation can be re-run safely; the actions themselves are
+# inherently destructive and require explicit confirmation.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+
+sr_header 'SnapRAID recovery'
+
+_action=$(gum choose \
+	--header 'What needs recovering?' \
+	'Check (read-only verification)' \
+	'Fix (repair detected errors)' \
+	'Fix specific drive (after replacement)' \
+	'Cancel') \
+	|| { sr_warn 'cancelled'; exit 1; }
+
+case "$_action" in
+	'Check (read-only verification)')
+		sr_confirm 'Run snapraid check?' \
+			"Read-only.  Verifies all data against parity.  Long
+operation; can take many hours." \
+			"snapraid -c ${SR_CONF} check" \
+			|| exit 1
+		snapraid -c "$SR_CONF" check
+		;;
+	'Fix (repair detected errors)')
+		sr_confirm 'Run snapraid -e fix?' \
+			"Repairs files flagged by previous check/scrub.  Writes
+to data drives.  Run 'check' first if uncertain." \
+			"snapraid -c ${SR_CONF} -e fix" \
+			|| exit 1
+		snapraid -c "$SR_CONF" -e fix
+		;;
+	'Fix specific drive (after replacement)')
+		_d=$(gum choose --header 'Which data disk?' \
+			d1 d2 d3) \
+			|| exit 1
+		sr_confirm "Rebuild ${_d}?" \
+			"Reconstructs ${_d} from parity onto the freshly
+formatted replacement drive.  The drive must already be
+formatted (run snapraid-format first) and mounted at
+/mnt/snapraid0/data<N>.  Long operation." \
+			"snapraid -c ${SR_CONF} -d ${_d} fix" \
+			|| exit 1
+		snapraid -c "$SR_CONF" -d "$_d" \
+			-l "${SR_LOG_DIR}/fix-${_d}-$(date +%s).log" fix
+		sr_confirm 'Verify with snapraid check?' \
+			'Optional but strongly recommended.' \
+			"snapraid -c ${SR_CONF} check" \
+			&& snapraid -c "$SR_CONF" check
+		;;
+	Cancel)
+		sr_warn 'cancelled'
+		exit 0
+		;;
+esac
+
+sr_ok 'recovery action complete'

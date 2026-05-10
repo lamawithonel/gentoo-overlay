@@ -1,0 +1,47 @@
+#!/bin/sh
+# Interactive wrapper.  Shows what would run, asks for confirmation,
+# then delegates to snapraid-runner.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+
+_action=$(gum choose \
+	--header 'Which operation?' \
+	'sync' 'scrub' \
+	$(if [ '@SMART_LONG_ENABLED@' = '1' ]; then
+		printf '%s\n' "'smart-long'"
+	fi)) \
+	|| { sr_warn 'cancelled'; exit 1; }
+
+case "$_action" in
+	sync)
+		_difflog=$(mktemp)
+		snapraid -c "$SR_CONF" diff > "$_difflog" 2>&1 || true
+		gum style --margin '1 2' --bold 'Diff preview:'
+		gum style --foreground "$_SR_DIM_FG" --margin '0 2' \
+			"$(tail -n 20 "$_difflog")"
+		rm -f "$_difflog"
+		sr_confirm 'Run sync?' \
+			"Updates parity to match current data state." \
+			"snapraid -c ${SR_CONF} sync" \
+			|| exit 1
+		;;
+	scrub)
+		sr_confirm 'Run scrub?' \
+			"Verifies parity for 10% of oldest blocks (>10 days).
+Read-only on data; takes hours on full arrays." \
+			"snapraid -c ${SR_CONF} scrub -p 10 -o 10" \
+			|| exit 1
+		;;
+	smart-long)
+		sr_confirm 'Start SMART long self-test on all drives?' \
+			"Each drive will take several hours to complete.
+Drives remain usable but may be slower." \
+			"smartctl -d sat -t long <each drive>" \
+			|| exit 1
+		;;
+esac
+
+/usr/local/sbin/snapraid-runner "$_action"

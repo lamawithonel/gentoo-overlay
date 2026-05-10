@@ -1,0 +1,7 @@
+[Unit]
+Description=SMART long self-test on all SnapRAID drives
+RequiresMountsFor=/mnt/snapraid0/parity1 /mnt/snapraid0/parity2 /mnt/snapraid0/data1 /mnt/snapraid0/data2 /mnt/snapraid0/data3
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/snapraid-runner smart-long

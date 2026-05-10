@@ -1,0 +1,66 @@
+#!/bin/sh
+# End-to-end acceptance test.  Read-only.  Run anytime.
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+
+sr_header 'Final acceptance test'
+
+_pass=0; _fail=0
+_t() {
+	if eval "$2" >/dev/null 2>&1; then
+		sr_green "$1"; _pass=$((_pass + 1))
+	else
+		sr_red "$1"; _fail=$((_fail + 1))
+	fi
+}
+
+_t 'preflight passes' \
+	'/usr/local/sbin/snapraid-preflight'
+_t 'roles file has 5 entries' \
+	'[ "$(grep -vc "^#" /etc/snapraid-roles.conf)" = 5 ]'
+_t 'all 6 mountpoints mounted' \
+	'for m in /mnt/snapraid0/parity1 /mnt/snapraid0/parity2 /mnt/snapraid0/data1 /mnt/snapraid0/data2 \
+		/mnt/snapraid0/data3 /mnt/snapraid0/storage; do mountpoint -q "$m" || exit 1; done'
+_t 'data branches have reflink=1' \
+	'for m in /mnt/snapraid0/data1 /mnt/snapraid0/data2 /mnt/snapraid0/data3; do \
+		xfs_info "$m" | grep -q "reflink=1" || exit 1; done'
+_t 'parity branches have reflink=1' \
+	'for m in /mnt/snapraid0/parity1 /mnt/snapraid0/parity2; do \
+		xfs_info "$m" | grep -q "reflink=1" || exit 1; done'
+_t 'snapraid config valid' \
+	'snapraid -c /etc/snapraid.conf status'
+_t 'snapraid-sync.timer active' \
+	'systemctl is-active snapraid-sync.timer'
+_t 'snapraid-scrub.timer active' \
+	'systemctl is-active snapraid-scrub.timer'
+# Only assert smart-long is active if the timer was installed
+# (gated by the 'smart-tests' USE flag at build time).
+_smart_long_enabled='@SMART_LONG_ENABLED@'
+if [ "$_smart_long_enabled" = '1' ]; then
+	_t 'snapraid-smart-long.timer active' \
+		'systemctl is-active snapraid-smart-long.timer'
+fi
+_t 'pool is writable' \
+	'_f=$(mktemp /mnt/snapraid0/storage/.acceptance.XXXXXX) && rm -f "$_f"'
+_t 'reflink works on data1' \
+	'_d=$(mktemp -d /mnt/snapraid0/data1/.acceptance.XXXXXX) && \
+	 dd if=/dev/zero of="$_d/a" bs=1M count=1 status=none && \
+	 cp --reflink=always "$_d/a" "$_d/b" && \
+	 rm -rf "$_d"'
+_t 'udev tuning applied (bfq or mq-deadline scheduler)' \
+	'_link=$(awk "/^data 1 /{print \$3}" /etc/snapraid-roles.conf); \
+	 _name=$(basename "$(readlink -f "$_link")"); \
+	 _sched=$(grep -o "\[[a-z-]*\]" \
+		/sys/block/${_name}/queue/scheduler \
+		| tr -d "[]"); \
+	 [ "$_sched" = "bfq" ] || [ "$_sched" = "mq-deadline" ]'
+
+printf '\n'
+gum style \
+	--foreground "$_SR_HDR_FG" --bold --border rounded \
+	--padding '1 2' \
+	"Acceptance: ${_pass} passed, ${_fail} failed."
+
+[ "$_fail" -eq 0 ]

@@ -1,0 +1,10 @@
+[Unit]
+Description=SnapRAID daily sync
+RequiresMountsFor=/mnt/snapraid0/storage /mnt/snapraid0/parity1 /mnt/snapraid0/parity2
+ConditionPathIsMountPoint=/mnt/snapraid0/storage
+
+[Service]
+Type=oneshot
+Nice=15
+IOSchedulingClass=idle
+ExecStart=/usr/local/sbin/snapraid-runner sync

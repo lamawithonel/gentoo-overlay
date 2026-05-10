@@ -1,0 +1,150 @@
+#!/bin/sh
+# Partition and format drives listed in /etc/snapraid-roles.conf.
+# DESTRUCTIVE.  Idempotent: skips drives that already have a
+# correctly-formatted XFS partition with the expected label.
+#
+# Usage: snapraid-format [--force]
+set -o errexit
+set -o nounset
+
+. /usr/local/lib/snapraid-helpers.sh
+sr_require_root
+sr_parse_force "$@"
+
+# XFS mkfs options (chosen for integrity + sane HDD performance):
+#   -m crc=1,reflink=1,finobt=1   integrity + reflink support
+#   -d agcount=4                  fewer AGs reduce HDD seeking
+#   -l size=128m,lazy-count=1     larger log for write bursts
+#   -i size=512                   bigger inodes hold xattrs inline
+readonly XFS_OPTS='-f -m crc=1,reflink=1,finobt=1 -d agcount=4 -l size=128m,lazy-count=1 -i size=512'
+
+[ -f "$SR_ROLES_FILE" ] || {
+	sr_err "${SR_ROLES_FILE} missing; run snapraid-detect first"
+	exit 1
+}
+
+sr_header 'Format drives as XFS with reflink=1'
+
+# First pass: classify each drive as already-formatted, needs-format,
+# or needs-confirmation.  Build a plan.
+_plan_format=''
+_plan_skip=''
+while read -r _role _idx _link; do
+	case "$_role" in '#'*|'') continue ;; esac
+	_label="${_role}${_idx}"
+	_part="${_link}-part1"
+
+	# Already correct?
+	if [ -e "$_part" ] \
+			&& xfs_info "$_part" 2>/dev/null \
+				| grep -q 'reflink=1' \
+			&& [ "$(blkid -o value -s LABEL "$_part" \
+					2>/dev/null)" = "$_label" ]; then
+		_plan_skip="${_plan_skip}${_label} ${_link}
+"
+	else
+		_plan_format="${_plan_format}${_label} ${_link}
+"
+	fi
+done < "$SR_ROLES_FILE"
+
+# Show plan.
+if [ -n "$_plan_skip" ]; then
+	gum style --margin '1 2' --bold \
+		'Already correctly formatted (will skip):'
+	echo "$_plan_skip" | while read -r _line; do
+		[ -n "$_line" ] || continue
+		sr_skip "$_line"
+	done
+fi
+
+if [ -z "$_plan_format" ]; then
+	sr_header 'All drives already formatted; nothing to do'
+	exit 0
+fi
+
+gum style --margin '1 2' --bold 'Will be wiped and reformatted:'
+echo "$_plan_format" | while read -r _line; do
+	[ -n "$_line" ] || continue
+	gum style --foreground "$_SR_ERR_FG" --margin '0 4' \
+		"  ${_line}"
+done
+
+# Per-disk confirmation is mandatory.  Each drive gets its own
+# sr_confirm with the full set of destructive commands batched
+# together; the operator must explicitly approve every disk.
+#
+# All destructive operations target the /dev/disk/by-id/ symlink
+# (not /dev/sdX) so a USB hot-plug renaming the kernel device
+# cannot pivot the operation onto the wrong disk.
+
+_format_one() {
+	_label="$1"; _link="$2"
+	_dev=$(readlink -f "$_link")
+	_part="${_link}-part1"
+
+	gum style --margin '1 0' --bold \
+		"==> ${_label}: ${_link}"
+	sr_show_byid "$_link"
+
+	sr_confirm \
+		"Wipe and format ${_label}?" \
+		"This will PERMANENTLY ERASE all data on ${_link}
+(currently resolves to ${_dev}).  A fresh GPT label, a single
+partition spanning the whole disk, and an XFS filesystem with
+reflink=1 and crc=1 will be created.
+
+Destructive commands address the disk by its by-id symlink;
+the kernel device node is shown for reference only." \
+		"wipefs -a ${_link}" \
+		"parted -s ${_link} mklabel gpt" \
+		"parted -s -a optimal ${_link} mkpart ${_label} 0% 100%" \
+		"mkfs.xfs ${XFS_OPTS} -L ${_label} ${_part}" \
+		|| { sr_warn "skipped ${_label}"; return 0; }
+
+	gum spin --spinner dot --title "Wiping ${_link}..." -- \
+		wipefs -a "$_link"
+	gum spin --spinner dot --title "Creating GPT label..." -- \
+		parted -s "$_link" mklabel gpt
+	gum spin --spinner dot --title "Creating partition..." -- \
+		parted -s -a optimal "$_link" mkpart "$_label" 0% 100%
+	partprobe "$_link"
+	udevadm settle
+
+	# Wait for the by-id partition symlink.
+	_tries=0
+	while [ ! -e "$_part" ] && [ "$_tries" -lt 10 ]; do
+		sleep 1
+		_tries=$((_tries + 1))
+	done
+	[ -e "$_part" ] || {
+		sr_err "missing ${_part} after partprobe"
+		return 1
+	}
+
+	# shellcheck disable=SC2086
+	gum spin --spinner dot --show-output \
+			--title "mkfs.xfs ${_label}..." -- \
+		mkfs.xfs $XFS_OPTS -L "$_label" "$_part"
+
+	sr_ok "formatted ${_label}"
+}
+
+# Iterate via a dedicated file descriptor so the loop body runs in
+# the parent shell and inherits the controlling TTY on stdin --
+# `gum confirm` reads keystrokes from stdin, and a `... | while`
+# pipeline would feed it the plan text instead, causing every
+# prompt to silently cancel.
+_plan_file=$(mktemp)
+trap 'rm -f "$_plan_file"' EXIT
+printf '%s' "$_plan_format" > "$_plan_file"
+
+exec 3< "$_plan_file"
+while read -r _label _link <&3; do
+	[ -n "$_label" ] || continue
+	_format_one "$_label" "$_link"
+done
+exec 3<&-
+
+sr_mark_done "${SR_STATE_DIR}/.formatted"
+sr_header 'Format complete'
