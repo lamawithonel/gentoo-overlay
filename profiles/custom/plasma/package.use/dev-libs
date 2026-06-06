@@ -3,6 +3,8 @@ dev-libs/boost                  icu nls python
 dev-libs/cyrus-sasl             -berkdb -gdbm
 dev-libs/imath                  large-stack
 dev-libs/jemalloc               lazy-lock
+dev-libs/libcdio                -cxx
+dev-libs/libcdio-paranoia       -cxx
 dev-libs/libdbusmenu            gtk3
 dev-libs/nng                    -deprecated
 dev-libs/nss                    utils
