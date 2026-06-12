@@ -1,4 +1,4 @@
-kde-plasma/discover             flatpak
+kde-plasma/discover             flatpak webengine
 kde-plasma/kdeplasma-addons     -alternate-calendar -comic networkmanager share
 kde-plasma/ksysguard            lm-sensors networkmanager
 kde-plasma/ksystemstats         lm-sensors networkmanager

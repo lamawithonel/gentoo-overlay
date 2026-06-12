@@ -4,3 +4,4 @@ kde-frameworks/kfilemetadata            epub ffmpeg office taglib
 kde-frameworks/knewstuff                opds
 kde-frameworks/kxmlgui                  attica
 kde-frameworks/plasma                   man
+kde-frameworks/purpose                  webengine

@@ -1,4 +1,4 @@
-dev-qt/qtbase                   evdev -mysql postgres
+dev-qt/qtbase                   evdev io-uring -mysql postgres
 dev-qt/qtmultimedia             -v4l
 dev-qt/qtnetwork                networkmanager
 dev-qt/qtsql                    -mysql postgres
