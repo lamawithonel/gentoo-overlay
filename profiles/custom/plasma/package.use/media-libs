@@ -14,6 +14,7 @@ media-libs/libvpx               postproc
 media-libs/mesa                 -classic lm-sensors osmesa
 media-libs/mlt                  -gtk -rubberband
 media-libs/oidn                 openimageio
+media-libs/opencv               python
 media-libs/openexr              large-stack
 media-libs/openimageio          -gui -tools raw
 media-libs/opensubdiv           opencl tbb

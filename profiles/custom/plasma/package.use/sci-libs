@@ -1,4 +1,8 @@
-sci-libs/amd                    -fortran
-sci-libs/fftw                   -fortran
-sci-libs/gsl                    cblas-external -deprecated
-sci-libs/hdf5                   -fortran -threads
+sci-libs/amd                            -fortran
+sci-libs/blas-lapack-aux-wrapper        index64
+sci-libs/fftw                           -fortran
+sci-libs/gsl                            cblas-external -deprecated
+sci-libs/hdf5                           -fortran -threads
+sci-libs/flexiblas                      index64
+sci-libs/openblas                       index64
+sci-libs/lapack                         index64

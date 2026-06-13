@@ -1,4 +1,6 @@
+virtual/blas                    index64
 virtual/ffmpeg                  opus
+virtual/lapack                  index64
 virtual/linux-sources           firmware
 virtual/wine                    proton
 virtual/zlib                    static-libs

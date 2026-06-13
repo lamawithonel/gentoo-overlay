@@ -1,0 +1,3 @@
+sci-ml/huggingface_hub          torch
+sci-ml/transformers             torch
+sci-ml/caffe2                   fbgemm openblas xnnpack

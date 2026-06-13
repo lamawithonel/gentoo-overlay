@@ -1,6 +1,11 @@
+dev-python/gguf                 -gui
+dev-python/mcp                  cli rich ws
+dev-python/mistral-common       image
 dev-python/pyqt5                -bluetooth -declarative -multimedia -network -opengl -printsupport -svg -webchannel
 dev-python/pyqt6                -bluetooth -multimedia -opengl -printsupport -svg -webchannel
 dev-python/ipython              -wxwidgets
+dev-python/numpy                index64
 dev-python/pillow               webp
 dev-python/pyyaml               libyaml
 dev-python/setuptools_scm       git
+dev-python/vllm                 rust

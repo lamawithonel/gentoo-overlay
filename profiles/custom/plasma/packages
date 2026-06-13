@@ -67,6 +67,10 @@ dev-libs/tree-sitter-typescript
 # CAD/CAM
 media-gfx/blender
 
+# Local LLMs
+sci-misc/llama-cpp
+sci-ml/ollama
+
 # Misc.
 app-admin/chrpath
 app-admin/mkosi
