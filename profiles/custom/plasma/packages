@@ -66,6 +66,7 @@ dev-libs/tree-sitter-typescript
 
 # CAD/CAM
 media-gfx/blender
+media-gfx/openscad
 
 # Local LLMs
 sci-misc/llama-cpp
