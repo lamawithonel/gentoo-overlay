@@ -1,3 +1,4 @@
+sci-ml/caffe2                   distributed fbgemm gloo openblas xnnpack
+sci-ml/gloo                     libuv
 sci-ml/huggingface_hub          torch
 sci-ml/transformers             torch
-sci-ml/caffe2                   fbgemm openblas xnnpack

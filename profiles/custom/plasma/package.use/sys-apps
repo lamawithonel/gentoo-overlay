@@ -4,6 +4,7 @@ sys-apps/fwupd                  amdgpu cbor gnutls logitech nvme uefi tpm
 sys-apps/gawk                   mpfr
 sys-apps/hwloc                  netloc
 sys-apps/iproute2               elf
+sys-apps/kbd                    xkb
 sys-apps/kmod                   pkcs7
 sys-apps/memtest86+             -bios64
 sys-apps/rng-tools              pkcs11

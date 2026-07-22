@@ -1,9 +1,11 @@
 sys-fs/google-drive-ocamlfuse
 
+dev-ml/cryptokit
+dev-ml/fuse3
 dev-ml/gapi-ocaml
-dev-ml/ocamlfuse
-dev-ml/ocaml-sqlite3
-dev-ml/otoml
-dev-ml/tiny_httpd
 dev-ml/hmap
 dev-ml/iostream
+dev-ml/ocaml-sqlite3
+dev-ml/ocamlfuse
+dev-ml/otoml
+dev-ml/tiny_httpd
