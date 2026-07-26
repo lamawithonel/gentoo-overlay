@@ -75,7 +75,7 @@ sci-misc/llama-cpp
 app-admin/chrpath
 app-admin/mkosi
 app-antivirus/clamav
-app-arch/p7zip
+app-arch/7zip
 app-arch/par2cmdline
 app-benchmarks/bootchart2
 app-benchmarks/geekbench
