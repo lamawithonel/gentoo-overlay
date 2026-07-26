@@ -70,7 +70,6 @@ media-gfx/openscad
 
 # Local LLMs
 sci-misc/llama-cpp
-sci-ml/ollama
 
 # Misc.
 app-admin/chrpath
