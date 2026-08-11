@@ -117,6 +117,7 @@ sys-apps/mlocate
 sys-apps/nvme-cli
 sys-apps/ripgrep
 sys-apps/smartmontools
+sys-apps/usbmon
 sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-block/bmap-tools
 sys-fs/duperemove
