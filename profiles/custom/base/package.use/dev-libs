@@ -1,2 +1,3 @@
 dev-libs/libfido2                       hidapi
+dev-libs/libisofs                       lfa-flags projid
 dev-libs/libnl                          -debug
