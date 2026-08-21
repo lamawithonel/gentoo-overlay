@@ -20,7 +20,7 @@ CURL_SSL='-* openssl'
 
 USE_AUDIO='		-alsa pulseaudio pipewire'
 USE_DESKTOP_MISC='	-activities gnome-keyring -handbook keyring phonon -semantic-desktop -vala wayland'
-USE_COMPILER_FEATURES='	lto ocamlopt pgo'
+USE_COMPILER_FEATURES='	lto ocamlopt pgo -strip'
 USE_GRAPHICS='		fontconfig'
 USE_INPUT='		'
 USE_I18N_L10N='		icu idn libidn2'
