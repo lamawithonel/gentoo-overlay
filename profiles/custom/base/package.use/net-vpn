@@ -1,2 +1,2 @@
-net-vpn/openvpn                         dco
-net-vpn/wireguard                      -wg-quick
+net-vpn/openvpn                         dco kernel-ovpn
+net-vpn/wireguard                       -wg-quick
