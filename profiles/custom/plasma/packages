@@ -105,6 +105,7 @@ dev-util/diffstat
 dev-util/rustup
 dev-util/shellcheck-bin
 dev-util/stressapptest
+dev-vcs/git-lfs
 gui-apps/wl-clipboard
 net-im/zoom
 net-irc/konversation
