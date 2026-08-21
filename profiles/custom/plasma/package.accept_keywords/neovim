@@ -1,0 +1,5 @@
+app-editors/neovim
+
+# required by app-editors/neovim-0.12.3::gentoo
+# required by @__auto_slot_operator_replace_installed__ (argument)
+=dev-lua/luv-1.52.1.0 ~amd64
