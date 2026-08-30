@@ -3,8 +3,10 @@
  This repository is a **Gentoo Portage overlay** (third-party
  ebuild repository) for the maintainer's personal use.  It is
  consumed by Portage on Gentoo systems, not built or tested as
- a normal software project.  There is no compile/lint/test
- toolchain checked into the repo.
+ a normal software project.  Repo tooling is managed by `mise`
+ (pinned pkgcheck/pkgdev plus check, manifest, and test tasks in
+ `mise.toml`) with `hk`-managed git hooks (`hk.pkl`); run
+ `mise install && mise run setup` once after cloning.
 
 ## Repository layout
 
@@ -29,10 +31,16 @@
      plasma/systemd`) via `parent` files.
    - `profiles/features/selinux/systemd` — a feature overlay
      profile pulled in via `parent` from SELinux variants.
- - `media-fonts/bitter/` — the only ebuild package currently
-   in the overlay (EAPI 7, `inherit font`).  New packages
-   follow the standard Gentoo `<category>/<pkg>/<pkg>-<ver>.
-   ebuild` + `metadata.xml` + `Manifest` layout.
+ - Ebuild packages, all following the standard Gentoo
+   `<category>/<pkg>/<pkg>-<ver>.ebuild` + `metadata.xml` +
+   `Manifest` layout:
+   - `app-admin/snapraid-mergerfs-setup/` — helper scripts and
+     docs for a SnapRAID + mergerfs array.
+   - `dev-lang/mojo/` — the Mojo compiler and stdlib, built
+     from source with upstream's Bazel wrapper (pinned commit;
+     `RESTRICT=network-sandbox`).
+   - `media-fonts/bitter/` — the Bitter typeface
+     (`inherit font`).
 
 ## Conventions
 
@@ -69,11 +77,25 @@
 ## Working with this overlay
 
  - Validate ebuild/profile changes locally with
-   `pkgcheck scan` and/or `repoman full` from inside the
-   overlay root.  Regenerate manifests with
-   `pkgdev manifest` (or `ebuild <pkg>.ebuild manifest`) in
-   the package directory after changing `SRC_URI` or
-   bumping a version.
+   `mise run check` (`pkgcheck scan --exit`) from the overlay
+   root.  Regenerate manifests with `mise run manifest`, which
+   uses the repo-local distdir and fails if a Manifest changed.
+   The pre-commit hook runs both against the staged changes.
+ - **Test builds** run through `mise run test-mojo` (one build)
+   or `mise run test-matrix` (USE-flag matrix), which build the
+   working tree via `PORTAGE_REPOSITORIES` — never the
+   installed copy of the overlay.  Constraints, enforced by the
+   task and by gitignored `mise.local.toml` host config:
+   - `PORTAGE_TMPDIR` and `DISTDIR` live under `.cache/agents/`
+     (never system paths; build trees can reach ~8 GiB).
+   - Builds are memory-capped with `choom -n 1000` so a runaway
+     compile dies before the desktop does.
+   - Core cap: set `MAKEOPTS` on the host (this machine uses
+     `-j4` in `mise.local.toml`); never commit a host's value.
+   - `TEST_MARCH` is required: dev-lang/mojo's upstream build
+     defaults to `-march=x86-64-v3` and appends user CFLAGS
+     after it, so a host older than v3 (this one is v2)
+     SIGILLs unless an explicit supported `-march` is passed.
  - To rebuild metadata cache (only for local use; do not
    commit): `egencache --update --repo=lamawithonel
    --jobs=$(nproc)`.
