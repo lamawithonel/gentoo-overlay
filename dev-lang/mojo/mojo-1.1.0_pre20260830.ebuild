@@ -146,7 +146,7 @@ src_install() {
 	doexe "$(mojo_out mojo-repl-entry-point)"
 
 	insinto /usr/lib/mojo/lib/mojo
-	doins "$(mojo_out std.mojopkg)"
+	doins "$(mojo_out std.mojoc)"
 
 	insinto /etc/modular
 	doins "${FILESDIR}/modular.cfg"
@@ -159,7 +159,7 @@ src_install() {
 
 pkg_postinst() {
 	elog "Installed from source: mojo driver, standard library"
-	elog "(std.mojopkg), KGEN compiler runtime, mojo-lsp-server,"
+	elog "(std.mojoc), KGEN compiler runtime, mojo-lsp-server,"
 	elog "and the REPL entry point."
 	elog ""
 	elog "Not installed: 'mojo debug' (needs the Mojo LLDB build),"
