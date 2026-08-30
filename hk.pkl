@@ -1,0 +1,24 @@
+amends "package://github.com/jdx/hk/releases/download/v1.55.0/hk@1.55.0#/Config.pkl"
+
+// Git hooks for the overlay.  All logic lives in mise tasks; hk only
+// decides when they run.  Install with `mise run setup` (hk install).
+
+hooks {
+    ["pre-commit"] {
+        steps {
+            ["overlay"] {
+                // Package dirs plus overlay metadata; dotdirs are not
+                // matched, so repo tooling never triggers the hook.
+                glob = List("*/*/**", "profiles/**", "metadata/**", "eclass/**")
+                check = "mise run check-staged -- {{files}}"
+            }
+        }
+    }
+    ["pre-push"] {
+        steps {
+            ["pkgcheck"] {
+                check = "mise run check"
+            }
+        }
+    }
+}
