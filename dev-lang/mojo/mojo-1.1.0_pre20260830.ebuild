@@ -62,6 +62,12 @@ pkg_setup() {
 	ewarn "time; the network sandbox is disabled for this package."
 	ewarn "The Mojo compiler and standard library themselves are"
 	ewarn "compiled entirely from source (--config=build-mojo)."
+	ewarn ""
+	ewarn "Upstream's toolchain defaults to -march=x86-64-v3.  On"
+	ewarn "older CPUs the build itself dies with SIGILL (its just-"
+	ewarn "built host tools use v3 instructions) unless CFLAGS and"
+	ewarn "CXXFLAGS carry a -march your CPU supports (-march=native"
+	ewarn "is fine); the user flag is appended last and wins."
 }
 
 src_prepare() {
@@ -162,7 +168,8 @@ src_install() {
 	dosym ../lib/mojo/bin/mojo /usr/bin/mojo
 	dosym ../lib/mojo/bin/mojo-lsp-server /usr/bin/mojo-lsp-server
 
-	dodoc README.md mojo/README.md
+	dodoc README.md
+	newdoc mojo/README.md README.mojo.md
 }
 
 pkg_postinst() {
