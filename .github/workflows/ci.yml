@@ -5,8 +5,10 @@
 name: CI
 
 on:
+  # Every branch push is scanned (feature branches must be green
+  # before they merge, and PRs are rare in a solo overlay); the
+  # commits job below additionally runs on PRs only.
   push:
-    branches: [master]
   pull_request:
 
 permissions:
