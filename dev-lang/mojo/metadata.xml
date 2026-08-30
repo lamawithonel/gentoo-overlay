@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="project">
+		<email>lucas.yamanishi@gmail.com</email>
+		<name>Lucas Yamanishi</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">modular/modular</remote-id>
+	</upstream>
+	<longdescription>
+		The Mojo programming language: compiler (KGEN), standard
+		library, language server, and REPL support, built from the
+		open-source sources in the modular/modular repository.
+		The compiler and its bundled LLVM/MLIR are compiled from
+		source with Bazel; no prebuilt Mojo or MAX binaries are
+		installed.
+	</longdescription>
+</pkgmetadata>
