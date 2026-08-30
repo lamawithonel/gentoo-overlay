@@ -4,6 +4,13 @@ profiles/use.local.desc
 .local/
 .cache/
 
+# Host-local devtool overrides (core caps, -march); the committed
+# mise.toml and hk.pkl stay host-neutral.
+mise.local.toml
+.mise.local.toml
+hk.local.pkl
+.config/hk.local.pkl
+
 # Local editor and agent tooling artifacts (zero-byte strays and
 # per-host config; none of these belong to the overlay).
 .claude/

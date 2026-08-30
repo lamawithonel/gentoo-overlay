@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+#MISE description="USE-flag matrix of capped dev-lang/mojo test builds"
+#
+# Runs test-mojo once per USE combination, each with FEATURES=test.
+# Cells run sequentially (each build is memory-capped but large) and
+# failures do not stop the matrix; failed cells are summarized at the
+# end and make the task exit nonzero.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+_combos=('' 'debug' 'debug jupyter' 'python')
+_failed=()
+
+for _use in "${_combos[@]}"; do
+	echo "=== matrix cell: USE='${_use}' FEATURES=test ==="
+	if ! USE="$_use" FEATURES='test' mise run test-mojo; then
+		_failed+=("USE='${_use}'")
+	fi
+done
+
+if [ "${#_failed[@]}" -gt 0 ]; then
+	echo 'FAILED matrix cells:' >&2
+	printf '  %s\n' "${_failed[@]}" >&2
+	exit 1
+fi
+echo "matrix complete: all ${#_combos[@]} cells passed"

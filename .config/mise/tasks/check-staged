@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#MISE description="pkgcheck + manifest verify for staged overlay files (hk pre-commit)"
+#
+# Called by the hk pre-commit hook with the staged file list as
+# arguments.  pkgcheck's native --staged mode scans just the staged
+# changes; the argument list is only used to find which packages need
+# a Manifest verify (regenerate, then fail if the Manifest moved).
+#
+# Exit codes: nonzero when pkgcheck finds error-class results or a
+# regenerated Manifest differs from the staged one.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+_root="${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}"
+cd "$_root"
+
+pkgcheck scan --exit --staged
+
+_pkgs=''
+for _f in "$@"; do
+	case "$_f" in
+		*/*/*)
+			_cat="${_f%%/*}"
+			_rest="${_f#*/}"
+			_pn="${_rest%%/*}"
+			if compgen -G "${_cat}/${_pn}/*.ebuild" > /dev/null; then
+				_pkgs="${_pkgs}${_cat}/${_pn}"$'\n'
+			fi
+			;;
+	esac
+done
+
+printf '%s' "$_pkgs" | sort -u | while read -r _pkg; do
+	[ -n "$_pkg" ] || continue
+	pkgdev manifest --distdir .cache/agents/distfiles "$_pkg"
+	git diff --exit-code -- "${_pkg}/Manifest"
+done

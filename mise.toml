@@ -1,0 +1,26 @@
+# Devtool pins and repo tasks for this overlay.  Host-specific knobs
+# (core caps, -march) belong in the gitignored mise.local.toml, never
+# here.  See AGENTS.md for the test-run constraints.
+
+[settings]
+# Run the pipx backend through uv for fast, isolated installs.
+pipx.uvx = true
+
+[tools]
+"pipx:pkgcheck" = "0.10.42"
+"pipx:pkgdev" = "0.2.17"
+
+[tasks.setup]
+description = "Install the hk-managed git hooks into .git/hooks"
+run = "hk install"
+
+[tasks.check]
+description = "pkgcheck scan over the whole overlay (fails on error-class results)"
+run = "pkgcheck scan --exit"
+
+[tasks.manifest]
+description = "Regenerate all manifests; fail if any Manifest changed"
+run = [
+	"pkgdev manifest --distdir .cache/agents/distfiles",
+	"git diff --exit-code -- '*/Manifest'",
+]

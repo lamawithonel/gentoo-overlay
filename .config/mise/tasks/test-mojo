@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#MISE description="One capped test build of dev-lang/mojo from this working tree"
+#
+# Builds dev-lang/mojo with `ebuild ... clean [test] install` against
+# the checked-out overlay (via PORTAGE_REPOSITORIES), never the
+# installed copy.  The build is memory-capped with `choom -n 1000` so
+# a runaway compile dies alone.
+#
+# Environment contract:
+#   TEST_MARCH   (required)  -march the host CPU supports, e.g. x86-64-v2.
+#                            Explicit on purpose: the upstream build
+#                            defaults to x86-64-v3 and SIGILLs on older
+#                            CPUs.  Set it in mise.local.toml.
+#   USE          (optional)  USE flags for the build; default "".
+#   FEATURES     (optional)  Portage FEATURES; default "test".
+#   MAKEOPTS     (optional)  passed through if set (host core cap).
+#   GENTOO_REPO  (optional)  path to ::gentoo; default via portageq.
+#
+# Exit codes: 1 on usage/environment errors, otherwise ebuild's code.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+_fail() {
+	echo "ERROR: $*" >&2
+	exit 1
+}
+
+command -v choom > /dev/null 2>&1 || _fail 'cannot find choom (sys-apps/util-linux)'
+command -v ebuild > /dev/null 2>&1 || _fail 'cannot find ebuild (sys-apps/portage)'
+
+_root="${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}"
+[ -n "${TEST_MARCH:-}" ] \
+	|| _fail 'set TEST_MARCH to a -march this CPU supports (e.g. x86-64-v2)'
+
+_ebuild="$(find "${_root}/dev-lang/mojo" -maxdepth 1 -name '*.ebuild' \
+	! -name '*-9999.ebuild' | sort --version-sort | tail -n 1)"
+[ -n "$_ebuild" ] || _fail 'no dev-lang/mojo ebuild found'
+
+_gentoo_repo="${GENTOO_REPO:-$(portageq get_repo_path / gentoo 2> /dev/null \
+	|| echo '/var/db/repos/gentoo')}"
+[ -d "$_gentoo_repo" ] || _fail "gentoo repo not found at ${_gentoo_repo}"
+
+export DISTDIR="${_root}/.cache/agents/distfiles"
+export PORTAGE_TMPDIR="${_root}/.cache/agents/portage-tmp"
+install -d -m 0700 "$DISTDIR" "$PORTAGE_TMPDIR"
+
+# Only the two repos below exist for this build; the system repos.conf
+# (including the installed copy of this overlay) is ignored entirely.
+export PORTAGE_REPOSITORIES="
+[DEFAULT]
+main-repo = gentoo
+
+[gentoo]
+location = ${_gentoo_repo}
+
+[lamawithonel]
+location = ${_root}
+"
+
+export USE="${USE:-}"
+export FEATURES="${FEATURES:-test}"
+# -frecord-gcc-switches lets the flag audit read -march back out of
+# the installed binaries (.GCC.command.line sections).
+export CFLAGS="-O2 -pipe -march=${TEST_MARCH} -frecord-gcc-switches"
+export CXXFLAGS="$CFLAGS"
+
+_phases='clean install'
+case " ${FEATURES} " in
+	*' test '*)
+		_phases='clean test install'
+		;;
+esac
+
+_pf="$(basename "$_ebuild" .ebuild)"
+echo ">>> USE='${USE}' FEATURES='${FEATURES}' -march=${TEST_MARCH}"
+echo ">>> build log: ${PORTAGE_TMPDIR}/portage/dev-lang/${_pf}/temp/build.log"
+# shellcheck disable=SC2086  # _phases is an intentionally split word list
+choom -n 1000 -- ebuild "$_ebuild" ${_phases}
