@@ -45,8 +45,8 @@
 
 ## Conventions
 
- - **EAPI:** 7 for ebuilds and profile `eapi` files.  EAPIs
-   0–4 are banned and 5 is deprecated per `metadata/layout.
+ - **EAPI:** 8 for ebuilds and profile `eapi` files.  EAPIs
+   0–4 are banned and 5–6 are deprecated per `metadata/layout.
    conf`; do not introduce them.
  - **Profile inheritance** is via `parent` files (one entry
    per line, `repo:path` for cross-repo, `..` for relative).
