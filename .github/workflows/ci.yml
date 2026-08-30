@@ -1,0 +1,87 @@
+# Tier-1 CI for the overlay: pkgcheck scan, Manifest integrity, and a
+# per-commit scan on pull requests.  Build-test tiers are deliberately
+# deferred: dev-lang/mojo needs a self-hosted runner or an
+# upstream-cache smoke tier before it can build in CI.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Only PR runs are superseded by new pushes; master push runs always
+  # finish so every landed commit gets a verdict.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pkgcheck:
+    name: pkgcheck scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout overlay
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Run pkgcheck
+        # v1 is a branch, not a tag; pinned to its current head.
+        uses: pkgcore/pkgcheck-action@8491e92faa1010d5c6947c114d23215e5a74684e # v1
+
+  manifest:
+    name: Manifest integrity
+    runs-on: ubuntu-latest
+    container:
+      image: gentoo/stage3:latest
+    steps:
+      # git must be installed before checkout so the workspace is a
+      # real clone (the API-tarball fallback has no .git to diff).
+      - name: Install git and pkgdev
+        env:
+          # Portage's own sandboxes cannot nest inside the job
+          # container.
+          FEATURES: >-
+            -ipc-sandbox -network-sandbox -pid-sandbox -sandbox
+            -usersandbox
+        run: |
+          emerge-webrsync
+          getuto
+          emerge --quiet --oneshot --getbinpkg=y dev-vcs/git dev-util/pkgdev
+      - name: Checkout overlay
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Cache distfiles
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: /var/cache/distfiles
+          key: distfiles-${{ hashFiles('**/Manifest') }}
+          restore-keys: |
+            distfiles-
+      - name: Regenerate manifests
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          pkgdev manifest
+      - name: Fail on Manifest drift
+        # Porcelain also catches a Manifest that was never committed,
+        # which the regeneration step just created as an untracked
+        # file and a plain git diff would ignore.
+        run: |
+          git status --porcelain -- '*/Manifest'
+          test -z "$(git status --porcelain -- '*/Manifest')"
+
+  commits:
+    name: pkgcheck scan --commits
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pkgcore/pkgcheck:latest
+    steps:
+      - name: Checkout overlay (full history)
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Scan the PR commits
+        run: |
+          git config --global --add safe.directory '*'
+          pmaint sync gentoo
+          pkgcheck scan --exit --commits "origin/${GITHUB_BASE_REF}"
