@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-#MISE description="pkgcheck + manifest verify for staged overlay files (hk pre-commit)"
+#MISE description="pkgcheck + manifest verify for staged overlay changes (hk pre-commit)"
 #
-# Called by the hk pre-commit hook with the staged file list as
-# arguments.  pkgcheck's native --staged mode scans just the staged
-# changes; the argument list is only used to find which packages need
-# a Manifest verify (regenerate, then fail if the Manifest moved).
+# Called by the hk pre-commit hook (no arguments; the staged file list
+# comes from git itself so deletion-only commits are covered too).
+# pkgcheck's --staged mode scans the index directly.  Manifests are
+# verified against the index without touching the working tree: the
+# index is exported with checkout-index into a temp dir, regenerated
+# there, and compared against the staged Manifest.
 #
 # Exit codes: nonzero when pkgcheck finds error-class results or a
-# regenerated Manifest differs from the staged one.
+# staged Manifest does not match its regenerated content.
 
 set -o errexit
 set -o nounset
@@ -16,24 +18,44 @@ set -o pipefail
 _root="${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}"
 cd "$_root"
 
+_tmp=''
+_cleanup() {
+	[ -z "$_tmp" ] || rm -rf "$_tmp"
+}
+trap _cleanup EXIT INT TERM HUP
+
+_staged="$(git diff --cached --name-only)"
+[ -n "$_staged" ] || exit 0
+
 pkgcheck scan --exit --staged
 
-_pkgs=''
-for _f in "$@"; do
+# Map staged paths (additions, edits, AND deletions) to the package
+# dirs still present in the index.
+_pkgs="$(printf '%s\n' "$_staged" | while IFS= read -r _f; do
 	case "$_f" in
 		*/*/*)
 			_cat="${_f%%/*}"
-			_rest="${_f#*/}"
-			_pn="${_rest%%/*}"
-			if compgen -G "${_cat}/${_pn}/*.ebuild" > /dev/null; then
-				_pkgs="${_pkgs}${_cat}/${_pn}"$'\n'
+			_pn="${_f#*/}"
+			_pn="${_pn%%/*}"
+			if [ -n "$(git ls-files --cached -- "${_cat}/${_pn}/*.ebuild")" ]; then
+				printf '%s/%s\n' "$_cat" "$_pn"
 			fi
 			;;
 	esac
-done
+done | sort -u)"
+[ -n "$_pkgs" ] || exit 0
 
-printf '%s' "$_pkgs" | sort -u | while read -r _pkg; do
-	[ -n "$_pkg" ] || continue
-	pkgdev manifest --distdir .cache/agents/distfiles "$_pkg"
-	git diff --exit-code -- "${_pkg}/Manifest"
+_tmp="$(mktemp -d "${TMPDIR:-/tmp}/check-staged.XXXXXX")"
+git checkout-index -a --prefix="${_tmp}/"
+
+printf '%s\n' "$_pkgs" | while IFS= read -r _pkg; do
+	(cd "$_tmp" \
+		&& pkgdev manifest --distdir "${_root}/.cache/agents/distfiles" "$_pkg")
+	if ! git show ":${_pkg}/Manifest" 2> /dev/null \
+		| diff -u --label "${_pkg}/Manifest (staged)" - \
+			--label "${_pkg}/Manifest (regenerated)" \
+			"${_tmp}/${_pkg}/Manifest"; then
+		echo "ERROR: staged ${_pkg}/Manifest is stale or missing" >&2
+		exit 1
+	fi
 done

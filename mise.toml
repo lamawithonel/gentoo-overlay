@@ -11,7 +11,7 @@ pipx.uvx = true
 "pipx:pkgdev" = "0.2.17"
 
 [tasks.setup]
-description = "Install the hk-managed git hooks into .git/hooks"
+description = "Install the hk-managed git hooks (git config hook.* entries)"
 run = "hk install"
 
 [tasks.check]
@@ -19,8 +19,11 @@ description = "pkgcheck scan over the whole overlay (fails on error-class result
 run = "pkgcheck scan --exit"
 
 [tasks.manifest]
-description = "Regenerate all manifests; fail if any Manifest changed"
+description = "Regenerate all manifests; fail if any Manifest changed or is untracked"
+# git status --porcelain also catches a newly created, never-committed
+# Manifest, which git diff alone cannot see.
 run = [
 	"pkgdev manifest --distdir .cache/agents/distfiles",
-	"git diff --exit-code -- '*/Manifest'",
+	"git status --porcelain -- '*/Manifest'",
+	"test -z \"$(git status --porcelain -- '*/Manifest')\"",
 ]

@@ -34,8 +34,32 @@ _root="${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}"
 [ -n "${TEST_MARCH:-}" ] \
 	|| _fail 'set TEST_MARCH to a -march this CPU supports (e.g. x86-64-v2)'
 
-_ebuild="$(find "${_root}/dev-lang/mojo" -maxdepth 1 -name '*.ebuild' \
-	! -name '*-9999.ebuild' | sort --version-sort | tail -n 1)"
+# Gentoo version ordering (_pre < release) -- plain sort -V would pick
+# a _pre snapshot over the final release.  MOJO_EBUILD overrides.
+_pick_ebuild() {
+	python - "$1" <<- 'EOF'
+		import functools
+		import glob
+		import sys
+
+		from portage.versions import pkgsplit, vercmp
+
+		def _version(path):
+		    parts = pkgsplit(path[: -len(".ebuild")].rsplit("/", 1)[1])
+		    return parts[1] if parts[2] == "r0" else f"{parts[1]}-{parts[2]}"
+
+		ebuilds = [
+		    e
+		    for e in glob.glob(sys.argv[1] + "/*.ebuild")
+		    if not e.endswith("-9999.ebuild")
+		]
+		if ebuilds:
+		    key = functools.cmp_to_key(lambda a, b: vercmp(_version(a), _version(b)))
+		    print(max(ebuilds, key=key))
+	EOF
+}
+
+_ebuild="${MOJO_EBUILD:-$(_pick_ebuild "${_root}/dev-lang/mojo")}"
 [ -n "$_ebuild" ] || _fail 'no dev-lang/mojo ebuild found'
 
 _gentoo_repo="${GENTOO_REPO:-$(portageq get_repo_path / gentoo 2> /dev/null \

@@ -7,10 +7,10 @@ hooks {
     ["pre-commit"] {
         steps {
             ["overlay"] {
-                // Package dirs plus overlay metadata; dotdirs are not
-                // matched, so repo tooling never triggers the hook.
-                glob = List("*/*/**", "profiles/**", "metadata/**", "eclass/**")
-                check = "mise run check-staged -- {{files}}"
+                // No glob: the task reads the staged file list from
+                // git itself, so deletion-only commits are covered
+                // and hk's glob semantics never filter the gate.
+                check = "mise run check-staged"
             }
         }
     }
