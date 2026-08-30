@@ -64,6 +64,18 @@ pkg_setup() {
 	ewarn "compiled entirely from source (--config=build-mojo)."
 }
 
+src_prepare() {
+	default
+	# tools/bazel probes local GPUs (nvidia-smi/amd-smi) to seed
+	# --local_resources, and aborts on hosts where amd-smi exists
+	# without a usable GPU.  The result only matters for GPU test
+	# scheduling, not for building the compiler, so pre-seed the
+	# cache file the wrapper would otherwise generate.
+	mkdir -p build || die
+	echo "build --local_resources=gpu-memory=0" \
+		> build/local-resources.bazelrc || die
+}
+
 src_compile() {
 	# Upstream hard-disables the host toolchain (bazel/internal/
 	# common.bazelrc: --repo_env=CC=false, CXX=false,
