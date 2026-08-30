@@ -122,6 +122,8 @@ src_compile() {
 		//KGEN:CompilerRT \
 		//KGEN/tools/mojo-lsp-server \
 		//KGEN/tools/mojo-repl-entry-point \
+		//AsyncRT:RuntimeGlobals \
+		//Support:Globals \
 		|| die "bazel build failed"
 }
 
@@ -135,15 +137,21 @@ mojo_out() {
 }
 
 src_install() {
+	# Executables carry a Bazel-baked RPATH of $ORIGIN/../lib, so
+	# bin/ and lib/ placement is load-bearing: the REPL entry point
+	# lives in bin/ (modular.cfg overrides its default lib/ path)
+	# and the shared libraries it and the driver NEED live in lib/.
 	exeinto /usr/lib/mojo/bin
 	doexe "$(mojo_out mojo)"
 	doexe "$(mojo_out mojo-lsp-server)"
+	doexe "$(mojo_out mojo-repl-entry-point)"
 
 	# The driver resolves everything below relative to package_root
 	# from /etc/modular/modular.cfg; see files/modular.cfg.
 	exeinto /usr/lib/mojo/lib
 	doexe "$(mojo_out libKGENCompilerRTShared.so)"
-	doexe "$(mojo_out mojo-repl-entry-point)"
+	doexe "$(mojo_out libAsyncRTRuntimeGlobals.so)"
+	doexe "$(mojo_out libMSupportGlobals.so)"
 
 	insinto /usr/lib/mojo/lib/mojo
 	doins "$(mojo_out std.mojoc)"
