@@ -1,7 +1,7 @@
 # Copyright 2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( python3_{12..15} )
 
@@ -239,8 +239,8 @@ src_install() {
 	insinto /etc/modular
 	doins "${FILESDIR}/modular.cfg"
 
-	dosym ../lib/mojo/bin/mojo /usr/bin/mojo
-	dosym ../lib/mojo/bin/mojo-lsp-server /usr/bin/mojo-lsp-server
+	dosym -r /usr/lib/mojo/bin/mojo /usr/bin/mojo
+	dosym -r /usr/lib/mojo/bin/mojo-lsp-server /usr/bin/mojo-lsp-server
 
 	# Tablegen-generated man pages (FEATURES=noman filtering is
 	# portage's job; we always install).
