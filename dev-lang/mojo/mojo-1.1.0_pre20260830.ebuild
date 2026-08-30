@@ -3,7 +3,9 @@
 
 EAPI=7
 
-inherit check-reqs multiprocessing
+PYTHON_COMPAT=( python3_{12..15} )
+
+inherit check-reqs multiprocessing python-r1
 
 # Snapshot of the modular monorepo main branch.  The Mojo compiler
 # sources (KGEN/) were opened on 2026-08-18 and are not yet part of
@@ -26,6 +28,11 @@ S="${WORKDIR}/modular-${MY_COMMIT}"
 LICENSE="Apache-2.0-with-LLVM-exceptions Apache-2.0 BSD MIT ZLIB"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64"
+IUSE="debug doc examples jupyter python test"
+REQUIRED_USE="
+	jupyter? ( debug )
+	python? ( ${PYTHON_REQUIRED_USE} )
+"
 
 # network-sandbox: Bazel fetches its external inputs at build time
 # (LLVM sources at a pinned commit, Bazel module deps from the Bazel
@@ -34,7 +41,7 @@ KEYWORDS="~amd64 ~arm64"
 # integrity hashes.  Pre-fetching everything into DISTDIR is not
 # practical yet: upstream commits no MODULE.bazel.lock, so the full
 # URL set is not enumerable without running Bazel first.
-RESTRICT="network-sandbox"
+RESTRICT="network-sandbox !test? ( test )"
 
 # The mojo driver invokes the system "cc" to link `mojo build`
 # executables at runtime (KGEN/tools/mojo/Build/mojo-build.cpp).
@@ -43,19 +50,32 @@ RDEPEND="
 		sys-devel/gcc
 		llvm-core/clang
 	)
+	jupyter? ( dev-python/jupyter-client )
+	python? ( ${PYTHON_DEPS} )
 "
 # Everything else is hermetic: upstream's Bazel build downloads and
 # uses its own pinned clang, sysroot, and Python -- see src_compile.
 BDEPEND="net-misc/curl"
 
-CHECKREQS_DISK_BUILD="40G"
-CHECKREQS_MEMORY="16G"
-
 pkg_pretend() {
+	CHECKREQS_MEMORY="16G"
+	# The debugger stack adds an LLDB-scale build on top of the
+	# base LLVM+compiler build.
+	if use debug; then
+		CHECKREQS_DISK_BUILD="60G"
+	else
+		CHECKREQS_DISK_BUILD="40G"
+	fi
 	check-reqs_pkg_pretend
 }
 
 pkg_setup() {
+	CHECKREQS_MEMORY="16G"
+	if use debug; then
+		CHECKREQS_DISK_BUILD="60G"
+	else
+		CHECKREQS_DISK_BUILD="40G"
+	fi
 	check-reqs_pkg_setup
 	ewarn "This build downloads its Bazel toolchain and third-party"
 	ewarn "sources (LLVM at a pinned commit, ~1 GiB total) at build"
@@ -82,7 +102,9 @@ src_prepare() {
 		> build/local-resources.bazelrc || die
 }
 
-src_compile() {
+src_configure() {
+	default
+
 	# Upstream hard-disables the host toolchain (bazel/internal/
 	# common.bazelrc: --repo_env=CC=false, CXX=false,
 	# BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1) and compiles everything
@@ -96,8 +118,21 @@ src_compile() {
 	# target configuration); the --host_* twins cover
 	# exec-configuration tools (tablegen and friends), so e.g. a
 	# user -march=<value> reaches every compilation stage.
-	local -a bazel_opts=(
+	#
+	# --//:modular_config=production is upstream's release profile
+	# and the only value that disables assertions (-DNDEBUG,
+	# -U_GLIBCXX_ASSERTIONS); the default profile ships with
+	# assertions compiled in.  --//:release_type=production selects
+	# the production telemetry endpoint and drops a dev-only run
+	# wrapper.  The version stamps replace the "dev0 (deadbeef)"
+	# placeholders in `mojo --version`.
+	BAZEL_ARGS=(
 		--compilation_mode=opt
+		"--//:modular_config=production"
+		"--//:release_type=production"
+		"--//:mojo_base_version=$(ver_cut 1-3)"
+		"--//:mojo_version_label=_${PV#*_}"
+		"--//:modular_version_sha=${MY_COMMIT:0:10}"
 		--jobs="$(makeopts_jobs)"
 		--verbose_failures
 		--color=no
@@ -105,41 +140,80 @@ src_compile() {
 	)
 	local flag
 	for flag in ${CFLAGS}; do
-		bazel_opts+=( "--conlyopt=${flag}" "--host_conlyopt=${flag}" )
+		BAZEL_ARGS+=( "--conlyopt=${flag}" "--host_conlyopt=${flag}" )
 	done
 	for flag in ${CXXFLAGS}; do
-		bazel_opts+=( "--cxxopt=${flag}" "--host_cxxopt=${flag}" )
+		BAZEL_ARGS+=( "--cxxopt=${flag}" "--host_cxxopt=${flag}" )
 	done
 	for flag in ${LDFLAGS}; do
-		bazel_opts+=( "--linkopt=${flag}" "--host_linkopt=${flag}" )
+		BAZEL_ARGS+=( "--linkopt=${flag}" "--host_linkopt=${flag}" )
 	done
 
 	# Keep bazelisk's and Bazel's caches inside the build dir.
 	export BAZELISK_HOME="${WORKDIR}/bazelisk-home"
+}
 
+# Run ./bazelw with the configured arguments.
+emojo() {
+	local cmd="$1"
+	shift
+	echo ./bazelw "${cmd}" --config=build-mojo "$@" >&2
+	./bazelw --output_user_root="${WORKDIR}/bazel-root" \
+		"${cmd}" --config=build-mojo "$@"
+}
+
+src_compile() {
 	# --config=build-mojo builds the Mojo compiler from KGEN/
 	# sources and registers it as the Mojo toolchain, so the
-	# stdlib .mojopkg below is compiled by the just-built compiler,
+	# stdlib .mojoc below is compiled by the just-built compiler,
 	# not by a downloaded nightly (bazel/internal/BUILD.bazel).
-	./bazelw --output_user_root="${WORKDIR}/bazel-root" \
-		build --config=build-mojo "${bazel_opts[@]}" \
-		//KGEN/tools/mojo:mojo \
-		//mojo/stdlib/std \
-		//KGEN:CompilerRT \
-		//KGEN/tools/mojo-lsp-server \
-		//KGEN/tools/mojo-repl-entry-point \
-		//AsyncRT:RuntimeGlobals \
-		//Support:Globals \
+	local -a targets=(
+		//KGEN/tools/mojo:mojo
+		//KGEN/tools/mojo:docs
+		//mojo/stdlib/std
+		//KGEN:CompilerRT
+		//KGEN/tools/mojo-lsp-server
+		//KGEN/tools/mojo-repl-entry-point
+		//AsyncRT:RuntimeGlobals
+		//Support:Globals
+	)
+	# The debugger set mirrors the data deps of upstream's
+	# mojo-full bundle (KGEN/tools/mojo/BUILD.bazel).
+	use debug && targets+=(
+		//KGEN:mojo-lldb
+		//KGEN:MojoLLDB
+		//KGEN:gdb-server
+		//KGEN:copy-lldb-visualizers
+		@llvm-project//lldb:lldb-argdumper
+		@llvm-project//llvm:llvm-symbolizer
+	)
+	use jupyter && targets+=(
+		//KGEN:MojoJupyter
+		//KGEN/tools/mojo-jupyter-executor
+	)
+	use doc && targets+=( //mojo/stdlib/std:docs )
+
+	emojo build "${BAZEL_ARGS[@]}" "${targets[@]}" \
 		|| die "bazel build failed"
 }
 
-# Locate a unique build output under bazel-bin, dying loudly if it
-# is missing so layout changes upstream cannot yield broken installs.
+src_test() {
+	# The stdlib test suite, run against the just-built compiler
+	# (KGEN/docs/WorkingInOSRepo.md).
+	emojo test "${BAZEL_ARGS[@]}" //mojo/stdlib/... \
+		|| die "stdlib tests failed"
+}
+
+# Locate a unique build output under bazel-bin by trying each given
+# name, dying loudly if none exist so layout changes upstream cannot
+# yield broken installs.
 mojo_out() {
-	local found
-	found="$(find -L "${S}/bazel-bin" -name "$1" -type f -print -quit)"
-	[[ -n ${found} ]] || die "build output '$1' not found under bazel-bin"
-	echo "${found}"
+	local name found
+	for name in "$@"; do
+		found="$(find -L "${S}/bazel-bin" -name "${name}" -type f -print -quit)"
+		[[ -n ${found} ]] && { echo "${found}"; return; }
+	done
+	die "build output '$*' not found under bazel-bin"
 }
 
 src_install() {
@@ -168,6 +242,61 @@ src_install() {
 	dosym ../lib/mojo/bin/mojo /usr/bin/mojo
 	dosym ../lib/mojo/bin/mojo-lsp-server /usr/bin/mojo-lsp-server
 
+	# Tablegen-generated man pages (FEATURES=noman filtering is
+	# portage's job; we always install).
+	local -a manpages
+	mapfile -t manpages < \
+		<(find -L "${S}/bazel-bin/KGEN/tools/mojo" -name '*.1' -type f)
+	[[ ${#manpages[@]} -gt 0 ]] || die "no man pages found under bazel-bin"
+	doman "${manpages[@]}"
+
+	if use debug; then
+		# lldb-server and lldb-argdumper must sit beside the
+		# lldb binary to be found at runtime (KGEN/BUILD.bazel);
+		# libMojoLLDB.so and the Python visualizers resolve via
+		# modular.cfg defaults relative to package_root.
+		exeinto /usr/lib/mojo/bin
+		doexe "$(mojo_out mojo-lldb lldb)"
+		doexe "$(mojo_out lldb-server gdb-server)"
+		doexe "$(mojo_out lldb-argdumper)"
+		doexe "$(mojo_out llvm-symbolizer)"
+		exeinto /usr/lib/mojo/lib
+		doexe "$(mojo_out libMojoLLDB.so)"
+		insinto /usr/lib/mojo/lib
+		doins "$(mojo_out lldbDataFormatters.py)"
+		doins "$(mojo_out mlirDataFormatters.py)"
+	fi
+
+	if use jupyter; then
+		exeinto /usr/lib/mojo/bin
+		doexe "$(mojo_out mojo-jupyter-executor)"
+		exeinto /usr/lib/mojo/lib
+		doexe "$(mojo_out libMojoJupyter.so)"
+		insinto /usr/lib/mojo/share/jupyter-mojo
+		doins -r KGEN/utils/jupyter-mojo/.
+	fi
+
+	if use doc; then
+		local stddocs="${S}/bazel-bin/mojo/stdlib/std/std.docs"
+		[[ -d ${stddocs} ]] || die "std.docs output not found"
+		insinto "/usr/share/doc/${PF}/stdlib-api"
+		doins -r "${stddocs}"/.
+		docompress -x "/usr/share/doc/${PF}/stdlib-api"
+	fi
+
+	if use examples; then
+		insinto "/usr/share/doc/${PF}/examples"
+		doins -r mojo/examples/.
+		docompress -x "/usr/share/doc/${PF}/examples"
+	fi
+
+	if use python; then
+		installmojopy() {
+			python_domodule mojo/python/mojo
+		}
+		python_foreach_impl installmojopy
+	fi
+
 	dodoc README.md
 	newdoc mojo/README.md README.mojo.md
 }
@@ -176,8 +305,19 @@ pkg_postinst() {
 	elog "Installed from source: mojo driver, standard library"
 	elog "(std.mojoc), KGEN compiler runtime, mojo-lsp-server,"
 	elog "and the REPL entry point."
+	if ! use debug; then
+		elog ""
+		elog "'mojo debug' AND 'mojo repl' need the LLDB stack:"
+		elog "enable USE=debug to install it."
+	fi
+	if use jupyter; then
+		elog ""
+		elog "To register the Mojo Jupyter kernel for your user:"
+		elog "  python /usr/lib/mojo/share/jupyter-mojo/manage_kernel.py install"
+	fi
 	elog ""
-	elog "Not installed: 'mojo debug' (needs the Mojo LLDB build),"
-	elog "'mojo format' (needs the mblack Python wheel), and the"
-	elog "MAX platform, parts of which are not open source."
+	elog "'mojo format' requires mblack, which upstream only ships"
+	elog "as a Python wheel with unverifiable dependencies; it is"
+	elog "not installed.  The MAX platform is not built: parts of"
+	elog "it are not open source."
 }

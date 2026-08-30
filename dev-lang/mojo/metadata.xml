@@ -8,6 +8,15 @@
 	<upstream>
 		<remote-id type="github">modular/modular</remote-id>
 	</upstream>
+	<use>
+		<flag name="debug">Build and install the Mojo debugger stack
+		(mojo-lldb, libMojoLLDB, lldb-server); required for the
+		"mojo debug" and "mojo repl" subcommands</flag>
+		<flag name="jupyter">Build the Mojo Jupyter kernel
+		(libMojoJupyter and kernelspec); requires
+		<pkg>dev-python/jupyter-client</pkg> at runtime</flag>
+		<flag name="examples">Install upstream example programs</flag>
+	</use>
 	<longdescription>
 		The Mojo programming language: compiler (KGEN), standard
 		library, language server, and REPL support, built from the
