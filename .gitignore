@@ -3,3 +3,20 @@ metadata/pkg_desc_index
 profiles/use.local.desc
 .local/
 .cache/
+
+# Local editor and agent tooling artifacts (zero-byte strays and
+# per-host config; none of these belong to the overlay).
+.claude/
+.mcp.json
+.idea
+.vscode
+
+# Stray host-local dotfiles that tooling drops into the work tree.
+.bash_profile
+.bashrc
+.profile
+.zprofile
+.zshrc
+.ripgreprc
+.gitconfig
+.gitmodules
