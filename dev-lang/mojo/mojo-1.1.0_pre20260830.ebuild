@@ -13,7 +13,7 @@ inherit check-reqs multiprocessing
 MY_COMMIT="f08ac164e2743513f60e46621de6dc4a5a5a30e7"
 
 DESCRIPTION="The Mojo programming language: compiler, stdlib, LSP, and REPL"
-HOMEPAGE="https://www.modular.com/mojo https://github.com/modular/modular"
+HOMEPAGE="https://mojolang.org https://github.com/modular/modular"
 SRC_URI="https://github.com/modular/modular/archive/${MY_COMMIT}.tar.gz -> ${P}.tar.gz"
 S="${WORKDIR}/modular-${MY_COMMIT}"
 
