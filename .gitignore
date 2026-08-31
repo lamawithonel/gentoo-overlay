@@ -5,7 +5,8 @@ profiles/use.local.desc
 .cache/
 
 # Host-local devtool overrides (core caps, -march); the committed
-# mise.toml and hk.pkl stay host-neutral.
+# .config/mise/config.toml and .config/hk.pkl stay host-neutral.
+.config/mise/config.local.toml
 mise.local.toml
 .mise.local.toml
 hk.local.pkl

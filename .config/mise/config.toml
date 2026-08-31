@@ -1,6 +1,8 @@
 # Devtool pins and repo tasks for this overlay.  Host-specific knobs
-# (core caps, -march) belong in the gitignored mise.local.toml, never
-# here.  See AGENTS.md for the test-run constraints.
+# (core caps, -march) belong in the gitignored config.local.toml next
+# to this file, never here.  See AGENTS.md for the test-run
+# constraints.  Lives under .config/ because Portage rejects stray
+# top-level files in an overlay.
 
 [settings]
 # Run the pipx backend through uv for fast, isolated installs.

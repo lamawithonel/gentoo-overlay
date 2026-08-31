@@ -5,9 +5,11 @@
  consumed by Portage on Gentoo systems, not built or tested as
  a normal software project.  Repo tooling is managed by `mise`
  (pinned pkgcheck/pkgdev plus check and manifest tasks in
- `mise.toml`; test tasks are bash file tasks under
- `.config/mise/tasks/`) with `hk`-managed git hooks (`hk.pkl`);
- run `mise install && mise run setup` once after cloning.
+ `.config/mise/config.toml`; test tasks are bash file tasks under
+ `.config/mise/tasks/`) with `hk`-managed git hooks
+ (`.config/hk.pkl`); run `mise install && mise run setup` once
+ after cloning.  All devtool config lives under `.config/`
+ because Portage rejects stray top-level files in an overlay.
 
 ## Repository layout
 
@@ -87,18 +89,21 @@
    or `mise run test-matrix` (USE-flag matrix), which build the
    working tree via `PORTAGE_REPOSITORIES` — never the
    installed copy of the overlay.  Constraints, enforced by the
-   task and by gitignored `mise.local.toml` host config:
+   task and by gitignored `.config/mise/config.local.toml` host
+   config:
    - `PORTAGE_TMPDIR` and `DISTDIR` live under `.cache/agents/`
      (never system paths; build trees can reach ~8 GiB).
    - Builds are memory-capped with `choom -n 1000` so a runaway
      compile dies before the desktop does.
    - Core cap: set `MAKEOPTS` per host in the gitignored
-     `mise.local.toml`; never commit a host's value.
+     `.config/mise/config.local.toml`; never commit a host's
+     value.
    - `TEST_MARCH` is required: dev-lang/mojo's upstream build
      defaults to `-march=x86-64-v3` and appends user CFLAGS
      after it, so a host older than v3 SIGILLs unless an
      explicit supported `-march` (e.g. `x86-64-v2`) is passed.
-     Set it in `mise.local.toml` next to `MAKEOPTS`.
+     Set it in `.config/mise/config.local.toml` next to
+     `MAKEOPTS`.
  - To rebuild metadata cache (only for local use; do not
    commit): `egencache --update --repo=lamawithonel
    --jobs=$(nproc)`.

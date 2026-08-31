@@ -10,7 +10,7 @@
 #   TEST_MARCH   (required)  -march the host CPU supports, e.g. x86-64-v2.
 #                            Explicit on purpose: the upstream build
 #                            defaults to x86-64-v3 and SIGILLs on older
-#                            CPUs.  Set it in mise.local.toml.
+#                            CPUs.  Set it in .config/mise/config.local.toml.
 #   USE          (optional)  USE flags for the build; default "".
 #   FEATURES     (optional)  Portage FEATURES; default "test".
 #   MAKEOPTS     (optional)  passed through if set (host core cap).
