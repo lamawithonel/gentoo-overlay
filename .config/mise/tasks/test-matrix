@@ -5,17 +5,44 @@
 # Cells run sequentially (each build is memory-capped but large) and
 # failures do not stop the matrix; failed cells are summarized at the
 # end and make the task exit nonzero.
+#
+# Because each cell's `ebuild clean` wipes the previous image, every
+# successful cell captures its evidence (installed file list, QA
+# notices, the -march recorded in the driver binary) into
+# .cache/agents/matrix-results/<slug>/ for post-run verification.
 
 set -o errexit
 set -o nounset
 set -o pipefail
 
+_root="${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}"
+
+_capture() {
+	local _slug="$1" _pkgdir _dest
+	_pkgdir="$(find "${_root}/.cache/agents/portage-tmp/portage/dev-lang" \
+		-maxdepth 1 -name 'mojo-*' -type d | head -n 1)"
+	[ -n "$_pkgdir" ] || return 0
+	_dest="${_root}/.cache/agents/matrix-results/${_slug}"
+	mkdir -p "$_dest"
+	find "${_pkgdir}/image" -type f 2> /dev/null \
+		| sed "s|^${_pkgdir}/image||" | sort > "${_dest}/files.txt"
+	grep -aE 'QA Notice|QA:' "${_pkgdir}/temp/build.log" \
+		> "${_dest}/qa.txt" || true
+	readelf -p .GCC.command.line \
+		"${_pkgdir}/image/usr/lib/mojo/bin/mojo" 2> /dev/null \
+		| grep -m 1 -o -- '-march=[a-z0-9_-]*' > "${_dest}/march.txt" || true
+}
+
 _combos=('' 'debug' 'debug jupyter' 'python')
 _failed=()
 
 for _use in "${_combos[@]}"; do
+	_slug="${_use:-none}"
+	_slug="${_slug// /-}"
 	echo "=== matrix cell: USE='${_use}' FEATURES=test ==="
-	if ! USE="$_use" FEATURES='test' mise run test-mojo; then
+	if USE="$_use" FEATURES='test' mise run test-mojo; then
+		_capture "$_slug"
+	else
 		_failed+=("USE='${_use}'")
 	fi
 done

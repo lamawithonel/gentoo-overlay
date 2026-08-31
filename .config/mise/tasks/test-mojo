@@ -90,10 +90,18 @@ export FEATURES="${FEATURES:-test}"
 export CFLAGS="-O2 -pipe -march=${TEST_MARCH} -frecord-gcc-switches"
 export CXXFLAGS="$CFLAGS"
 
+# Request the test phase only when portage itself would run it: the
+# ebuild has RESTRICT="!test? ( test )", and passing an explicit
+# `test` phase to ebuild(1) *forces* restricted tests ("Forcing
+# test."), which is never what a matrix cell without USE=test means.
 _phases='clean install'
 case " ${FEATURES} " in
 	*' test '*)
-		_phases='clean test install'
+		case " ${USE} " in
+			*' test '*)
+				_phases='clean test install'
+				;;
+		esac
 		;;
 esac
 
