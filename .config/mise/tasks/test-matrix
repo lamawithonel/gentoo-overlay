@@ -26,11 +26,21 @@ _capture() {
 	mkdir -p "$_dest"
 	find "${_pkgdir}/image" -type f 2> /dev/null \
 		| sed "s|^${_pkgdir}/image||" | sort > "${_dest}/files.txt"
-	grep -aE 'QA Notice|QA:' "${_pkgdir}/temp/build.log" \
+	grep -aA15 'QA Notice' "${_pkgdir}/temp/build.log" \
 		> "${_dest}/qa.txt" || true
-	readelf -p .GCC.command.line \
-		"${_pkgdir}/image/usr/lib/mojo/bin/mojo" 2> /dev/null \
-		| grep -m 1 -o -- '-march=[a-z0-9_-]*' > "${_dest}/march.txt" || true
+	# Splitdebug strips .GCC.command.line into the .debug file, so
+	# try it first; expect the user -march recorded after (winning
+	# over) upstream's x86-64-v3 default.
+	local _b
+	for _b in \
+		"${_pkgdir}/image/usr/lib/debug/usr/lib/mojo/bin/mojo.debug" \
+		"${_pkgdir}/image/usr/lib/mojo/bin/mojo"; do
+		if readelf -p .GCC.command.line "$_b" 2> /dev/null \
+			| grep -oa -- '-march=[a-z0-9_-]*' | sort | uniq -c \
+			> "${_dest}/march.txt" && [ -s "${_dest}/march.txt" ]; then
+			break
+		fi
+	done
 }
 
 _combos=('' 'debug' 'debug jupyter' 'python')

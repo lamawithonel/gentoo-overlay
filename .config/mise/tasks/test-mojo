@@ -67,6 +67,12 @@ _gentoo_repo="${GENTOO_REPO:-$(portageq get_repo_path / gentoo 2> /dev/null \
 [ -d "$_gentoo_repo" ] || _fail "gentoo repo not found at ${_gentoo_repo}"
 
 export DISTDIR="${_root}/.cache/agents/distfiles"
+# Known harness artifact: this PORTAGE_TMPDIR is deep enough that
+# python3.12's parallel compileall dies on the 108-byte AF_UNIX
+# socket limit (portage canonicalizes the path, so a short symlink
+# cannot hide it), leaving a benign byte-compile QA notice in the
+# USE=python cell.  Real installs under /var/tmp/portage stay far
+# below the limit.
 export PORTAGE_TMPDIR="${_root}/.cache/agents/portage-tmp"
 install -d -m 0700 "$DISTDIR" "$PORTAGE_TMPDIR"
 
