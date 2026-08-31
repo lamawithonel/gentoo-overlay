@@ -43,7 +43,9 @@ _capture() {
 	done
 }
 
-_combos=('' 'debug' 'debug jupyter' 'python')
+# "doc" rides as its own single leg; it is deliberately not crossed
+# with the other flags.
+_combos=('' 'debug' 'debug jupyter' 'python' 'doc')
 _failed=()
 
 for _use in "${_combos[@]}"; do

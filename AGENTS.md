@@ -40,8 +40,9 @@
    - `dev-lang/mojo/` — the Mojo compiler and stdlib, built
      from source with upstream's Bazel wrapper (pinned commit;
      `RESTRICT=network-sandbox`).
-   - `media-fonts/bitter/` — the Bitter typeface
-     (`inherit font`).
+   - `media-fonts/bitter-pro/` — the Bitter Pro typeface
+     (`inherit font`; successor to the deleted upstream of
+     media-fonts/bitter).
 
 ## Conventions
 
