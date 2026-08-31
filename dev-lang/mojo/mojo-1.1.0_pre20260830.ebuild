@@ -50,6 +50,10 @@ RDEPEND="
 		sys-devel/gcc
 		llvm-core/clang
 	)
+	debug? (
+		dev-libs/libbsd
+		sys-libs/ncurses:=
+	)
 	jupyter? ( dev-python/jupyter-client )
 	python? ( ${PYTHON_DEPS} )
 "
@@ -87,7 +91,10 @@ pkg_setup() {
 	ewarn "older CPUs the build itself dies with SIGILL (its just-"
 	ewarn "built host tools use v3 instructions) unless CFLAGS and"
 	ewarn "CXXFLAGS carry a -march your CPU supports (-march=native"
-	ewarn "is fine); the user flag is appended last and wins."
+	ewarn "is fine); the user flag is appended last and wins.  The"
+	ewarn "same -march is also re-pinned into Mojo codegen (see"
+	ewarn "src_prepare), which otherwise targets x86-64-v3"
+	ewarn "unconditionally -- stdlib included."
 }
 
 src_prepare() {
@@ -100,6 +107,26 @@ src_prepare() {
 	mkdir -p build || die
 	echo "build --local_resources=gpu-memory=0" \
 		> build/local-resources.bazelrc || die
+
+	# CFLAGS never reach Mojo codegen: upstream pins
+	# --target-cpu=x86-64-v3 for every x86_64 Linux Mojo
+	# compilation (bazel/internal/BUILD.bazel, mojo_copts_toolchain),
+	# the stdlib included, so the installed std.mojoc carries v3
+	# instructions and SIGILLs at runtime on older CPUs regardless
+	# of the C/C++ flags.  Re-pin it to the last -march in CFLAGS;
+	# LLVM accepts the -march spelling (x86-64-v2, znver3, native,
+	# ...) as a CPU name.
+	local _march _flag
+	for _flag in ${CFLAGS}; do
+		[[ ${_flag} == -march=* ]] && _march=${_flag#-march=}
+	done
+	if [[ -n ${_march} && ${_march} != x86-64-v3 ]]; then
+		sed -i "s/--target-cpu=x86-64-v3/--target-cpu=${_march}/" \
+			bazel/internal/BUILD.bazel || die
+		grep -q -- "--target-cpu=${_march}" bazel/internal/BUILD.bazel \
+			|| die "Mojo target-cpu substitution failed"
+		einfo "Mojo codegen target-cpu re-pinned to ${_march}"
+	fi
 }
 
 src_configure() {
@@ -199,8 +226,32 @@ src_compile() {
 
 src_test() {
 	# The stdlib test suite, run against the just-built compiler
-	# (KGEN/docs/WorkingInOSRepo.md).
-	emojo test "${BAZEL_ARGS[@]}" //mojo/stdlib/... \
+	# (KGEN/docs/WorkingInOSRepo.md).  Excluded targets:
+	#
+	# - test_range_codegen cross-compiles for amdgcn-amd-amdhsa, a
+	#   backend --config=build-mojo does not build, so it can never
+	#   compile here and its build failure would skip the whole
+	#   suite.
+	# - Three lit-style tests whose RUN lines execute a binary
+	#   built moments earlier inside the test; that spawn fails
+	#   with EPERM under portage's sandbox (the same tests spawn
+	#   fine in a bare bazel run outside portage).
+	# - Five targets that link libAsyncRTMojoBindings.so out of
+	#   Modular's prebuilt MAX wheel (the only stdlib tests that
+	#   do; see their runfiles).  The blob is compiled for
+	#   x86-64-v3, so they SIGILL on older CPUs, and they exercise
+	#   the wheel rather than anything this package builds or
+	#   installs.
+	emojo test "${BAZEL_ARGS[@]}" -- //mojo/stdlib/... \
+		-//mojo/stdlib/test/builtin:test_range_codegen.mojo.test \
+		-//mojo/stdlib/test/collections/string:test_string_unicode_panic.mojo.test \
+		-//mojo/stdlib/test/collections:test_asan_annotations_list.mojo.test \
+		-//mojo/stdlib/test/sys:test_compile_sanitize_address.mojo.test \
+		-//mojo/stdlib/benchmarks:algorithm/bench_elementwise.mojo.smoke \
+		-//mojo/stdlib/benchmarks:memory/bench_heap_parallel.mojo.smoke \
+		-//mojo/stdlib/test/builtin:test_device_passable.mojo.test \
+		-//mojo/stdlib/test/memory/pointer:test_pointer.mojo.test \
+		-//mojo/stdlib/test/_plugin:test_gpu_target_plugin.mojo.test \
 		|| die "stdlib tests failed"
 }
 
@@ -254,14 +305,22 @@ src_install() {
 		# lldb-server and lldb-argdumper must sit beside the
 		# lldb binary to be found at runtime (KGEN/BUILD.bazel);
 		# libMojoLLDB.so and the Python visualizers resolve via
-		# modular.cfg defaults relative to package_root.
+		# modular.cfg defaults relative to package_root.  The
+		# driver's default lldb path is bin/mojo-lldb
+		# (KGEN/lib/Support/Configuration.cpp), so the binary is
+		# installed under that name even when the build outputs
+		# it as plain "lldb".
 		exeinto /usr/lib/mojo/bin
-		doexe "$(mojo_out mojo-lldb lldb)"
+		newexe "$(mojo_out mojo-lldb lldb)" mojo-lldb
 		doexe "$(mojo_out lldb-server gdb-server)"
 		doexe "$(mojo_out lldb-argdumper)"
 		doexe "$(mojo_out llvm-symbolizer)"
 		exeinto /usr/lib/mojo/lib
 		doexe "$(mojo_out libMojoLLDB.so)"
+		# mojo-lldb and libMojoLLDB.so link the LLDB core library
+		# by soname (liblldb<version>git.so); it must ship beside
+		# them or both fail to load.
+		doexe "$(mojo_out 'liblldb*.so*')"
 		insinto /usr/lib/mojo/lib
 		doins "$(mojo_out lldbDataFormatters.py)"
 		doins "$(mojo_out mlirDataFormatters.py)"
@@ -291,6 +350,9 @@ src_install() {
 	fi
 
 	if use python; then
+		# Build-system leftovers that would otherwise land in
+		# site-packages.
+		rm mojo/python/mojo/BUILD.bazel mojo/python/mojo/README.md || die
 		installmojopy() {
 			python_domodule mojo/python/mojo
 		}
