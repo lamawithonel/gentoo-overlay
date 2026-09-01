@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="project">
+		<email>lucas.yamanishi@gmail.com</email>
+		<name>Lucas Yamanishi</name>
+	</maintainer>
+	<longdescription>
+		Modular's closed-source MAX platform runtime and prebuilt
+		Mojo compiler, repackaged unmodified from the official PyPI
+		wheels (max-core, max-mojo-libs, mojo-compiler,
+		mojo-compiler-mojo-libs).  Installed self-contained under
+		/opt/modular-max with an env-wired mojo-max launcher; GPU
+		codegen and launch exist only in this prebuilt compiler, not
+		in the open-source dev-lang/mojo build.
+	</longdescription>
+	<use>
+		<flag name="cuda">Pull in the NVIDIA driver userland the
+			runtime dlopens for CUDA devices</flag>
+		<flag name="rocm">Pull in the HIP/ROCm userland the runtime
+			dlopens for AMD devices</flag>
+	</use>
+	<upstream>
+		<remote-id type="pypi">max-core</remote-id>
+	</upstream>
+</pkgmetadata>

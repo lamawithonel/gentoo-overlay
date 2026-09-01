@@ -42,6 +42,11 @@
    - `dev-lang/mojo/` — the Mojo compiler and stdlib, built
      from source with upstream's Bazel wrapper (pinned commit;
      `RESTRICT=network-sandbox`).
+   - `dev-mojo/max-bin/` — Modular's closed MAX + prebuilt Mojo
+     compiler stack, repackaged from PyPI wheels (proprietary
+     license in `licenses/`, `RESTRICT="mirror bindist strip"`;
+     binaries are x86-64-v3-only).  GPU codegen exists only
+     here, never in the from-source `dev-lang/mojo`.
    - `media-fonts/bitter-pro/` — the Bitter Pro typeface
      (`inherit font`; successor to the deleted upstream of
      media-fonts/bitter).
