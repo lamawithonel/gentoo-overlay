@@ -98,6 +98,7 @@ dev-debug/strace
 dev-embedded/arduino
 dev-embedded/openocd
 dev-embedded/stlink
+dev-lang/mojo
 dev-lua/luarocks
 dev-python/bashate
 dev-util/checkbashisms
