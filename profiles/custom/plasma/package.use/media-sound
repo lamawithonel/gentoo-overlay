@@ -1,3 +1,4 @@
 media-sound/lame                -frontend sndfile
 media-sound/pulseaudio          alsa -alsa-plugin -daemon gconf libsamplerate realtime
 media-sound/mpg123              -sdl
+media-sound/sox                 fftw loudness speexdsp
