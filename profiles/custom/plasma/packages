@@ -123,6 +123,7 @@ sys-apps/smartmontools
 sys-apps/usbmon
 sys-auth/rtkit # Can be removed once Pipewire adds it as a dependency
 sys-block/bmap-tools
+sys-block/fio
 sys-fs/duperemove
 sys-fs/google-drive-ocamlfuse
 sys-fs/ntfs3g
