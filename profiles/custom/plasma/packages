@@ -81,6 +81,7 @@ app-arch/par2cmdline
 app-benchmarks/bootchart2
 app-benchmarks/geekbench
 app-crypt/efitools
+app-crypt/lego
 app-crypt/sbsigntools
 #app-crypt/tpm2-openssl
 #app-crypt/tpm2-pkcs11
