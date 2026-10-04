@@ -86,6 +86,7 @@ app-crypt/sbsigntools
 #app-crypt/tpm2-pkcs11
 app-forensics/lynis
 app-misc/jdupes
+app-misc/mosquitto
 app-misc/rdfind
 app-misc/toilet
 app-misc/wally-cli
