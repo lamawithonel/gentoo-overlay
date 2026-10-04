@@ -11,9 +11,14 @@ trim_trailing_whitespace = true
 indent_style = tab
 indent_size = 4
 
-# Profile files keep hard tabs; several carry a
-# `# vi:ts=8:sw=8:noexpandtab` modeline.
+# Profile files use soft tabs at 4-space width.
 [profiles/**]
+indent_style = space
+indent_size = 4
+
+# Except these two, which align their values with hard tabs and
+# carry a `# vi:ts=8:sw=8:noexpandtab` modeline.
+[profiles/custom/{base,plasma}/make.defaults]
 indent_style = tab
 indent_size = 8
 

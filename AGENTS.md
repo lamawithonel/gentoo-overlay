@@ -116,8 +116,14 @@
    `repositories.xml` / `eselect repository`; profile paths
    are referenced as `lamawithonel:custom/<...>`.
 
-## Vi modeline
+## Indentation
 
- Some files (e.g. `profiles/profiles.desc`) end with a
- `# vi:ts=8:sw=8:noexpandtab` modeline — preserve hard tabs
- in those files.
+ `.editorconfig` is authoritative.  Profile files use soft
+ tabs (spaces) at 4-space width, including column-aligned
+ files such as `profiles/profiles.desc` and `package.use`
+ entries.  The only exceptions are
+ `profiles/custom/base/make.defaults` and
+ `profiles/custom/plasma/make.defaults`, which align values
+ with hard tabs and end with a `# vi:ts=8:sw=8:noexpandtab`
+ modeline; preserve both.  Ebuilds, eclasses, and shell
+ files (including the mise file tasks) keep hard tabs.

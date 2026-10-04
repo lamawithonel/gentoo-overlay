@@ -13,9 +13,8 @@ notes below are specific to working inside `profiles/`.
   must stay within this set.
 - `profiles.desc` — registry of every shipped profile:
   `<arch> <path-under-profiles/> <stability>` where
-  stability is `stable` or `exp`.  Ends with a
-  `# vi:ts=8:sw=8:noexpandtab` modeline; the file uses
-  **hard tabs** as field separators — preserve them.
+  stability is `stable` or `exp`.  Fields are aligned
+  with spaces, not tabs.
 - `custom/` — user-facing profile sets that consumers
   select via `eselect profile` as
   `lamawithonel:custom/<...>`:
@@ -85,8 +84,11 @@ manually before committing profile changes.
 
 ## House style
 
-- Hard tabs in `profiles.desc`; preserve any
-  `# vi:ts=8:sw=8:noexpandtab` modelines.
+- Soft tabs (spaces) at 4-space width everywhere except
+  `custom/base/make.defaults` and
+  `custom/plasma/make.defaults`, which keep hard tabs and
+  their `# vi:ts=8:sw=8:noexpandtab` modelines.  See
+  `.editorconfig`.
 - Comments and prose wrap before 80 columns (72 preferred),
   matching the repo-wide style in `AGENTS.md`.
 - Commits: one logical profile change per commit,
