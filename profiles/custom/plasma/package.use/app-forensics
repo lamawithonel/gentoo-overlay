@@ -1,2 +1,2 @@
-app-forensics/lynis             -cron
-app-forensics/openscap          chroot docker gconf nss python rpm sce sql ssh vm
+app-forensics/lynis                     -cron
+app-forensics/openscap                  chroot docker gconf nss python rpm sce sql ssh vm

@@ -1,2 +1,2 @@
-net-firewall/ipset              -modules
-net-firewall/firewalld          gui
+net-firewall/ipset                      -modules
+net-firewall/firewalld                  gui

@@ -1,2 +1,2 @@
-sys-block/fio                   aio io-uring
-sys-block/parted                device-mapper
+sys-block/fio                           aio io-uring
+sys-block/parted                        device-mapper

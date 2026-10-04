@@ -1,8 +1,8 @@
-app-emulation/guestfs-tools     libvirt -perl
-app-emulation/qemu              bpf -doc gnutls io-uring jemalloc keyutils sdl2 smartcard spice static-user usbredir virtfs vte
-app-emulation/libguestfs        -gtk inspect-icons libvirt -perl python
-app-emulation/libvirt           dtrace firewalld pcap -vepa virt-network virtiofsd wireshark-plugins
-app-emulation/virt-viewer       vte
-app-emulation/virt-what         dmi
-app-emulation/virtualbox        -sdk -vmmraw vnc
-app-emulation/wine-proton       osmesa -wow64
+app-emulation/guestfs-tools             libvirt -perl
+app-emulation/qemu                      bpf -doc gnutls io-uring jemalloc keyutils sdl2 smartcard spice static-user usbredir virtfs vte
+app-emulation/libguestfs                -gtk inspect-icons libvirt -perl python
+app-emulation/libvirt                   dtrace firewalld pcap -vepa virt-network virtiofsd wireshark-plugins
+app-emulation/virt-viewer               vte
+app-emulation/virt-what                 dmi
+app-emulation/virtualbox                -sdk -vmmraw vnc
+app-emulation/wine-proton               osmesa -wow64

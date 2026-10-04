@@ -89,6 +89,11 @@ manually before committing profile changes.
   `custom/plasma/make.defaults`, which keep hard tabs and
   their `# vi:ts=8:sw=8:noexpandtab` modelines.  See
   `.editorconfig`.
+- Every `package.use` entry starts its USE flag list at
+  column 40 (pad the atom with spaces), so the files read as
+  one table when concatenated.  The lone exception is
+  `custom/plasma/package.use/media-video`, whose wider
+  columns group flags as general, decode, and encode.
 - Comments and prose wrap before 80 columns (72 preferred),
   matching the repo-wide style in `AGENTS.md`.
 - Commits: one logical profile change per commit,

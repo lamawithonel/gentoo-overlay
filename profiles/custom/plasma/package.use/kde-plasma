@@ -1,13 +1,13 @@
-kde-plasma/discover             flatpak webengine
-kde-plasma/kdeplasma-addons     -alternate-calendar -comic networkmanager share
-kde-plasma/ksysguard            lm-sensors networkmanager
-kde-plasma/ksystemstats         lm-sensors networkmanager
-kde-plasma/kwin                 screencast
-kde-plasma/plasma-desktop       appstream emoji screencast -sdl
-kde-plasma/plasma-firewall      firewalld -ufw
-kde-plasma/plasma-meta          colord discover flatpak networkmanager
-kde-plasma/plasma-nm            -modemmanager
-kde-plasma/plasma-vault         networkmanager
-kde-plasma/plasma-workspace     appstream geolocation qrcode screencast
-kde-plasma/powerdevil           brightness-control
-kde-plasma/spectacle            share
+kde-plasma/discover                     flatpak webengine
+kde-plasma/kdeplasma-addons             -alternate-calendar -comic networkmanager share
+kde-plasma/ksysguard                    lm-sensors networkmanager
+kde-plasma/ksystemstats                 lm-sensors networkmanager
+kde-plasma/kwin                         screencast
+kde-plasma/plasma-desktop               appstream emoji screencast -sdl
+kde-plasma/plasma-firewall              firewalld -ufw
+kde-plasma/plasma-meta                  colord discover flatpak networkmanager
+kde-plasma/plasma-nm                    -modemmanager
+kde-plasma/plasma-vault                 networkmanager
+kde-plasma/plasma-workspace             appstream geolocation qrcode screencast
+kde-plasma/powerdevil                   brightness-control
+kde-plasma/spectacle                    share

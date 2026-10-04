@@ -1,2 +1,2 @@
-gui-libs/gtk                    colord ffmpeg
-gui-libs/wlroots                tinywl
+gui-libs/gtk                            colord ffmpeg
+gui-libs/wlroots                        tinywl

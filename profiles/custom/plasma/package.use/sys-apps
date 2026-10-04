@@ -1,18 +1,18 @@
-sys-apps/coreutils              gmp
-sys-apps/dbus                   user-session
-sys-apps/fwupd                  amdgpu cbor gnutls logitech nvme uefi tpm
-sys-apps/gawk                   mpfr
-sys-apps/hwloc                  netloc
-sys-apps/iproute2               elf
-sys-apps/kbd                    xkb
-sys-apps/kmod                   pkcs7
-sys-apps/memtest86+             -bios64
-sys-apps/rng-tools              pkcs11
-sys-apps/shadow                 bcrypt
-sys-apps/smartmontools          update-drivedb
-sys-apps/systemd                boot curl elfutils fido2 gnuefi importd pkcs11 ukify xkb
-sys-apps/util-linux             uuidd
-sys-apps/xdg-desktop-portal     flatpak screencast
+sys-apps/coreutils                      gmp
+sys-apps/dbus                           user-session
+sys-apps/fwupd                          amdgpu cbor gnutls logitech nvme uefi tpm
+sys-apps/gawk                           mpfr
+sys-apps/hwloc                          netloc
+sys-apps/iproute2                       elf
+sys-apps/kbd                            xkb
+sys-apps/kmod                           pkcs7
+sys-apps/memtest86+                     -bios64
+sys-apps/rng-tools                      pkcs11
+sys-apps/shadow                         bcrypt
+sys-apps/smartmontools                  update-drivedb
+sys-apps/systemd                        boot curl elfutils fido2 gnuefi importd pkcs11 ukify xkb
+sys-apps/util-linux                     uuidd
+sys-apps/xdg-desktop-portal             flatpak screencast
 
 # required by app-emulation/qemu-8.1.5::gentoo[xattr,static-user]
-sys-apps/attr                   static-libs
+sys-apps/attr                           static-libs

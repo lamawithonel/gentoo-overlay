@@ -1,8 +1,8 @@
-net-misc/curl                   http2 openssl
-net-misc/dhcp                   -server
-net-misc/freerdp                -client openh264 -sdl smartcard
-net-misc/modemmanager           -qmi -qrtr
-net-misc/networkmanager         iwd json -wext
-net-misc/openssh                security-key
-net-misc/spice-gtk              usbredir
-net-misc/wget                   cookie-check
+net-misc/curl                           http2 openssl
+net-misc/dhcp                           -server
+net-misc/freerdp                        -client openh264 -sdl smartcard
+net-misc/modemmanager                   -qmi -qrtr
+net-misc/networkmanager                 iwd json -wext
+net-misc/openssh                        security-key
+net-misc/spice-gtk                      usbredir
+net-misc/wget                           cookie-check

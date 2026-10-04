@@ -1,2 +1,2 @@
-dev-qt/qtbase                   journald
-dev-qt/qttools                  -assistant
+dev-qt/qtbase                           journald
+dev-qt/qttools                          -assistant

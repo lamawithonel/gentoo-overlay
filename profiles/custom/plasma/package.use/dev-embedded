@@ -1,2 +1,2 @@
-dev-embedded/avrdude            ftdi
-dev-embedded/openocd            capstone
+dev-embedded/avrdude                    ftdi
+dev-embedded/openocd                    capstone

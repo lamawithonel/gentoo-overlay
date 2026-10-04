@@ -1,6 +1,6 @@
-sys-libs/libblockdev            cryptsetup kbd smart -tools
-sys-libs/libomp                 hwloc
-sys-libs/libselinux             python ruby
-sys-libs/ncurses                tinfo
-sys-libs/timezone-data          leaps-timezone
-sys-libs/zlib                   static-libs
+sys-libs/libblockdev                    cryptsetup kbd smart -tools
+sys-libs/libomp                         hwloc
+sys-libs/libselinux                     python ruby
+sys-libs/ncurses                        tinfo
+sys-libs/timezone-data                  leaps-timezone
+sys-libs/zlib                           static-libs

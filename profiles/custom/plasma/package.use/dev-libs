@@ -1,20 +1,20 @@
-dev-libs/appstream-glib         stemmer
-dev-libs/boost                  icu nls python
-dev-libs/cyrus-sasl             -berkdb -gdbm
-dev-libs/imath                  large-stack
-dev-libs/jemalloc               lazy-lock
-dev-libs/libcdio                -cxx
-dev-libs/libcdio-paranoia       -cxx
-dev-libs/libdbusmenu            gtk3
-dev-libs/nng                    -deprecated
-dev-libs/nss                    utils
-dev-libs/openssl                gmp rfc3779 sctp
-dev-libs/pkcs11-helper          nss
-dev-libs/poco                   -data -file2pagecompiler -mongodb -net -pagecompiler -pdf
-dev-libs/rasqal                 gmp
-dev-libs/tmux                   jemalloc
+dev-libs/appstream-glib                 stemmer
+dev-libs/boost                          icu nls python
+dev-libs/cyrus-sasl                     -berkdb -gdbm
+dev-libs/imath                          large-stack
+dev-libs/jemalloc                       lazy-lock
+dev-libs/libcdio                        -cxx
+dev-libs/libcdio-paranoia               -cxx
+dev-libs/libdbusmenu                    gtk3
+dev-libs/nng                            -deprecated
+dev-libs/nss                            utils
+dev-libs/openssl                        gmp rfc3779 sctp
+dev-libs/pkcs11-helper                  nss
+dev-libs/poco                           -data -file2pagecompiler -mongodb -net -pagecompiler -pdf
+dev-libs/rasqal                         gmp
+dev-libs/tmux                           jemalloc
 
 # required by app-emulation/qemu-8.1.5::gentoo[static-user]
-dev-libs/glib                   static-libs
+dev-libs/glib                           static-libs
 # required by app-emulation/qemu-8.1.5::gentoo[static-user]
-dev-libs/libpcre2                static-libs
+dev-libs/libpcre2                       static-libs

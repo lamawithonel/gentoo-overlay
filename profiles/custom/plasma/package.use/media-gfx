@@ -1,5 +1,5 @@
-media-gfx/blender               -X man openal
-media-gfx/imagemagick           cxx fftw
+media-gfx/blender                       -X man openal
+media-gfx/imagemagick                   cxx fftw
 # FIXME: Remove nls from Inkscape once https://gitlab.com/inkscape/inkscape/issues/168 is fixed
-media-gfx/inkscape              -cdr imagemagick jemalloc nls -spell svg2
-media-gfx/krita:5               -pdf
+media-gfx/inkscape                      -cdr imagemagick jemalloc nls -spell svg2
+media-gfx/krita:5                       -pdf
