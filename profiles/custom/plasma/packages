@@ -109,6 +109,7 @@ dev-util/shellcheck-bin
 dev-util/stressapptest
 dev-vcs/git-lfs
 gui-apps/wl-clipboard
+gui-wm/labwc
 net-im/zoom
 net-irc/konversation
 net-misc/dropbox-cli

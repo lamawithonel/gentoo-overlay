@@ -1,0 +1,5 @@
+gui-wm/labwc
+
+# required by gui-wm/labwc-0.20.2::gentoo[icons]
+# required by gui-wm/labwc (argument)
+gui-libs/libsfdo
