@@ -1,5 +1,5 @@
 kde-plasma/discover                     flatpak webengine
-kde-plasma/kdeplasma-addons             -alternate-calendar -comic networkmanager share
+kde-plasma/kdeplasma-addons             -alternate-calendar -comic led networkmanager share
 kde-plasma/ksysguard                    lm-sensors networkmanager
 kde-plasma/ksystemstats                 lm-sensors networkmanager
 kde-plasma/kwin                         screencast

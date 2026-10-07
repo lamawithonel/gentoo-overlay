@@ -12,7 +12,7 @@ media-libs/libsamplerate                sndfile
 media-libs/libsdl2                      libsamplerate kms
 media-libs/libvpx                       postproc
 media-libs/mesa                         -classic lm-sensors osmesa
-media-libs/mlt                          -gtk -rubberband
+media-libs/mlt                          -gtk rnnoise -rubberband
 media-libs/oidn                         openimageio
 media-libs/opencv                       python
 media-libs/openexr                      large-stack
