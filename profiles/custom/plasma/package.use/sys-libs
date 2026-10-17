@@ -1,3 +1,5 @@
+# Disable sframe support until Zig 0.17 is stablized
+sys-libs/glibc                          -sframe
 sys-libs/libblockdev                    cryptsetup kbd smart -tools
 sys-libs/libomp                         hwloc
 sys-libs/libselinux                     python ruby
