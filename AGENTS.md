@@ -37,6 +37,10 @@
  - Ebuild packages, all following the standard Gentoo
    `<category>/<pkg>/<pkg>-<ver>.ebuild` + `metadata.xml` +
    `Manifest` layout:
+   - `acct-group/strata/`, `acct-user/strata/` -- the service
+     account for sci-ml/strata (home `/var/lib/strata`, groups
+     `render` and `video`).  EAPI 9, as the acct eclasses allow
+     and ::gentoo's sci-ml/ollama accounts use.
    - `app-admin/snapraid-mergerfs-setup/` — helper scripts and
      docs for a SnapRAID + mergerfs array.
    - `dev-lang/mojo/` — the Mojo compiler and stdlib, built
