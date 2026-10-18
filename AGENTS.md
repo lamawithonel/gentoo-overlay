@@ -54,6 +54,11 @@
    - `media-fonts/bitter-pro/` — the Bitter Pro typeface
      (`inherit font`; successor to the deleted upstream of
      media-fonts/bitter).
+   - `sci-ml/strata/` -- the Strata LLM engine (ROCm only) and
+     its OpenAI-compatible server: a read-only tree in
+     `/usr/lib/strata`, served by `strata@<tag>.service`.  One
+     packaged-mode patch, shared with 9999, moves every write
+     to `/var/lib/strata`; `strata-setup` writes the configs.
    - `sec-policy/selinux-strata/` -- SELinux policy for
      sci-ml/strata.  Its version tracks the base policy, and
      RDEPEND caps the base below the next patch bundle because
