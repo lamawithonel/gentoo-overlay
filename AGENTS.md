@@ -54,6 +54,11 @@
    - `media-fonts/bitter-pro/` — the Bitter Pro typeface
      (`inherit font`; successor to the deleted upstream of
      media-fonts/bitter).
+   - `sec-policy/selinux-strata/` -- SELinux policy for
+     sci-ml/strata.  Its version tracks the base policy, and
+     RDEPEND caps the base below the next patch bundle because
+     its `/dev/kfd` label must go once the base has one; bump
+     the two together.
 
 ## Conventions
 

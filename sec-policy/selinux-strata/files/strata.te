@@ -1,0 +1,87 @@
+policy_module(strata, 1.0.0)
+
+gen_require(`
+	type device_t;
+')
+
+########################################
+#
+# Declarations
+#
+
+## <desc>
+##	<p>
+##	Allow strata to read user cache content, for a user's
+##	~/.cache/huggingface bind-mounted under /var/lib/strata.
+##	</p>
+## </desc>
+gen_tunable(strata_read_user_cache, false)
+
+type strata_t;
+type strata_exec_t;
+init_daemon_domain(strata_t, strata_exec_t)
+
+# shortcut: permissive until the AVCs from the user-approved strata@
+# E2E run on the test host refine this policy; drop it with that capture.
+permissive strata_t;
+
+type strata_var_lib_t;
+files_type(strata_var_lib_t)
+
+type strata_port_t;
+corenet_port(strata_port_t)
+
+# Fedora's type for the ROCm compute node; see strata.fc.
+type hsa_device_t;
+dev_node(hsa_device_t)
+
+########################################
+#
+# Local policy
+#
+
+allow strata_t self:fifo_file rw_fifo_file_perms;
+allow strata_t self:process signal_perms;
+allow strata_t self:unix_stream_socket create_stream_socket_perms;
+allow strata_t self:unix_dgram_socket create_socket_perms;
+allow strata_t self:tcp_socket create_stream_socket_perms;
+allow strata_t self:netlink_route_socket r_netlink_socket_perms;
+
+allow strata_t strata_port_t:tcp_socket { name_bind name_connect };
+corenet_tcp_bind_generic_node(strata_t)
+
+# server.py runs the engine in its own domain.
+can_exec(strata_t, strata_exec_t)
+
+# State, configs, the data dir, and HF_HOME; the engine mmaps packs.
+mmap_manage_files_pattern(strata_t, strata_var_lib_t, strata_var_lib_t)
+manage_dirs_pattern(strata_t, strata_var_lib_t, strata_var_lib_t)
+manage_lnk_files_pattern(strata_t, strata_var_lib_t, strata_var_lib_t)
+files_var_lib_filetrans(strata_t, strata_var_lib_t, dir)
+files_search_var_lib(strata_t)
+
+# /proc/meminfo, /proc/cpuinfo, and the amdgpu and kfd sysfs nodes.
+kernel_read_system_state(strata_t)
+dev_read_sysfs(strata_t)
+
+dev_rw_dri(strata_t)
+# ROCr opens /dev/kfd read-write and mmaps its doorbell and event pages.
+rw_chr_files_pattern(strata_t, device_t, hsa_device_t)
+allow strata_t hsa_device_t:chr_file map;
+
+# The Python interpreter, its libraries, /usr/lib/strata, and ROCm.
+corecmd_exec_bin(strata_t)
+libs_use_ld_so(strata_t)
+libs_use_shared_libs(strata_t)
+libs_read_lib_files(strata_t)
+files_read_usr_files(strata_t)
+files_read_etc_files(strata_t)
+miscfiles_read_localization(strata_t)
+
+# stdout and stderr are the journal stream PID 1 hands over.
+init_use_fds(strata_t)
+init_rw_inherited_stream_socket(strata_t)
+
+tunable_policy(`strata_read_user_cache',`
+	xdg_read_cache_files(strata_t)
+')
