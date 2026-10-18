@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="project">
+		<email>lucas.yamanishi@gmail.com</email>
+		<name>Lucas Yamanishi</name>
+	</maintainer>
+	<upstream>
+		<remote-id type="github">Niko1221/Strata</remote-id>
+	</upstream>
+</pkgmetadata>
