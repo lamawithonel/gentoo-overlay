@@ -104,12 +104,13 @@
    root.  Regenerate manifests with `mise run manifest`, which
    uses the repo-local distdir and fails if a Manifest changed.
    The pre-commit hook runs both against the staged changes.
- - **Test builds** run through `mise run test-mojo` (one build)
-   or `mise run test-matrix` (USE-flag matrix), which build the
-   working tree via `PORTAGE_REPOSITORIES` — never the
-   installed copy of the overlay.  Constraints, enforced by the
-   task and by gitignored `.config/mise/config.local.toml` host
-   config:
+ - **Test builds** run through `mise run test-mojo` (one build),
+   `mise run test-matrix` (USE-flag matrix), or
+   `mise run test-strata` (sci-ml/strata, or any `EBUILD=`),
+   which build the working tree via `PORTAGE_REPOSITORIES` —
+   never the installed copy of the overlay.  Constraints,
+   enforced by the task and by gitignored
+   `.config/mise/config.local.toml` host config:
    - `PORTAGE_TMPDIR` and `DISTDIR` live under `.cache/agents/`
      (never system paths; build trees can reach ~8 GiB).
    - Builds are memory-capped with `choom -n 1000` so a runaway
@@ -123,6 +124,10 @@
      explicit supported `-march` (e.g. `x86-64-v2`) is passed.
      Set it in `.config/mise/config.local.toml` next to
      `MAKEOPTS`.
+   - sci-ml/strata's specs also run outside Portage with the
+     mise-managed `pytest` (`mise exec -- pytest`), which carries
+     upstream's pinned requirements.  Under `FEATURES=test`,
+     src_test needs the system `dev-python/pytest` instead.
  - To rebuild metadata cache (only for local use; do not
    commit): `egencache --update --repo=lamawithonel
    --jobs=$(nproc)`.

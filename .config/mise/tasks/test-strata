@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+#MISE description="One capped test build of sci-ml/strata from this working tree"
+#
+# Builds sci-ml/strata (or EBUILD) with `ebuild ... clean install`
+# against the checked-out overlay (via PORTAGE_REPOSITORIES), never the
+# installed copy.  The build is memory-capped with `choom -n 1000` so
+# a runaway compile dies alone.
+#
+# Environment contract:
+#   TEST_MARCH   (required)  -march the host CPU supports, e.g. x86-64-v2.
+#                            Explicit on purpose: it replaces make.conf's
+#                            CFLAGS, so no host -march=native leaks into
+#                            the build.  Set it in .config/mise/config.local.toml.
+#   EBUILD       (optional)  ebuild to build, e.g. the
+#                            sec-policy/selinux-strata one; default the
+#                            newest non-9999 sci-ml/strata ebuild.
+#   USE          (optional)  USE flags for the build; default "rocm".
+#   FEATURES     (optional)  Portage FEATURES; default "test".  With
+#                            test, install runs src_test first (Portage
+#                            also sets USE=test); FEATURES=-test skips it.
+#   MAKEOPTS     (optional)  passed through if set (host core cap).
+#   GENTOO_REPO  (optional)  path to ::gentoo; default via portageq.
+#
+# Exit codes: 1 on usage/environment errors, otherwise ebuild's code.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+_fail() {
+	echo "ERROR: $*" >&2
+	exit 1
+}
+
+command -v choom > /dev/null 2>&1 || _fail 'cannot find choom (sys-apps/util-linux)'
+command -v ebuild > /dev/null 2>&1 || _fail 'cannot find ebuild (sys-apps/portage)'
+
+_root="${MISE_PROJECT_ROOT:-$(git rev-parse --show-toplevel)}"
+[ -n "${TEST_MARCH:-}" ] \
+	|| _fail 'set TEST_MARCH to a -march this CPU supports (e.g. x86-64-v2)'
+
+# Gentoo version ordering (_pre < release) -- plain sort -V would pick
+# a _pre snapshot over the final release.
+_pick_ebuild() {
+	python - "$1" <<- 'EOF'
+		import functools
+		import glob
+		import sys
+
+		from portage.versions import pkgsplit, vercmp
+
+		def _version(path):
+		    parts = pkgsplit(path[: -len(".ebuild")].rsplit("/", 1)[1])
+		    return parts[1] if parts[2] == "r0" else f"{parts[1]}-{parts[2]}"
+
+		ebuilds = [
+		    e
+		    for e in glob.glob(sys.argv[1] + "/*.ebuild")
+		    if not e.endswith("-9999.ebuild")
+		]
+		if ebuilds:
+		    key = functools.cmp_to_key(lambda a, b: vercmp(_version(a), _version(b)))
+		    print(max(ebuilds, key=key))
+	EOF
+}
+
+_ebuild="${EBUILD:-$(_pick_ebuild "${_root}/sci-ml/strata")}"
+[ -n "$_ebuild" ] || _fail 'no sci-ml/strata ebuild found'
+[ -f "$_ebuild" ] || _fail "ebuild not found: ${_ebuild}"
+# Portage sets EBUILD itself; do not hand it a stale copy.
+unset EBUILD
+
+_gentoo_repo="${GENTOO_REPO:-$(portageq get_repo_path / gentoo 2> /dev/null \
+	|| echo '/var/db/repos/gentoo')}"
+[ -d "$_gentoo_repo" ] || _fail "gentoo repo not found at ${_gentoo_repo}"
+
+export DISTDIR="${_root}/.cache/agents/distfiles"
+export PORTAGE_TMPDIR="${_root}/.cache/agents/portage-tmp"
+install -d -m 0700 "$DISTDIR" "$PORTAGE_TMPDIR"
+
+# Only the two repos below exist for this build; the system repos.conf
+# (including the installed copy of this overlay) is ignored entirely.
+export PORTAGE_REPOSITORIES="
+[DEFAULT]
+main-repo = gentoo
+
+[gentoo]
+location = ${_gentoo_repo}
+
+[lamawithonel]
+location = ${_root}
+"
+
+# dobin and friends chown to root unless told otherwise, which a
+# non-root ebuild(1) run cannot do (Portage's own tests set these too).
+export PORTAGE_INST_UID="${PORTAGE_INST_UID:-$(id -u)}"
+export PORTAGE_INST_GID="${PORTAGE_INST_GID:-$(id -g)}"
+
+export USE="${USE:-rocm}"
+export FEATURES="${FEATURES:-test}"
+export CFLAGS="-O2 -pipe -march=${TEST_MARCH}"
+export CXXFLAGS="$CFLAGS"
+
+_pf="$(basename "$_ebuild" .ebuild)"
+_cat="$(basename "$(dirname "$(dirname "$_ebuild")")")"
+echo ">>> USE='${USE}' FEATURES='${FEATURES}' -march=${TEST_MARCH}"
+echo ">>> build log: ${PORTAGE_TMPDIR}/portage/${_cat}/${_pf}/temp/build.log"
+# No explicit `test` phase: ebuild(1) would force it past RESTRICT
+# ("Forcing test."), and install already runs src_test per FEATURES.
+choom -n 1000 -- ebuild "$_ebuild" clean install
