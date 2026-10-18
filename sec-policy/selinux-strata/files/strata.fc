@@ -1,0 +1,12 @@
+/usr/lib/strata/engine/strata	--	gen_context(system_u:object_r:strata_exec_t,s0)
+/usr/lib/strata/serve/server\.py	--	gen_context(system_u:object_r:strata_exec_t,s0)
+
+# Base policy 2.20260922 and 9999 label this xserver_misc_device_t; two
+# specs for one path fail the policy load, so the ebuild caps the base.
+/dev/kfd	-c	gen_context(system_u:object_r:hsa_device_t,s0)
+
+/var/lib/strata(/.*)?	gen_context(system_u:object_r:strata_var_lib_t,s0)
+# The HF cache may be a bind-mounted user cache; restorecon must leave
+# its labels alone.  The longer fixed stem sorts after the entry above,
+# so this one wins.
+/var/lib/strata/huggingface(/.*)?	<<none>>
