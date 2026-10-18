@@ -1,0 +1,56 @@
+[Unit]
+Description=Strata inference server (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=strata
+Group=strata
+SupplementaryGroups=render video
+Environment=STRATA_STATE_DIR=%S/strata
+# No --port: in packaged mode the server listens on the config's "port".
+ExecStart=/usr/lib/strata/serve/server.py --engine strata --config %S/strata/strata-%i.json
+WorkingDirectory=%S/strata
+StateDirectory=strata
+StateDirectoryMode=0750
+UMask=0027
+# The engine page-locks model data in RAM.
+LimitMEMLOCK=infinity
+# server.py alone gets SIGTERM and quits the engine itself; leftovers get SIGKILL.
+KillMode=mixed
+TimeoutStopSec=90
+Restart=on-failure
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+RemoveIPC=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+CapabilityBoundingSet=
+# No PrivateDevices=: it would hide the GPU nodes allowed here.
+DevicePolicy=closed
+DeviceAllow=/dev/kfd rw
+DeviceAllow=char-drm rw
+# No MemoryDenyWriteExecute=: the GPU runtimes need writable executable mappings.
+# The server reads /proc/PID only for itself and its engine child.
+ProtectProc=invisible
+# No ProcSubset=pid: the server and engine read /proc/meminfo and /proc/cpuinfo.
+# Models are downloaded by the strata user outside the service; it only reads them.
+ReadOnlyPaths=-%S/strata/huggingface
+
+[Install]
+WantedBy=multi-user.target

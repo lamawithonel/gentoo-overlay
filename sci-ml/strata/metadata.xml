@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="project">
+		<email>lucas.yamanishi@gmail.com</email>
+		<name>Lucas Yamanishi</name>
+	</maintainer>
+	<use>
+		<flag name="rocm">Build the inference engine for AMD GPUs with HIP (<pkg>dev-util/hip</pkg>)</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">Niko1221/Strata</remote-id>
+	</upstream>
+</pkgmetadata>

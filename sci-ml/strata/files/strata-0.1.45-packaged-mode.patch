@@ -1,0 +1,745 @@
+Strata packaged mode: run setup.py and serve/server.py from a read-only tree.
+
+Opt-in: STRATA_STATE_DIR=<writable folder> turns it on; unset, both behave as v0.1.45.
+setup.py: configs and settings.json in STRATA_STATE_DIR, data folder STRATA_STATE_DIR/data, no scan for
+other Strata folders, no pip, no engine download or compile (engine/strata plus engine/BUILD.json, with a
+rebuild hint on a GPU or CPU mismatch), no run script, no log file, port 8095 for a new install, and a stop
+(not a fallback into the read-only tree) when the data folder cannot be made.
+serve/server.py: a python3 shebang, the config's "port" when no --port is given, an engine with no "log" inherits stderr.
+Tests: tools/test_setup_packaged.py, serve/test_packaged.py; tools/test_setup_golden.py names the vision exe <VEXE>
+as it names the engine <EXE>, so the golden (recorded on Windows) holds on Linux too.  Not sent upstream.
+diff --git a/serve/server.py b/serve/server.py
+index 2e80577..5ad4b5d 100644
+--- a/serve/server.py
++++ b/serve/server.py
+@@ -1,3 +1,4 @@
++#!/usr/bin/env python3
+ """serve/server.py - plan v0.3 P8: OpenAI and Anthropic endpoints over any engine that maps token ids to tokens.
+ 
+     python -m serve.server --engine mock --port 8095            (a scripted engine, for clients and tests)
+@@ -55,6 +56,9 @@ from typing import Iterator, Protocol
+ from urllib.parse import parse_qs, urlsplit
+ 
+ ROOT = Path(__file__).resolve().parents[1]
++# Packaged mode (STRATA_STATE_DIR set, as for setup.py): with no --port the config's "port" is used, and an
++# engine whose config names no "log" writes to this server's stderr (a service's journal) instead of nowhere.
++PACKAGED = bool(os.environ.get("STRATA_STATE_DIR"))
+ sys.path.insert(0, str(ROOT / "tools"))
+ sys.path.insert(0, str(ROOT))   # run as a script (run-<model>.bat) as well as a module
+ from serve.frontend import (THINK_END, ChatTemplate, Event, OutputParser, anthropic_to_messages,  # noqa: E402
+@@ -816,7 +820,7 @@ class StrataEngine:
+         if lazy:
+             return
+         self.unloaded = False            # `ended` stays True until READY (below): not alive while starting (#344)
+-        self.log = open(log, "a", encoding="utf-8") if log else subprocess.DEVNULL
++        self.log = open(log, "a", encoding="utf-8") if log else None if PACKAGED else subprocess.DEVNULL
+         loading = threading.Event()                     # set once READY: the narrator below stops
+         log_start = os.path.getsize(log) if log else 0  # where this start's lines begin (start_failure_hint)
+         self.log_start = log_start                      # #596: the Monitor's conversation cache reads from here
+@@ -6799,6 +6803,11 @@ def default_model_name(cfg: dict) -> str:
+     return cfg.get("model_name") or FAMILY_MODEL_NAMES.get(cfg.get("arch") or "qwen4exp", "qwen3.8-flash-next")
+ 
+ 
++def listen_port(port, cfg) -> int:
++    """--port, else (packaged mode: a service passes none) the config's "port", else 8095."""
++    return port if port is not None else (cfg.get("port") if PACKAGED else None) or 8095
++
++
+ def main() -> int:
+     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+     ap.add_argument("--engine", choices=["mock", "strata"], default="mock")
+@@ -6810,7 +6819,7 @@ def main() -> int:
+     ap.add_argument("--script", action="append",
+                     help="the mock engine's answer (default: a short greeting); given more than once, requests get "
+                          "them in turn and the last one repeats")
+-    ap.add_argument("--port", type=int, default=8095)
++    ap.add_argument("--port", type=int)
+     ap.add_argument("--gpu", help="the GPU to run on, as nvidia-smi numbers them, or several for a layer split "
+                                   "(\"0,2\"; also \"gpu\" in the config)")
+     ap.add_argument("--tokenizer", default=str(ROOT / "pack/full/tokenizer"),
+@@ -6854,6 +6863,7 @@ def main() -> int:
+     if a.gpu is not None:
+         cfg["gpu"] = int(a.gpu) if a.gpu.strip().isdigit() else a.gpu
+     a.host = a.host or cfg.get("host") or "127.0.0.1"   # issue #26: the run scripts pass no --host, the config can
++    a.port = listen_port(a.port, cfg)
+     try:                                                # before the minutes of loading: is the port free?
+         Server((a.host, a.port), BaseHTTPRequestHandler).server_close()
+     except OSError as e:
+diff --git a/serve/test_packaged.py b/serve/test_packaged.py
+new file mode 100644
+index 0000000..892d292
+--- /dev/null
++++ b/serve/test_packaged.py
+@@ -0,0 +1,111 @@
++"""Tests for the server's packaged mode (STRATA_STATE_DIR set, as for setup.py): the config's "port" when no --port is
++given, and an engine whose config names no "log" writing to the server's stderr (a service's journal).  No GPU.
++
++    python -m pytest serve/test_packaged.py
++"""
++from __future__ import annotations
++
++import json
++import os
++import queue
++import shutil
++import socket
++import subprocess
++import sys
++import tempfile
++import threading
++import time
++import unittest
++from pathlib import Path
++from unittest import mock
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++from serve import server  # noqa: E402
++
++
++def free_port() -> int:
++    with socket.socket() as s:
++        s.bind(("127.0.0.1", 0))
++        return s.getsockname()[1]
++
++
++def ready_line(config: Path, packaged: bool) -> str:
++    """The server's "ready:" line (mock engine, this config, no --port), or all it printed instead."""
++    env = dict(os.environ)
++    env.pop("STRATA_STATE_DIR", None)
++    if packaged:
++        env["STRATA_STATE_DIR"] = str(config.parent)
++    p = subprocess.Popen([sys.executable, str(ROOT / "serve" / "server.py"), "--engine", "mock", "--config",
++                          str(config)], cwd=config.parent, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
++                         text=True)
++    lines: queue.Queue = queue.Queue()
++    threading.Thread(target=lambda: [lines.put(x) for x in p.stdout], daemon=True).start()
++    seen = []
++    try:
++        deadline = time.monotonic() + 60
++        while time.monotonic() < deadline:
++            try:
++                line = lines.get(timeout=1)
++            except queue.Empty:
++                if p.poll() is not None:
++                    break
++                continue
++            seen.append(line)
++            if line.startswith("ready:"):
++                return line
++        return "".join(seen)
++    finally:
++        p.kill()
++        p.wait()
++
++
++class PortTest(unittest.TestCase):
++    def config(self, **cfg) -> Path:
++        d = Path(tempfile.mkdtemp(prefix="strata-packaged-"))
++        self.addCleanup(shutil.rmtree, d, True)
++        (d / "strata-test.json").write_text(json.dumps(cfg), encoding="utf-8")
++        return d / "strata-test.json"
++
++    def listen_port(self, packaged: bool, cfg: dict) -> int:
++        """The port the server would listen on with no --port; nothing listens (8095 may be taken)."""
++        with mock.patch.object(server, "PACKAGED", packaged, create=True):
++            return server.listen_port(None, cfg)
++
++    def test_given_packaged_mode_and_no_port_when_the_server_starts_then_it_listens_on_the_configs_port(self):
++        port = free_port()                              # ephemeral: here listening is the point
++        self.assertIn(f":{port}/v1", ready_line(self.config(port=port), packaged=True))
++
++    def test_given_packaged_mode_and_a_config_without_port_then_the_old_default_stands(self):
++        self.assertEqual(self.listen_port(True, {}), 8095)
++
++    def test_given_no_packaged_mode_then_the_configs_port_is_ignored_as_before(self):
++        self.assertEqual(self.listen_port(False, {"port": free_port()}), 8095)
++
++
++class EngineLogTest(unittest.TestCase):
++    def engine_stderr(self, packaged: bool):
++        """The stderr the engine process is started with, for a config without "log"."""
++        seen = {}
++
++        class Started(Exception):
++            pass
++
++        def popen(what, cmd, **kw):
++            seen.update(kw)
++            raise Started
++
++        with mock.patch.object(server, "PACKAGED", packaged, create=True), mock.patch.object(server, "popen", popen):
++            with self.assertRaises(Started):
++                server.StrataEngine("missing-executable", [], log=None)
++        return seen["stderr"]
++
++    def test_given_packaged_mode_and_no_log_when_the_engine_starts_then_its_stderr_is_the_servers(self):
++        self.assertIsNone(self.engine_stderr(True))
++
++    def test_given_no_packaged_mode_and_no_log_then_the_engines_stderr_is_dropped_as_before(self):
++        self.assertIs(self.engine_stderr(False), subprocess.DEVNULL)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/setup.py b/setup.py
+index 3dd2ca5..2a37fee 100644
+--- a/setup.py
++++ b/setup.py
+@@ -60,6 +60,10 @@ from pathlib import Path
+ 
+ ROOT = Path(__file__).resolve().parent
+ WIN = os.name == "nt"
++# Packaged mode (opt-in): a distribution installs this folder read-only and sets STRATA_STATE_DIR to a writable one.
++# The model configs and settings.json go there, and the data folder defaults to its data/.  Setup never runs pip,
++# downloads or compiles an engine (it uses engine/ as the package built it) and writes no start script.
++STATE_DIR = Path(os.environ["STRATA_STATE_DIR"]) if os.environ.get("STRATA_STATE_DIR") else None
+ # #214: every Hugging Face file comes from a fixed commit of its repository (the `sha` of
+ # https://huggingface.co/api/models/<repo> when this was pinned), so a checkout installs the same files on any
+ # day.  A revision the repository no longer has falls back to its current files, with a message (download()).
+@@ -1993,6 +1997,8 @@ def check_shards(shards):
+ 
+ def get_llama_cpp():
+     """llama.cpp at the pinned commit (ggml for the build, gguf-py for the tools, mtmd for images), as a zip: no git."""
++    if STATE_DIR:                                      # packaged: gguf-py, as installed
++        return ROOT / "third_party" / "llama.cpp"
+     llama = ROOT / "third_party" / "llama.cpp"
+     if (llama / "ggml" / "CMakeLists.txt").exists() and (llama / "gguf-py").is_dir():
+         return llama
+@@ -2060,6 +2066,9 @@ def pip_install(packages, what):
+     """pip install into .venv, skipped when the same list was installed before.  An install from before the pinned
+     requirements (#214) recorded bare names: those packages are kept as they are (nothing is reinstalled), and the
+     pinned dependencies it already has count as installed."""
++    if STATE_DIR:                                      # packaged: the system's packages
++        ok(f"{what}: the system's packages (packaged mode)")
++        return
+     stamp = Path(sys.prefix) / ".strata-pip.json"
+     have = json.loads(stamp.read_text(encoding="utf-8")) if stamp.exists() else []
+     bare = {p.lower() for p in have if req_name(p) == p.lower()}
+@@ -3709,6 +3718,8 @@ def update_installed_engine(url_base, toolkit=None) -> None:
+     START-HERE.bat on an existing install picks up a new release.  If that cannot happen (no internet, the model
+     still running, no ready-made engine for this GPU) the installed engine is kept and starts as before.
+     toolkit None: engine/, then the experimental CUDA 12 engine in engine-cuda12/ when one is installed."""
++    if STATE_DIR:                                      # packaged: the package manager updates it
++        return
+     if toolkit is None:
+         update_installed_engine(url_base, 13)
+         if (engine_dir(12) / "BUILD.json").exists():
+@@ -4347,6 +4358,8 @@ def ram_ctx(model, ram, low_ram=False) -> int:
+ 
+ 
+ def settings_path() -> Path:
++    if STATE_DIR:
++        return STATE_DIR / "settings.json"
+     if WIN:
+         return Path(os.environ.get("APPDATA") or Path.home() / "AppData" / "Roaming") / "Strata" / "settings.json"
+     return Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "strata" / "settings.json"
+@@ -4380,6 +4393,8 @@ def has_data(folder: Path) -> bool:
+ def other_installs(settings: dict) -> list:
+     """Strata folders besides this one that may hold model files: the ones this user ran before, and Strata* folders
+     next to this one (a zip unpacked again lands in e.g. `Strata-main (1)\\Strata-main`)."""
++    if STATE_DIR:                                      # packaged: no other copies to collect
++        return []
+     cands = [Path(p) for p in settings.get("installs", [])]
+     for base in dict.fromkeys((ROOT.parent, ROOT.parent.parent)):
+         try:
+@@ -4461,10 +4476,14 @@ def data_folder(requested: str | None) -> tuple:
+     and of earlier Strata folders on the same drive into the data folder, and points their configs there."""
+     settings = load_settings()
+     dest = Path(requested).expanduser().resolve() if requested else \
+-        Path(settings["data_dir"]) if settings.get("data_dir") else ROOT.parent / "Strata-data"
++        Path(settings["data_dir"]) if settings.get("data_dir") else \
++        STATE_DIR / "data" if STATE_DIR else ROOT.parent / "Strata-data"
+     try:
+         dest.mkdir(parents=True, exist_ok=True)
+     except OSError as e:                                # e.g. no write access next to the Strata folder
++        if STATE_DIR:                                   # packaged: ROOT is read-only, so no fallback there
++            fail(f"cannot create {dest} for the model files ({e})",
++                 "make it writable for this user, or pass another --data-dir")
+         warn(f"cannot use {dest} for the model files ({e}): keeping them in {ROOT}")
+         dest = ROOT
+     elsewhere = []
+@@ -4749,12 +4768,14 @@ def model_config(path: Path) -> bool:
+ 
+ 
+ def installed_configs():
+-    return [p for p in sorted(model_config_files(ROOT), key=lambda p: p.stat().st_mtime, reverse=True)
++    return [p for p in sorted(model_config_files(STATE_DIR or ROOT), key=lambda p: p.stat().st_mtime, reverse=True)
+             if model_config(p)]
+ 
+ 
+ def source_version() -> str:
+     """The engine version the source tree builds (CMakeLists.txt's project version)."""
++    if STATE_DIR:                                      # packaged: no CMakeLists.txt
++        return str(json.loads((ROOT / "engine" / "BUILD.json").read_text(encoding="utf-8")).get("version") or "0")
+     m = re.search(r"project\(strata VERSION ([\d.]+)", (ROOT / "CMakeLists.txt").read_text(encoding="utf-8"))
+     return m.group(1) if m else "0"
+ 
+@@ -5439,6 +5460,8 @@ def ensure_engine_for(cards, cfg_path: Path, cfg: dict, yes: bool) -> dict:
+     older or newer generation, #128) or a new GPU in the PC otherwise stops the start with 'no kernel image'.  Such a
+     card gets the engine compiled for all of them, before the start.  A Pascal / Volta card added to a model on the
+     CUDA 13 engine moves the model to the experimental CUDA 12 engine (CUDA 13 has no code for it)."""
++    if STATE_DIR:                                      # packaged: never compiled here
++        return cfg
+     tk = config_toolkit(cfg)
+     if tk == 13 and any(int(g["arch"]) < CUDA13_MIN_ARCH for g in cards):
+         return use_cuda12(cards, cfg_path, cfg, yes)
+@@ -5499,8 +5522,49 @@ def use_cuda12(cards, cfg_path: Path, cfg: dict, yes: bool) -> dict:
+     return cfg
+ 
+ 
++def packaged_engine(gpu, hip, vision):
++    """Packaged mode's step 4: the engine the package built, engine/strata, and the engine/BUILD.json written with it:
++    {"backend": "hip", "archs": ["gfx1100", ...], "isa_floor": "portable" | "avx" | "none", "version": "0.1.45"}.
++    Nothing is downloaded or compiled: a GPU or CPU the build does not cover stops setup with what to rebuild."""
++    eng = ROOT / "engine"
++    try:
++        meta = json.loads((eng / "BUILD.json").read_text(encoding="utf-8"))
++    except (OSError, ValueError) as e:
++        fail(f"the packaged engine's {eng / 'BUILD.json'} is unreadable ({e})", "reinstall the Strata package")
++    want = "hip" if hip else "cuda"
++    if meta.get("backend") != want:
++        fail(f"the packaged engine is built for {meta.get('backend')}; this PC's GPU needs {want}",
++             "install a Strata package built for this GPU")
++    built = [str(x) for x in meta.get("archs", [])]
++    miss = [str(x) for x in gpu.get("archs") or [gpu["arch"]] if str(x) not in built]
++    if miss:
++        fail(f"the packaged engine has no code for {', '.join(miss)} (it is built for {', '.join(built) or 'none'})",
++             "rebuild the package for this GPU (Gentoo: add it to AMDGPU_TARGETS and re-emerge sci-ml/strata)")
++    floor = meta.get("isa_floor") or "portable"
++    runs_on = {"portable": ("",), "avx": ("", "avx"), "none": ("", "avx", "none")}   # cpu_floor()'s answers
++    if cpu_floor(cpu_info()[1]) not in runs_on.get(floor, ()):
++        need = {"portable": "AVX2", "avx": "AVX", "none": "SSE4.2 and POPCNT"}.get(floor, floor)
++        fail(f"the packaged engine is built for CPUs with {need} ({floor}), which this CPU lacks",
++             "rebuild the package for this CPU (Gentoo: set CPU_FLAGS_X86 and re-emerge sci-ml/strata)")
++    ok(f"engine: the packaged one ({meta.get('version')}; {', '.join(built)}; {floor})")
++    return (ROOT / "third_party" / "llama.cpp", eng, meta, meta.get("lib_dirs") or [], gpu,
++            vision if (eng / VEXE).exists() else "none")
++
++
++def new_install_port() -> int:
++    """A new install's port: 8080, or in packaged mode 8095 (the server's own default, clear of other local servers)."""
++    return 8095 if STATE_DIR else 8080
++
++
++def run_log(tag: str) -> dict:
++    """The config's engine log; none in packaged mode, where the engine writes to the server's stderr (the journal)."""
++    return {} if STATE_DIR else {"log": str(ROOT / f"strata-{tag.lower()}.log")}
++
++
+ def write_run_script(model, cfg_path, port, open_browser=True):
+     """run-<model>.bat / .sh: the server with this config; `open_browser` False (#609: --no-browser) leaves --open out."""
++    if STATE_DIR:                                      # packaged: a service starts it
++        return None
+     serve = [sys.executable, str(ROOT / "serve" / "server.py"), "--engine", "strata", "--config", str(cfg_path),
+              "--port", str(port)] + (["--open"] if open_browser else [])
+     if WIN:
+@@ -5589,6 +5653,8 @@ def sycl_setup(argv) -> int:
+ def engine_step(a, gpu, hip, amd, cuda_tk, vision):
+     """Step 4: llama.cpp's sources and the engine (ready-made, or compiled here).  Returns (llama, engine folder, its
+     BUILD.json, its library folders, the GPU (AMD on Windows: as the engine sees it), the image-encoder choice)."""
++    if STATE_DIR:
++        return packaged_engine(gpu, hip, vision)
+     llama = get_llama_cpp()
+     ok(f"llama.cpp {LLAMA_CPP_COMMIT[:7]} (gguf-py, ggml, mtmd)")
+     if hip and WIN:                                    # AMD on Windows: the ready-made HIP engine (no compiler)
+@@ -5878,9 +5944,9 @@ def install_own_path(a, family, gpu, hip, amd, cuda_tk, multi, port, ram, adopte
+         if vram > 0:
+             args += ["--expert-vram", f"{max(vram - 3.0 - a.vram_reserve_mib / 1024, 0):.1f}"]
+         ok(f"VRAM kept free for other programs: about {a.vram_reserve_mib} MiB (the experts' share is set lower)")
+-    cfg = {"exe": str(eng / EXE), "args": args, "cwd": str(ROOT), "tokenizer": str(pack / "tokenizer"),
++    cfg = {"exe": str(eng / EXE), "args": args, "cwd": str(STATE_DIR or ROOT), "tokenizer": str(pack / "tokenizer"),
+            "model_name": f"{fam['name']}-{model.lower()}", "arch": fam["arch"],
+-           "log": str(ROOT / f"strata-{tag.lower()}.log"), "lib_dirs": lib_dirs, "port": port}
++           **run_log(tag), "lib_dirs": lib_dirs, "port": port}
+     if cuda_tk == 12:
+         cfg["cuda"] = 12
+     if hip:
+@@ -5895,7 +5961,7 @@ def install_own_path(a, family, gpu, hip, amd, cuda_tk, multi, port, ram, adopte
+     if a.browser is not None:
+         cfg["open_browser"] = a.browser
+     cfg["args"] = recommend_pool_workers(cfg["args"])   # --pool-workers: this engine path's CPU expert threads too
+-    cfg_path = ROOT / f"strata-{tag.lower()}.json"
++    cfg_path = (STATE_DIR or ROOT) / f"strata-{tag.lower()}.json"
+     if vision != "none":
+         old_cfg = cfg_path if cfg_path.is_file() else adopted
+         vt = vision_tokens(getattr(a, "vision_tokens", None), vision, old_cfg)
+@@ -5917,12 +5983,14 @@ def install_own_path(a, family, gpu, hip, amd, cuda_tk, multi, port, ram, adopte
+             ok("parallel requests: one at a time (--parallel 1)")
+     write_setup_config(cfg_path, cfg, adopted if adopted is not None and adopted.name == cfg_path.name else None)
+     script = write_run_script(tag, cfg_path, port, cfg.get("open_browser") is not False)
+-    ok(f"start script: {script.name}")
++    if script:
++        ok(f"start script: {script.name}")
+     say()
+     say("All set.")
+     say(f"  API (OpenAI):     http://127.0.0.1:{port}/v1   (any API key; model name: anything)")
+     say(f"  API (Anthropic):  http://127.0.0.1:{port}/v1/messages")
+-    say(f"  Next time:        just run {'START-HERE.bat' if WIN else './setup.sh'} (or {script.name}) - it starts right away")
++    if script:
++        say(f"  Next time:        just run {'START-HERE.bat' if WIN else './setup.sh'} (or {script.name}) - it starts right away")
+     if vision != "none":
+         say("  Images:           send them in the chat page, in chat.py (/image <path>) or over the API")
+     if par is None and not par_said:                   # the opt-in, said once (nothing changes)
+@@ -6164,7 +6232,7 @@ def main() -> int:
+     # on the first one alone unless given with --setup), --gpu N runs this start on one card; neither: the saved
+     # choice, and asked once when the PC has cards that could share the model
+     run_gpu = start_gpus(a.gpus) or a.gpu
+-    port = a.port or 8080                              # a new install's port (issue #32: --port for an existing one)
++    port = a.port or new_install_port()                # a new install's port (issue #32: --port for an existing one)
+     if a.calibrate and (a.setup or a.check or not have):    # #2036: said, not dropped
+         why = ("--setup" if a.setup else "--check" if a.check else "no model is installed yet")
+         warn(f"--calibrate does nothing with {why}: it tunes a model that is already installed. Run setup first, "
+@@ -6829,7 +6897,7 @@ def main() -> int:
+         run([sys.executable, str(ROOT / "tools" / "mtp_rt.py"), "--gguf", str(mtp / "mtp-q2_0.gguf"), "--out", str(rt)],
+             env=env)
+     # a setup run again without --draft-vocab keeps the subset this model's config chose before (cyrillic, fr, en)
+-    draft_vocab = a.draft_vocab or saved_draft_vocab(ROOT / f"strata-{tag.lower()}.json")
++    draft_vocab = a.draft_vocab or saved_draft_vocab((STATE_DIR or ROOT) / f"strata-{tag.lower()}.json")
+     refresh_draft_vocab(rt, draft_vocab or "cjk")
+     ok(f"MTP draft layer: {rt}")
+     for line in draft_vocab_note(gpu.get("vram_gb", 0.0), draft_vocab):   # #474: a recommendation, nothing changes
+@@ -7010,8 +7078,8 @@ def main() -> int:
+         # the package's profile, with llama.cpp's flags (the engine takes the same ones)
+         args += ["--control-vector-scaled", f"{esp}:1.0", "--control-vector-layer-range", "4", "44",
+                  "--cvec-mode", "project", "--cvec-dir", "per-layer"]
+-    cfg = {"exe": str(eng / EXE), "args": args, "cwd": str(ROOT), "tokenizer": str(pack / "tokenizer"),
+-           "model_name": f"{fam['name']}-{model.lower()}", "log": str(ROOT / f"strata-{tag.lower()}.log"),
++    cfg = {"exe": str(eng / EXE), "args": args, "cwd": str(STATE_DIR or ROOT), "tokenizer": str(pack / "tokenizer"),
++           "model_name": f"{fam['name']}-{model.lower()}", **run_log(tag),
+            "lib_dirs": lib_dirs, "port": port}
+     if cuda_tk == 12:                                  # the experimental CUDA 12 engine (engine-cuda12/)
+         cfg["cuda"] = 12
+@@ -7089,7 +7157,7 @@ def main() -> int:
+             cfg["parallel"] = 1
+             ok("parallel requests: one at a time (--parallel 1)")
+     if vision != "none":
+-        old_cfg = ROOT / f"strata-{tag.lower()}.json"
++        old_cfg = (STATE_DIR or ROOT) / f"strata-{tag.lower()}.json"
+         vt = vision_tokens(a.vision_tokens, vision, old_cfg if old_cfg.is_file() else adopted)
+         cfg["vision"] = {"exe": str(eng / VEXE), "mmproj": str(mmproj),     # the text model, opened vocab-only:
+                          "model": str(ready_paths(model, models_dir)["dense"] if ready else shards[0]),
+@@ -7100,7 +7168,7 @@ def main() -> int:
+         warn("--vision-tokens: images are off for this model, so it is not used")
+     if a.images:                                       # only when given: else an earlier "images" is carried over
+         cfg["images"] = setup_images(a, gpu, hip, Path(a.models_dir))
+-    cfg_path = ROOT / f"strata-{tag.lower()}.json"
++    cfg_path = (STATE_DIR or ROOT) / f"strata-{tag.lower()}.json"
+     cal = setup_calibration(cfg, hip)                  # #566: Linux HIP too; the tuning is offered on NVIDIA only
+     if cal is not None:
+         sys.path.insert(0, str(ROOT / "tools"))
+@@ -7124,7 +7192,8 @@ def main() -> int:
+         tuned = calibrate_config(cfg_path)
+     else:
+         tuned = None                                   # not asked for: nothing to repeat below
+-    ok(f"start script: {script.name}")
++    if script:
++        ok(f"start script: {script.name}")
+ 
+     say()
+     say("All set.")
+@@ -7133,7 +7202,8 @@ def main() -> int:
+     if a.host and a.host not in ("127.0.0.1", "localhost"):
+         say(f"  Other devices:    the server window prints this PC's address (http://<IP>:{port}/)"
+             + ("" if a.api_key else " - no API key set: anyone on your network can use it"))
+-    say(f"  Next time:        just run {'START-HERE.bat' if WIN else './setup.sh'} (or {script.name}) - it starts right away")
++    if script:
++        say(f"  Next time:        just run {'START-HERE.bat' if WIN else './setup.sh'} (or {script.name}) - it starts right away")
+     if vision != "none":
+         say("  Images:           send them in the chat page, in chat.py (/image <path>) or over the API")
+     if cfg.get("images"):
+diff --git a/tools/test_setup_golden.json b/tools/test_setup_golden.json
+index ad762c1..ec57f48 100644
+--- a/tools/test_setup_golden.json
++++ b/tools/test_setup_golden.json
+@@ -213,7 +213,7 @@
+    "port": 8080,
+    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+    "vision": {
+-    "exe": "<T>/engine/strata-vision.exe",
++    "exe": "<T>/engine/<VEXE>",
+     "gpu": true,
+     "max_tokens": 1024,
+     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+@@ -446,7 +446,7 @@
+    "port": 8080,
+    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+    "vision": {
+-    "exe": "<T>/engine/strata-vision.exe",
++    "exe": "<T>/engine/<VEXE>",
+     "gpu": true,
+     "max_tokens": 1024,
+     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+@@ -677,7 +677,7 @@
+    "port": 8080,
+    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+    "vision": {
+-    "exe": "<T>/engine/strata-vision.exe",
++    "exe": "<T>/engine/<VEXE>",
+     "gpu": false,
+     "max_tokens": 300,
+     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+@@ -895,7 +895,7 @@
+    "port": 8080,
+    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+    "vision": {
+-    "exe": "<T>/engine/strata-vision.exe",
++    "exe": "<T>/engine/<VEXE>",
+     "gpu": true,
+     "max_tokens": 1024,
+     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+@@ -1117,7 +1117,7 @@
+    "port": 8080,
+    "tokenizer": "<T>/data/packs/unsloth-ud-q4_k_xl/tokenizer",
+    "vision": {
+-    "exe": "<T>/engine/strata-vision.exe",
++    "exe": "<T>/engine/<VEXE>",
+     "gpu": false,
+     "max_tokens": 300,
+     "mmproj": "<T>/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+diff --git a/tools/test_setup_golden.py b/tools/test_setup_golden.py
+index af0777a..9c8a4a7 100644
+--- a/tools/test_setup_golden.py
++++ b/tools/test_setup_golden.py
+@@ -56,7 +56,8 @@ def normalize(v, t: Path):
+     if isinstance(v, list):
+         return [normalize(x, t) for x in v]
+     if isinstance(v, str):
+-        return re.sub(rf"(?<![w.-]){re.escape(setup.EXE)}(?![w.-])", "<EXE>", v.replace(str(t), "<T>").replace("\\", "/"))   # #973: only the whole name, not "strata-x.log" on Linux
++        v = re.sub(rf"(?<![w.-]){re.escape(setup.VEXE)}(?![w.-])", "<VEXE>", v.replace(str(t), "<T>").replace("\\", "/"))
++        return re.sub(rf"(?<![w.-]){re.escape(setup.EXE)}(?![w.-])", "<EXE>", v)   # #973: only the whole name, not "strata-x.log" on Linux
+     return v
+ 
+ 
+diff --git a/tools/test_setup_packaged.py b/tools/test_setup_packaged.py
+new file mode 100644
+index 0000000..c3ba93c
+--- /dev/null
++++ b/tools/test_setup_packaged.py
+@@ -0,0 +1,226 @@
++"""Tests for setup.py's packaged mode (opt-in, STRATA_STATE_DIR): a distribution installs Strata read-only and points
++STRATA_STATE_DIR at a writable folder.  The model configs, settings.json and the default data folder go there; setup
++never runs pip, downloads or compiles an engine, and writes no start script.  No GPU, no downloads.
++
++    python -m pytest tools/test_setup_packaged.py
++"""
++from __future__ import annotations
++
++import argparse
++import contextlib
++import io
++import json
++import os
++import shutil
++import subprocess
++import sys
++import tempfile
++import unittest
++from pathlib import Path
++from unittest import mock
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++sys.path.insert(0, str(ROOT / "tools"))
++import setup  # noqa: E402
++
++
++class Args(argparse.Namespace):
++    """setup's parsed arguments: an option not set here was not given."""
++    def __getattr__(self, name):
++        return None
++
++
++def build_json(folder: Path, **meta) -> None:
++    """The package's engine/strata and the engine/BUILD.json it writes beside it."""
++    eng = folder / "engine"
++    eng.mkdir(parents=True)
++    (eng / setup.EXE).write_bytes(b"")
++    (eng / "BUILD.json").write_text(json.dumps({"backend": "hip", "archs": ["gfx1100"], "isa_floor": "avx",
++                                                "version": "0.1.45", **meta}), encoding="utf-8")
++
++
++def files(folder: Path) -> set:
++    return {p.relative_to(folder) for p in folder.rglob("*")}
++
++
++def patch(test: unittest.TestCase, *patches) -> None:
++    for p in patches:
++        p.start()
++        test.addCleanup(p.stop)
++
++
++class Packaged(unittest.TestCase):
++    """Given packaged mode: a read-only install (ROOT) and its state folder (STATE_DIR), both temporary."""
++    def setUp(self):
++        self.tmp = Path(tempfile.mkdtemp(prefix="strata-packaged-"))
++        self.addCleanup(shutil.rmtree, self.tmp, True)
++        self.root, self.state = self.tmp / "usr-lib-strata", self.tmp / "state"
++        self.root.mkdir()
++        self.state.mkdir()
++        patch(self, mock.patch.object(setup, "ROOT", self.root),
++              mock.patch.object(setup, "STATE_DIR", self.state, create=True))
++
++
++class SwitchTest(unittest.TestCase):
++    def test_given_strata_state_dir_when_setup_loads_then_packaged_mode_is_on(self):
++        env = dict(os.environ, STRATA_STATE_DIR="/var/lib/strata")
++        on = subprocess.run([sys.executable, "-c", "import setup; print(setup.STATE_DIR)"], cwd=ROOT, env=env,
++                            capture_output=True, text=True)
++        self.assertEqual(on.stdout.strip(), "/var/lib/strata", on.stderr)
++        env.pop("STRATA_STATE_DIR")
++        off = subprocess.run([sys.executable, "-c", "import setup; print(setup.STATE_DIR)"], cwd=ROOT, env=env,
++                             capture_output=True, text=True)
++        self.assertEqual(off.stdout.strip(), "None", off.stderr)
++
++
++class InstallTest(Packaged):
++    def test_given_packaged_mode_when_setup_installs_then_its_files_are_under_the_state_dir_only(self):
++        key = next(iter(setup.OWN_PATH_FAMILIES))
++        fam = setup.OWN_PATH_FAMILIES[key]
++        model = next(iter(fam["models"]))
++        tag = fam["tag"] + model
++        gguf_dir = self.tmp / "gguf"
++        gguf_dir.mkdir()
++        (gguf_dir / fam["file"].format(q=model)).write_bytes(b"")
++        tok = self.state / "data" / "packs" / tag.lower() / "tokenizer"
++        tok.mkdir(parents=True)
++        (tok / "vocab.json").write_text("{}", encoding="utf-8")
++        (self.tmp / "venv").mkdir()
++        before = files(self.root)
++        runs = []
++        gpu = {"index": 0, "count": 1, "arch": "gfx1100", "name": "Radeon", "vram_gb": 24.0}
++        eng = self.root / "engine"
++        a = Args(model=model, context=32768, yes=True, no_start=True, gguf_dir=str(gguf_dir))
++        with mock.patch.object(setup, "engine_step", lambda *x: (self.root / "third_party" / "llama.cpp", eng, {}, [],
++                                                                 gpu, "none")), \
++                mock.patch.object(setup, "engine_families", lambda e: {fam["arch"]}), \
++                mock.patch.object(setup, "own_path_vision", lambda *x: "none"), \
++                mock.patch.object(setup, "done", lambda p: True), \
++                mock.patch.object(setup, "verify_sha256", lambda *x: None), \
++                mock.patch.object(setup, "recommend_pool_workers", lambda args: args), \
++                mock.patch.object(setup, "run", lambda cmd, **k: runs.append(cmd)), \
++                mock.patch.object(sys, "prefix", str(self.tmp / "venv")), \
++                contextlib.redirect_stdout(io.StringIO()):
++            rc = setup.install_own_path(a, key, gpu, True, [], 13, False, 8095, 1000.0, None)
++        self.assertEqual(rc, 0)
++        self.assertEqual(files(self.root), before, "nothing is written into the read-only install")
++        cfg = json.loads((self.state / f"strata-{tag.lower()}.json").read_text(encoding="utf-8"))
++        self.assertNotIn("log", cfg, "no log file: the engine writes to the server's stderr (the journal)")
++        self.assertEqual(cfg["cwd"], str(self.state))
++        self.assertEqual(cfg["port"], 8095)
++        self.assertEqual(setup.settings_path(), self.state / "settings.json")
++        self.assertTrue((self.state / "settings.json").is_file())
++        self.assertEqual(sorted(self.state.glob("run-*")), [])
++        self.assertEqual([c for c in runs if "pip" in c], [])
++
++
++class PipTest(Packaged):
++    def test_given_packaged_mode_when_setup_checks_python_packages_then_it_never_runs_pip(self):
++        runs = []
++        (self.tmp / "venv").mkdir()
++        with mock.patch.object(setup, "run", lambda cmd, **k: runs.append(cmd)), \
++                mock.patch.object(sys, "prefix", str(self.tmp / "venv")), contextlib.redirect_stdout(io.StringIO()):
++            setup.pip_install(["numpy==2.5.3"], "numpy")
++        self.assertEqual(runs, [])
++
++
++class EngineTest(Packaged):
++    """Given packaged mode and the package's engine/BUILD.json: nothing is downloaded or compiled."""
++    def setUp(self):
++        super().setUp()
++        for name in ("download", "build_engine", "build_engine_hip", "get_prebuilt", "get_prebuilt_hip", "cmake_build",
++                     "run"):
++            patch(self, mock.patch.object(setup, name, mock.Mock(side_effect=AssertionError(f"setup ran {name}"))))
++        self.cpu("avx")
++
++    def cpu(self, floor: str) -> None:
++        patch(self, mock.patch.object(setup, "cpu_info", lambda: ("cpu", floor == "")),
++              mock.patch.object(setup, "cpu_floor", lambda avx2: floor))
++
++    def step(self, arch="gfx1100"):
++        out = io.StringIO()
++        with contextlib.redirect_stdout(out):
++            try:
++                r = setup.engine_step(Args(), {"index": 0, "count": 1, "arch": arch, "name": "Radeon"}, True, [], 13,
++                                      "none")
++            except SystemExit:
++                return None, out.getvalue()
++        return r, out.getvalue()
++
++    def test_given_a_build_for_this_pc_when_setup_runs_then_it_uses_the_packaged_engine(self):
++        build_json(self.root)
++        r, out = self.step()
++        self.assertIsNotNone(r, out)
++        self.assertEqual(r[1], self.root / "engine")
++        self.assertEqual(r[3], [])
++
++    def test_given_a_card_the_build_lacks_when_setup_runs_then_it_stops_with_the_amdgpu_targets_hint(self):
++        build_json(self.root)
++        r, out = self.step("gfx1201")
++        self.assertIsNone(r)
++        self.assertIn("gfx1201", out)
++        self.assertIn("AMDGPU_TARGETS", out)
++
++    def test_given_an_avx2_build_on_an_avx_cpu_when_setup_runs_then_it_stops_with_the_cpu_flags_hint(self):
++        build_json(self.root, isa_floor="portable")
++        r, out = self.step()
++        self.assertIsNone(r)
++        self.assertIn("CPU_FLAGS_X86", out)
++
++    def test_given_a_no_avx_build_on_an_avx2_cpu_when_setup_runs_then_it_runs(self):
++        build_json(self.root, isa_floor="none")
++        self.cpu("")
++        r, out = self.step()
++        self.assertIsNotNone(r, out)
++
++
++class DataTest(Packaged):
++    def test_given_packaged_mode_then_the_data_dir_is_state_data_and_other_copies_are_left_alone(self):
++        old = self.tmp / "Strata-old"
++        (old / "models").mkdir(parents=True)
++        (old / "setup.py").write_text("", encoding="utf-8")
++        (old / "models" / "m.gguf").write_bytes(b"x")
++        with contextlib.redirect_stdout(io.StringIO()):
++            dest, elsewhere = setup.data_folder(None)
++        self.assertEqual(dest, self.state / "data")
++        self.assertEqual(elsewhere, [])
++        self.assertEqual(setup.other_installs({"installs": [str(old)]}), [])
++        self.assertTrue((old / "models" / "m.gguf").is_file())
++
++    def test_given_packaged_mode_when_the_data_dir_cannot_be_made_then_setup_stops_and_remembers_nothing(self):
++        ro = self.tmp / "ro"
++        ro.mkdir(mode=0o500)
++        self.addCleanup(ro.chmod, 0o700)
++        with contextlib.redirect_stdout(io.StringIO()), self.assertRaises(SystemExit):
++            setup.data_folder(str(ro / "data"))
++        self.assertFalse((self.state / "settings.json").exists(), "the read-only install is never the data dir")
++
++
++class ScriptTest(Packaged):
++    def test_given_packaged_mode_when_setup_finishes_then_it_writes_no_run_script(self):
++        self.assertIsNone(setup.write_run_script("Q4", self.state / "strata-q4.json", 8095))
++        self.assertEqual(files(self.root), set())
++        self.assertEqual(files(self.state), set())
++
++
++class PortTest(unittest.TestCase):
++    def test_given_packaged_mode_and_no_port_then_a_new_install_gets_8095(self):
++        with mock.patch.object(setup, "STATE_DIR", Path("/var/lib/strata"), create=True):
++            self.assertEqual(setup.new_install_port(), 8095)
++
++    def test_given_no_packaged_mode_then_a_new_install_keeps_8080(self):
++        with mock.patch.object(setup, "STATE_DIR", None, create=True):
++            self.assertEqual(setup.new_install_port(), 8080)
++
++    def test_given_no_port_when_setup_runs_then_the_config_records_the_new_install_port(self):
++        import test_setup_golden as golden
++        ram, found = golden.PROFILES["32GB-2x24GB"]
++        code, out, cfg, _ = golden.install(ram, found, golden.argv_for("qwen", "IQ3_XXS"),
++                                           extra=[mock.patch.object(setup, "new_install_port", lambda: 8095)])
++        self.assertEqual(code, 0, out[-3000:])
++        self.assertEqual(cfg["port"], 8095)
++
++
++if __name__ == "__main__":
++    unittest.main()
