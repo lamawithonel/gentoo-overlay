@@ -186,6 +186,8 @@ src_install() {
 
 	systemd_newunit "${FILESDIR}"/strata_at.service 'strata@.service'
 	dobin "${FILESDIR}"/strata-setup
+	exeinto /usr/libexec
+	doexe "${FILESDIR}"/strata-hugepages
 
 	docinto examples
 	dodoc "${FILESDIR}"/dropins/*.conf

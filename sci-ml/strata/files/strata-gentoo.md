@@ -88,6 +88,28 @@ comma-separated list of names (ports are ignored).  The same list can
 go in the config as `"allowed_hosts": ["my-server.lan"]`, or set an
 API key (`"api_key"`) instead.
 
+## Huge pages
+
+The engine asks for its CPU expert arena in 2 MiB huge pages, all or
+nothing.  With the pool short by even one page, it logs
+`MAP_HUGETLB unavailable (needed N 2 MiB pages, vm.nr_hugepages=M)`
+and falls back to normal pages, plus transparent huge pages where the
+kernel gives them.  It still runs, just with more TLB misses.
+
+The reliable way to get the pages is to reserve them at boot, before
+memory fragments.  Add `hugepages=N` to the kernel command line, or
+put `vm.nr_hugepages = N` in `/etc/sysctl.d/strata.conf`.  Those pages
+are gone for everything else until you lower the number again.
+
+To hold them only while the instance runs, install the
+`hugepages.conf` drop-in under `strata@<tag>.service.d/` and set
+`STRATA_HUGEPAGES=N`.  Before each start, `/usr/libexec/strata-hugepages`
+adds N pages to the pool; after each stop it takes back what it added.
+On a long-running machine the kernel may find fewer than N free 2 MiB
+blocks.  The helper then gives back what it got, logs how many it
+found, and lets the instance start on normal pages.  If that keeps
+happening, reserve the pages at boot instead.
+
 ## SELinux
 
 `sec-policy/selinux-strata` runs the server and its engine in
