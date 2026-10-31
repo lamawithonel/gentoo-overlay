@@ -15,6 +15,7 @@ hk.local.pkl
 # Local editor and agent tooling artifacts (zero-byte strays and
 # per-host config; none of these belong to the overlay).
 .claude/
+.pi/
 .mcp.json
 .idea
 .vscode
