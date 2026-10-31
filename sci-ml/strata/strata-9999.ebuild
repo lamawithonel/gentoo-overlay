@@ -7,6 +7,9 @@ PYTHON_COMPAT=( python3_{12..15} )
 # Limit AMDGPU_TARGETS to the wave32 archs upstream builds kernels for;
 # defaults follow rocm.eclass (ROCm 7 official archs on).
 ROCM_SKIP_GLOBALS=1
+# Upstream builds Release.  cmake.eclass blanks the per-type flags for C
+# and C++ only, so RelWithDebInfo would leave the HIP kernels at -O2 -g.
+CMAKE_BUILD_TYPE=Release
 
 inherit cmake git-r3 python-single-r1 rocm systemd toolchain-funcs
 
