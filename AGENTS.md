@@ -104,6 +104,8 @@
    root.  Regenerate manifests with `mise run manifest`, which
    uses the repo-local distdir and fails if a Manifest changed.
    The pre-commit hook runs both against the staged changes.
+ - Shell helpers shipped in `files/` have bats specs in
+   `.config/tests/`; run them with `mise run test-shell`.
  - **Test builds** run through `mise run test-mojo` (one build),
    `mise run test-matrix` (USE-flag matrix), or
    `mise run test-strata` (sci-ml/strata, or any `EBUILD=`),
