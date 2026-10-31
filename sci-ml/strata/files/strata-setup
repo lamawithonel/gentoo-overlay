@@ -1,0 +1,35 @@
+#!/bin/sh
+# strata-setup: run Strata's installer (/usr/lib/strata/setup.py) as the
+# strata user in packaged mode, so its configs, settings, and data dir land in
+# /var/lib/strata instead of the read-only /usr/lib/strata.
+#
+# Usage:        strata-setup [setup.py arguments...], as root or as strata.
+# Environment:  sets STRATA_STATE_DIR, HOME, HF_HOME, and PYTHONNOUSERSITE for setup.py.
+# Exit status:  setup.py's; 1 when run as any other user.
+
+set -o errexit
+set -o nounset
+
+SELF_NAME="$(basename "$0")" && readonly SELF_NAME
+
+_fail() {
+	echo "ERROR: $*" >&2
+	exit 1
+}
+
+case "$(id -un)" in
+	root)
+		# A new pty: code running as strata must not get root's terminal.
+		exec runuser --pty -u strata -- "$0" "$@"
+		;;
+	strata) ;;
+	*)
+		_fail "run ${SELF_NAME} as root; it switches to the strata user itself."
+		;;
+esac
+
+# The service can write HOME, so never load its user site-packages.
+export STRATA_STATE_DIR='/var/lib/strata' HOME='/var/lib/strata' HF_HOME='/var/lib/strata/huggingface' PYTHONNOUSERSITE=1
+umask 027
+# The server runs only as strata@<tag>.service, never from setup.
+exec /usr/lib/strata/setup.py --no-start "$@"

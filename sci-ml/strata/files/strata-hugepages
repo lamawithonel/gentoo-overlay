@@ -1,0 +1,109 @@
+#!/bin/sh
+# strata-hugepages: grow the 2 MiB hugetlb pool for one strata@<tag>
+# instance before it starts and shrink it again after it stops.  The
+# engine maps its expert arena with MAP_HUGETLB | MAP_HUGE_2MB, all or
+# nothing, so a pool that is short by one page is as useless as none:
+# reserve gives back a short grant and lets Strata fall back to normal
+# pages rather than strand the memory.
+#
+# Usage:        strata-hugepages reserve <tag> <pages>
+#               strata-hugepages release <tag>
+#               Run as root, from ExecStartPre=+ and ExecStopPost=+.
+# Environment:  STRATA_HUGEPAGES_POOL    pool size file, default
+#                   /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+#               STRATA_HUGEPAGES_RUNDIR  per-instance records and lock,
+#                   default /run/strata-hugepages
+# Exit status:  0 when the pool was changed, or left alone with a warning
+#               (a short grant or a pool it cannot write); 1 on bad usage.
+
+set -o errexit
+set -o nounset
+
+SELF_NAME="$(basename "$0")" && readonly SELF_NAME
+readonly POOL="${STRATA_HUGEPAGES_POOL:-/sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages}"
+readonly RUNDIR="${STRATA_HUGEPAGES_RUNDIR:-/run/strata-hugepages}"
+
+_usage() {
+	cat <<- EOF
+		Usage: ${SELF_NAME} reserve <tag> <pages>
+		       ${SELF_NAME} release <tag>
+	EOF
+}
+
+_fail() {
+	echo "ERROR: $*" >&2
+	exit 1
+}
+
+_warn() {
+	echo "WARNING: $*" >&2
+}
+
+_pool_read() {
+	read -r _n < "$POOL"
+	echo "$_n"
+}
+
+# The kernel accepts any size and grants what it can, so the caller
+# reads the pool back; this fails only when the write itself does.
+_pool_write() {
+	{ echo "$1" > "$POOL"; } 2> /dev/null
+}
+
+# Shrinks the pool by the pages <tag> reserved and forgets them.  The
+# caller holds the lock.
+_release() {
+	_record="${RUNDIR}/$1"
+	[ -f "$_record" ] || return 0
+	read -r _held < "$_record"
+	_now="$(_pool_read)"
+	_new=$((_now - _held))
+	[ "$_new" -ge 0 ] || _new=0
+	_pool_write "$_new" || _warn "cannot set ${POOL} to ${_new}; ${_held} pages stay reserved"
+	rm -f "$_record"
+}
+
+_reserve() {
+	_release "$1"
+	_had="$(_pool_read)"
+	_want=$((_had + $2))
+	if ! _pool_write "$_want"; then
+		_warn "cannot set ${POOL} to ${_want}; Strata will use normal pages"
+		return 0
+	fi
+	_got="$(_pool_read)"
+	if [ "$_got" -lt "$_want" ]; then
+		_pool_write "$_had" || _warn "cannot roll ${POOL} back to ${_had}"
+		_warn "got $((_got - _had)) of $2 2 MiB pages (memory is fragmented);" \
+			'gave them back, Strata will use normal pages'
+		return 0
+	fi
+	echo "$2" > "${RUNDIR}/$1"
+}
+
+_cmd="${1:-}"
+_tag="${2:-}"
+case "${_cmd}:$#" in
+	reserve:3 | release:2) ;;
+	*)
+		_usage >&2
+		exit 1
+		;;
+esac
+
+case "$_tag" in
+	'' | '.' | '..' | */*) _fail "bad instance tag '${_tag}'" ;;
+esac
+if [ "$_cmd" = reserve ]; then
+	case "$3" in
+		'' | 0 | *[!0-9]*) _fail "pages must be a positive integer, not '${3}'" ;;
+	esac
+fi
+
+[ -d "$RUNDIR" ] || mkdir -m 0700 "$RUNDIR"
+# One lock for all instances: each one's arithmetic reads and writes the
+# same pool.
+exec 9> "${RUNDIR}/.lock"
+flock 9
+
+"_${_cmd}" "$_tag" "${3:-}"

@@ -37,6 +37,10 @@
  - Ebuild packages, all following the standard Gentoo
    `<category>/<pkg>/<pkg>-<ver>.ebuild` + `metadata.xml` +
    `Manifest` layout:
+   - `acct-group/strata/`, `acct-user/strata/` -- the service
+     account for sci-ml/strata (home `/var/lib/strata`, groups
+     `render` and `video`).  EAPI 9, as the acct eclasses allow
+     and ::gentoo's sci-ml/ollama accounts use.
    - `app-admin/snapraid-mergerfs-setup/` — helper scripts and
      docs for a SnapRAID + mergerfs array.
    - `dev-lang/mojo/` — the Mojo compiler and stdlib, built
@@ -50,6 +54,16 @@
    - `media-fonts/bitter-pro/` — the Bitter Pro typeface
      (`inherit font`; successor to the deleted upstream of
      media-fonts/bitter).
+   - `sci-ml/strata/` -- the Strata LLM engine (ROCm only) and
+     its OpenAI-compatible server: a read-only tree in
+     `/usr/lib/strata`, served by `strata@<tag>.service`.  One
+     packaged-mode patch, shared with 9999, moves every write
+     to `/var/lib/strata`; `strata-setup` writes the configs.
+   - `sec-policy/selinux-strata/` -- SELinux policy for
+     sci-ml/strata.  Its version tracks the base policy, and
+     RDEPEND caps the base below the next patch bundle because
+     its `/dev/kfd` label must go once the base has one; bump
+     the two together.
 
 ## Conventions
 
@@ -90,12 +104,15 @@
    root.  Regenerate manifests with `mise run manifest`, which
    uses the repo-local distdir and fails if a Manifest changed.
    The pre-commit hook runs both against the staged changes.
- - **Test builds** run through `mise run test-mojo` (one build)
-   or `mise run test-matrix` (USE-flag matrix), which build the
-   working tree via `PORTAGE_REPOSITORIES` — never the
-   installed copy of the overlay.  Constraints, enforced by the
-   task and by gitignored `.config/mise/config.local.toml` host
-   config:
+ - Shell helpers shipped in `files/` have bats specs in
+   `.config/tests/`; run them with `mise run test-shell`.
+ - **Test builds** run through `mise run test-mojo` (one build),
+   `mise run test-matrix` (USE-flag matrix), or
+   `mise run test-strata` (sci-ml/strata, or any `EBUILD=`),
+   which build the working tree via `PORTAGE_REPOSITORIES` —
+   never the installed copy of the overlay.  Constraints,
+   enforced by the task and by gitignored
+   `.config/mise/config.local.toml` host config:
    - `PORTAGE_TMPDIR` and `DISTDIR` live under `.cache/agents/`
      (never system paths; build trees can reach ~8 GiB).
    - Builds are memory-capped with `choom -n 1000` so a runaway
@@ -109,6 +126,10 @@
      explicit supported `-march` (e.g. `x86-64-v2`) is passed.
      Set it in `.config/mise/config.local.toml` next to
      `MAKEOPTS`.
+   - sci-ml/strata's specs also run outside Portage with the
+     mise-managed `pytest` (`mise exec -- pytest`), which carries
+     upstream's pinned requirements.  Under `FEATURES=test`,
+     src_test needs the system `dev-python/pytest` instead.
  - To rebuild metadata cache (only for local use; do not
    commit): `egencache --update --repo=lamawithonel
    --jobs=$(nproc)`.
