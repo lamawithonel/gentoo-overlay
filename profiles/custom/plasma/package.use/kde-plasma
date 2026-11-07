@@ -8,6 +8,6 @@ kde-plasma/plasma-firewall              firewalld -ufw
 kde-plasma/plasma-meta                  colord discover flatpak networkmanager
 kde-plasma/plasma-nm                    -modemmanager
 kde-plasma/plasma-vault                 networkmanager
-kde-plasma/plasma-workspace             appstream -flatpak geolocation qrcode screencast
+kde-plasma/plasma-workspace             appstream flatpak geolocation qrcode screencast
 kde-plasma/powerdevil                   brightness-control
 kde-plasma/spectacle                    share
