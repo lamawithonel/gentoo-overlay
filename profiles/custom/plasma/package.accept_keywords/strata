@@ -1,0 +1,17 @@
+sci-ml/strata
+acct-group/strata
+acct-user/strata
+sec-policy/selinux-strata
+
+# required by sci-ml/strata-0.1.45::lamawithonel
+# required by sci-ml/strata (argument)
+sci-ml/huggingface_hub
+# required by sci-ml/huggingface_hub-2.2.0::stuff[torch]
+# required by sci-ml/strata-0.1.45::lamawithonel
+# required by sci-ml/strata (argument)
+sci-ml/pytorch
+# required by sci-ml/pytorch-2.14.1-r91::stuff[rocm]
+# required by sci-ml/huggingface_hub-2.2.0::stuff[torch]
+# required by sci-ml/strata-0.1.45::lamawithonel
+# required by sci-ml/strata (argument)
+sci-ml/caffe2
