@@ -60,10 +60,12 @@
      packaged-mode patch, shared with 9999, moves every write
      to `/var/lib/strata`; `strata-setup` writes the configs.
    - `sec-policy/selinux-strata/` -- SELinux policy for
-     sci-ml/strata.  Its version tracks the base policy, and
-     RDEPEND caps the base below the next patch bundle because
-     its `/dev/kfd` label must go once the base has one; bump
-     the two together.
+     sci-ml/strata.  Its version tracks the base policy.  From
+     2.20260922 the base labels `/dev/kfd`; the 2.20260616
+     ebuild adds its own label through a `POLICY_PATCH` and caps
+     the base below the next patch bundle, because two labels
+     for one path fail the policy load.  Drop it once the newer
+     base is stable.
 
 ## Conventions
 

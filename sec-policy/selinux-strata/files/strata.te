@@ -1,9 +1,5 @@
 policy_module(strata, 1.0.0)
 
-gen_require(`
-	type device_t;
-')
-
 ########################################
 #
 # Declarations
@@ -30,10 +26,6 @@ files_type(strata_var_lib_t)
 
 type strata_port_t;
 corenet_port(strata_port_t)
-
-# Fedora's type for the ROCm compute node; see strata.fc.
-type hsa_device_t;
-dev_node(hsa_device_t)
 
 ########################################
 #
@@ -65,9 +57,10 @@ kernel_read_system_state(strata_t)
 dev_read_sysfs(strata_t)
 
 dev_rw_dri(strata_t)
-# ROCr opens /dev/kfd read-write and mmaps its doorbell and event pages.
-rw_chr_files_pattern(strata_t, device_t, hsa_device_t)
-allow strata_t hsa_device_t:chr_file map;
+# ROCr opens /dev/kfd, which the base policy labels xserver_misc_device_t,
+# read-write and mmaps its doorbell and event pages.
+dev_rw_xserver_misc(strata_t)
+dev_map_xserver_misc(strata_t)
 
 # The Python interpreter, its libraries, /usr/lib/strata, and ROCm.
 corecmd_exec_bin(strata_t)

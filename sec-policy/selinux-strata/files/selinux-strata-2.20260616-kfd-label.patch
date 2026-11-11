@@ -1,0 +1,53 @@
+Keep the strata module's own /dev/kfd label (hsa_device_t, Fedora's type) for
+base policies before 2.20260922, which leave the node device_t.
+
+--- a/3rd_party/strata.fc
++++ b/3rd_party/strata.fc
+@@ -1,6 +1,10 @@
+ /usr/lib/strata/engine/strata(-vision(-hip)?)?	--	gen_context(system_u:object_r:strata_exec_t,s0)
+ /usr/lib/strata/serve/server\.py	--	gen_context(system_u:object_r:strata_exec_t,s0)
+ 
++# Base policy 2.20260922 and 9999 label this xserver_misc_device_t; two
++# specs for one path fail the policy load, so the ebuild caps the base.
++/dev/kfd	-c	gen_context(system_u:object_r:hsa_device_t,s0)
++
+ /var/lib/strata(/.*)?	gen_context(system_u:object_r:strata_var_lib_t,s0)
+ # The HF cache may be a bind-mounted user cache; restorecon must leave
+ # its labels alone.  The longer fixed stem sorts after the entry above,
+--- a/3rd_party/strata.te
++++ b/3rd_party/strata.te
+@@ -1,5 +1,9 @@
+ policy_module(strata, 1.0.0)
+ 
++gen_require(`
++	type device_t;
++')
++
+ ########################################
+ #
+ # Declarations
+@@ -27,6 +31,10 @@
+ type strata_port_t;
+ corenet_port(strata_port_t)
+ 
++# Fedora's type for the ROCm compute node; see strata.fc.
++type hsa_device_t;
++dev_node(hsa_device_t)
++
+ ########################################
+ #
+ # Local policy
+@@ -57,10 +65,9 @@
+ dev_read_sysfs(strata_t)
+ 
+ dev_rw_dri(strata_t)
+-# ROCr opens /dev/kfd, which the base policy labels xserver_misc_device_t,
+-# read-write and mmaps its doorbell and event pages.
+-dev_rw_xserver_misc(strata_t)
+-dev_map_xserver_misc(strata_t)
++# ROCr opens /dev/kfd read-write and mmaps its doorbell and event pages.
++rw_chr_files_pattern(strata_t, device_t, hsa_device_t)
++allow strata_t hsa_device_t:chr_file map;
+ 
+ # The Python interpreter, its libraries, /usr/lib/strata, and ROCm.
+ corecmd_exec_bin(strata_t)

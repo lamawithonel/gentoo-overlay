@@ -150,13 +150,14 @@ happening, reserve the pages at boot instead.
 
 `sec-policy/selinux-strata` runs the server and its engine in
 `strata_t`, for now as a permissive domain: denials are logged, not
-enforced.  It labels `/dev/kfd`, the ROCm compute node, as
-`hsa_device_t` (the type Fedora uses), which `strata_t` may open.
-Unconfined users keep ROCm access; confined user domains such as
-`staff_t` and `user_t` lose it.  Base policy 2.20260922 labels
-`/dev/kfd` on its own, and two labels for one path fail the policy
-load, so this package blocks every newer base policy until a matching
-`selinux-strata` bump, which drops its own label once the base has one.
+enforced.  Base policy 2.20260922 and later label `/dev/kfd`, the ROCm
+compute node, as `xserver_misc_device_t`, which `strata_t` may open.
+Older base policies leave it `device_t`, so `selinux-strata` versions
+for them label it `hsa_device_t` (the type Fedora uses) themselves.
+There, unconfined users keep ROCm access, but confined user domains
+such as `staff_t` and `user_t` lose it.  Two labels for one path fail
+the policy load, so those versions block newer base policies: upgrade
+`selinux-base-policy` and `selinux-strata` together.
 
 The package labels tcp 8095 as `strata_port_t`.  Label any other port
 an instance listens on, and delete that label before you uninstall the

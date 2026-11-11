@@ -12,9 +12,11 @@ DESCRIPTION="SELinux policy for sci-ml/strata"
 
 KEYWORDS="~amd64 ~arm64"
 
-# Bump in step with the base policy: strata.fc's /dev/kfd spec conflicts
-# with the one base 2.20260922 and hardened-refpolicy master add, so any
-# newer patch bundle may carry it.  Drop the spec once the base has it.
+# This base leaves /dev/kfd device_t, so the module labels it itself.
+POLICY_PATCH=( "${FILESDIR}"/${PN}-2.20260616-kfd-label.patch )
+
+# A newer base may carry its own /dev/kfd label (2.20260922 does), and
+# two specs for one path fail the policy load.
 RDEPEND="<sec-policy/selinux-base-policy-2.20260616_p2"
 
 # semanage labels the server port in pkg_postinst and pkg_postrm.
