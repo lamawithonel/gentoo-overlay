@@ -9,8 +9,11 @@ User=strata
 Group=strata
 SupplementaryGroups=render video
 Environment=STRATA_STATE_DIR=%S/strata
+# "--offline" blocks the server's outbound network access (MCP tool servers
+# and image URLs); the offline.conf and online.conf drop-ins set it.
+Environment=STRATA_OFFLINE_FLAG=
 # No --port: in packaged mode the server listens on the config's "port".
-ExecStart=/usr/lib/strata/serve/server.py --engine strata --config %S/strata/strata-%i.json
+ExecStart=/usr/lib/strata/serve/server.py --engine strata --config %S/strata/strata-%i.json $STRATA_OFFLINE_FLAG
 WorkingDirectory=%S/strata
 StateDirectory=strata
 StateDirectoryMode=0750

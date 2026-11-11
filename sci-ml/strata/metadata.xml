@@ -6,6 +6,9 @@
 		<name>Lucas Yamanishi</name>
 	</maintainer>
 	<use>
+		<flag name="default-offline">Start the server with --offline by default, blocking its outbound network access (MCP tool servers and images by URL); drop-ins switch it either way</flag>
+		<flag name="hipblaslt">Use <pkg>sci-libs/hipBLASLt</pkg> and upstream's tuning tables for prompt processing (on by default only on gfx1151; STRATA_HIPBLASLT_TABLE=on enables it elsewhere)</flag>
+		<flag name="vision">Build the image readers (CPU and HIP) so models can read pictures</flag>
 		<flag name="rocm">Build the inference engine for AMD GPUs with HIP (<pkg>dev-util/hip</pkg>)</flag>
 	</use>
 	<upstream>

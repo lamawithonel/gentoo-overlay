@@ -88,6 +88,42 @@ comma-separated list of names (ports are ignored).  The same list can
 go in the config as `"allowed_hosts": ["my-server.lan"]`, or set an
 API key (`"api_key"`) instead.
 
+## Network access
+
+The server itself reaches out only for MCP tool servers and for images
+given by URL.  `--offline` blocks both.  With `USE=default-offline`
+every instance starts with it; without the flag none does.  Either way,
+the `offline.conf` and `online.conf` drop-ins switch an instance (or all
+of them) to the other behaviour.  Downloads and setup never go through
+the service.
+
+## Images
+
+With `USE=vision` the package installs two image readers next to the
+engine: `strata-vision-hip` on the GPU and `strata-vision` on the CPU,
+its fallback.  `strata-setup` finds them in the engine's `BUILD.json`
+and records them in the config, so a model with a picture encoder reads
+images.  Without the flag those models answer text only.
+
+## hipBLASLt tuning
+
+With `USE=hipblaslt` the engine uses hipBLASLt for the dense matrix
+products of the prompt and installs upstream's tuning tables in
+`/usr/lib/strata/engine/tuning`.  It loads the table for its GPU and
+the running hipBLASLt version by itself on gfx1151 (Strix Halo), where
+upstream measured prompts about twice as fast.  On other cards a table
+changes answers in their last digits for a gain near 1%, so it stays
+off unless you set `Environment=STRATA_HIPBLASLT_TABLE=on` in a
+drop-in.  A card or hipBLASLt version without a table falls back to
+plain hipBLAS.
+
+## Models with their own engine
+
+DeepSeek-V4.1-Flash, and any model upstream's model list marks with a
+shape of its own, run on separate engines that upstream ships only
+through its signed update feed.  This package does not include them,
+so `strata-setup` stops when you choose one of those models.
+
 ## Huge pages
 
 The engine asks for its CPU expert arena in 2 MiB huge pages, all or

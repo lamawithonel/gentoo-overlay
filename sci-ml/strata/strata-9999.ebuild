@@ -28,12 +28,15 @@ AMDGPU_FLAGS=( "${AMDGPU_OFFICIAL[@]/#/amdgpu_targets_}" "${AMDGPU_UNOFFICIAL[@]
 ROCM_REQUIRED_USE=" || ( ${AMDGPU_FLAGS[*]} )"
 ROCM_USEDEP=$(printf '%s(-)?,' "${AMDGPU_FLAGS[@]}")
 ROCM_USEDEP=${ROCM_USEDEP%,}
+# hipBLASLt has no gfx1030, gfx1031, or gfx1102 code; the engine calls it
+# only with a tuning table, and there are none for those archs.
+HIPBLASLT_USEDEP="amdgpu_targets_gfx1100(-)?,amdgpu_targets_gfx1101(-)?,amdgpu_targets_gfx1151(-)?,amdgpu_targets_gfx1200(-)?,amdgpu_targets_gfx1201(-)?"
 
 IUSE="
 	${AMDGPU_OFFICIAL[*]/#/+amdgpu_targets_} ${AMDGPU_UNOFFICIAL[*]/#/amdgpu_targets_}
 	cpu_flags_x86_avx cpu_flags_x86_avx2 cpu_flags_x86_bmi2 cpu_flags_x86_f16c
 	cpu_flags_x86_fma3 cpu_flags_x86_popcnt cpu_flags_x86_sse4_2
-	+rocm selinux test
+	default-offline hipblaslt +rocm selinux test vision
 "
 # The engine's lowest CPU floor (STRATA_ISA_FLOOR=none) is SSE4.2 + POPCNT.
 REQUIRED_USE="
@@ -53,6 +56,7 @@ PYTHON_RDEPEND="
 		dev-python/regex[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
 		dev-python/tqdm[${PYTHON_USEDEP}]
+		dev-python/truststore[${PYTHON_USEDEP}]
 	')
 "
 DEPEND="
@@ -60,6 +64,7 @@ DEPEND="
 		dev-util/hip:=
 		sci-libs/hipBLAS:=[${ROCM_USEDEP}]
 		sci-libs/rocBLAS:=[${ROCM_USEDEP}]
+		hipblaslt? ( sci-libs/hipBLASLt:=[${HIPBLASLT_USEDEP}] )
 	)
 "
 RDEPEND="
@@ -80,7 +85,7 @@ BDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-0.1.45-packaged-mode.patch
+	"${FILESDIR}"/${PN}-0.2.13-packaged-mode.patch
 )
 
 EPYTEST_PLUGINS=()
@@ -100,12 +105,33 @@ _strata_isa_floor() {
 src_unpack() {
 	git-r3_src_unpack
 
-	# setup.py pins the llama.cpp commit that CMakeLists.txt also fetches
+	# gguf-py and the image reader's LLAMA_DIR expect setup.py's llama.cpp pin here
 	local uri=https://github.com/ggml-org/llama.cpp.git commit
 	commit=$(sed -n 's/^LLAMA_CPP_COMMIT = "\([0-9a-f]\{40\}\)"$/\1/p' "${S}"/setup.py) || die
 	[[ -n ${commit} ]] || die "LLAMA_CPP_COMMIT not found in setup.py"
 	git-r3_fetch ${uri} ${commit} ${CATEGORY}/${PN}/llama.cpp
 	git-r3_checkout ${uri} "${S}"/third_party/llama.cpp ${CATEGORY}/${PN}/llama.cpp
+}
+
+src_prepare() {
+	# A non-portable image reader would build with -march=native; take CFLAGS.
+	sed -i 's/set(GGML_NATIVE ON CACHE BOOL "" FORCE)/set(GGML_NATIVE OFF CACHE BOOL "" FORCE)/' \
+		tools/vision/CMakeLists.txt || die
+	cmake_src_prepare
+}
+
+# Configure the image reader (tools/vision) in its own build dir.
+# Usage: _strata_vision_configure <build dir> [cmake args...]
+_strata_vision_configure() {
+	local BUILD_DIR=${1} CMAKE_USE_DIR="${S}"/tools/vision
+	shift
+	local mycmakeargs=(
+		-DLLAMA_DIR="${S}"/third_party/llama.cpp
+		-DSTRATA_VISION_CUDA=OFF
+		-DSTRATA_PORTABLE=$([[ $(_strata_isa_floor) == portable ]] && echo ON || echo OFF)
+		"${@}"
+	)
+	cmake_src_configure
 }
 
 src_configure() {
@@ -114,7 +140,6 @@ src_configure() {
 	# upstream's HIP flags (setup.py build_engine_hip)
 	local mycmakeargs=(
 		-DGGML_NATIVE=OFF
-		-DSTRATA_GGML_DIR="${S}"/third_party/llama.cpp
 		-DSTRATA_ENABLE_CUDA=OFF
 		-DSTRATA_ENABLE_HIP=$(usex rocm)
 		-DSTRATA_BUILD_TESTS=OFF
@@ -123,8 +148,7 @@ src_configure() {
 		-DSTRATA_MMQ_KQUANTS=ON
 		-DCMAKE_HIP_ARCHITECTURES="${archs%;}"
 		-DCMAKE_HIP_COMPILER="$(tc-getHIPCXX)"
-		# found automagically otherwise
-		-DCMAKE_DISABLE_FIND_PACKAGE_hipblaslt=ON
+		$(cmake_use_find_package hipblaslt hipblaslt)
 	)
 	if [[ ${floor} == portable ]]; then
 		mycmakeargs+=( -DSTRATA_PORTABLE=ON )
@@ -132,10 +156,25 @@ src_configure() {
 		mycmakeargs+=( -DSTRATA_ISA_FLOOR=${floor} )
 	fi
 	cmake_src_configure
+
+	if use vision; then
+		# setup.py builds both: the CPU reader is the HIP reader's fallback
+		_strata_vision_configure "${WORKDIR}"/vision-cpu
+		_strata_vision_configure "${WORKDIR}"/vision-hip \
+			-DSTRATA_VISION_HIP=ON \
+			-DSTRATA_VISION_HIP_ARCHS="${archs%;}" \
+			-DCMAKE_HIP_COMPILER="$(tc-getHIPCXX)"
+	fi
 }
 
 src_compile() {
 	cmake_src_compile strata
+	if use vision; then
+		local d
+		for d in cpu hip; do
+			BUILD_DIR="${WORKDIR}/vision-${d}" cmake_src_compile strata-vision
+		done
+	fi
 }
 
 src_test() {
@@ -147,6 +186,8 @@ src_test() {
 		# get_prebuilt() HEADs the live GitHub release asset
 		tools/test_setup_engine_hash.py::WhatARefusalDoesToTheCaller::test_a_first_install_stops_because_there_is_nothing_to_fall_back_to
 		tools/test_setup_engine_hash.py::WhatARefusalDoesToTheCaller::test_updating_keeps_the_installed_engine_instead_of_stopping
+		# Races the download it kills: it can finish first (fails on unpatched trees too)
+		tools/test_setup_download.py::Resume::test_a_killed_download_continues
 	)
 	epytest -p no:cacheprovider serve/test_*.py tools/test_setup_*.py
 }
@@ -155,7 +196,8 @@ src_install() {
 	local root=/usr/lib/strata archs=$(get_amdgpu_flags)
 
 	insinto ${root}
-	doins -r data serve setup.py
+	# strata_control imports strata_cli in places; the terminal itself is not installed
+	doins -r data serve setup.py strata_cli strata_control
 	# Qwen Community License, not redistributable under MIT
 	rm -r "${ED}"${root}/data/experimental-speed-projection || die
 	rm "${ED}"${root}/serve/test_*.py || die
@@ -174,18 +216,34 @@ src_install() {
 	exeinto ${root}/engine
 	doexe "${BUILD_DIR}"/strata
 	archs=${archs%;}
+	archs=\"${archs//;/\", \"}\"
+	local vision=
+	if use vision; then
+		doexe "${WORKDIR}"/vision-{cpu/bin/strata-vision,hip/bin/strata-vision-hip}
+		vision=", \"vision\": \"gpu\", \"vision_archs\": [${archs}]"
+		vision+=", \"vision_gpu\": \"strata-vision-hip\", \"vision_cpu\": \"strata-vision\""
+	fi
 	cat > "${T}"/BUILD.json <<-EOF || die
-		{"backend": "hip", "archs": ["${archs//;/\", \"}"], "isa_floor": "$(_strata_isa_floor)", "version": "${PV}"}
+		{"backend": "hip", "archs": [${archs}], "isa_floor": "$(_strata_isa_floor)", "version": "${PV}"${vision}}
 	EOF
 	insinto ${root}/engine
 	doins "${T}"/BUILD.json
+	if use hipblaslt; then
+		# The engine picks the table for its GPU and the running hipBLASLt.
+		insinto ${root}/engine/tuning
+		doins tools/hip/*-hipblaslt-*.txt
+	fi
 
 	# upstream starts server.py through setup; the unit execs it directly
 	fperms +x ${root}/{setup.py,serve/server.py}
 	python_fix_shebang "${ED}"${root}/{setup.py,serve/server.py}
 	python_optimize "${ED}"${root}
 
-	systemd_newunit "${FILESDIR}"/strata_at.service 'strata@.service'
+	cp "${FILESDIR}"/strata_at.service "${T}"/ || die
+	if use default-offline; then
+		sed -i 's/^Environment=STRATA_OFFLINE_FLAG=$/&--offline/' "${T}"/strata_at.service || die
+	fi
+	systemd_newunit "${T}"/strata_at.service 'strata@.service'
 	dobin "${FILESDIR}"/strata-setup
 	exeinto /usr/libexec
 	doexe "${FILESDIR}"/strata-hugepages
