@@ -1,4 +1,4 @@
-/usr/lib/strata/engine/strata	--	gen_context(system_u:object_r:strata_exec_t,s0)
+/usr/lib/strata/engine/strata(-vision(-hip)?)?	--	gen_context(system_u:object_r:strata_exec_t,s0)
 /usr/lib/strata/serve/server\.py	--	gen_context(system_u:object_r:strata_exec_t,s0)
 
 # Base policy 2.20260922 and 9999 label this xserver_misc_device_t; two
