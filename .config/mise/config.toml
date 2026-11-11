@@ -17,7 +17,7 @@ shellcheck = "0.11.0"
 bats = "1.14.0"
 # Test env for sci-ml/strata's specs and smoke run, isolated from the
 # system interpreter.  The --with pins follow upstream requirements.txt.
-"pipx:pytest" = { version = "9.1.1", uvx_args = "--python 3.13 --with numpy==2.5.3 --with jinja2==3.1.6 --with regex==2026.9.10 --with pyyaml==6.0.3 --with tqdm==4.70.1 --with requests==2.34.2 --with pillow==12.3.0 --with psutil==7.2.2" }
+"pipx:pytest" = { version = "9.1.1", uvx_args = "--python 3.13 --with numpy==2.5.3 --with jinja2==3.1.6 --with regex==2026.9.10 --with pyyaml==6.0.3 --with tqdm==4.70.1 --with requests==2.34.2 --with pillow==13.0.0 --with psutil==7.2.2 --with truststore==0.10.5 --with certifi==2026.10.19" }
 
 [tasks.setup]
 description = "Install the hk-managed git hooks (git config hook.* entries)"
